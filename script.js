@@ -96,26 +96,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // **Rendering Functions**
-    function renderAdminReports(filteredReports) {
-        const adminReportsContainer = document.getElementById('admin-reports-container');
-        adminReportsContainer.innerHTML = '';
-        filteredReports.forEach(report => {
-            const li = document.createElement('li');
-            li.setAttribute('data-report-id', report.id);
-            li.innerHTML = `
-                <p><strong>Location:</strong> ${report.locationName}</p>
-                <p><strong>Category:</strong> ${report.category}</p>
-                <p><strong>Description:</strong> ${report.description}</p>
-                <p><strong>Urgency:</strong> ${report.urgency}</p>
-                <p><strong>Threat:</strong> ${report.threat}</p>
-                <p><strong>Status:</strong> <span class="report-status">${report.status}</span></p>
-                ${report.imageDataUrl ? `<img src="${report.imageDataUrl}" alt="Report Image">` : ''}
-                ${createStatusDropdown(report.status)}
-            `;
-            adminReportsContainer.appendChild(li);
-        });
-        renderAdminMap(filteredReports);
+    // Function to delete a report
+function deleteReport(reportId) {
+    if (confirm('Are you sure you want to delete this report?')) {
+        const index = reports.findIndex(report => report.id === reportId);
+        if (index !== -1) {
+            reports.splice(index, 1); // Remove the report from the array
+            const filteredReports = getFilteredReports(); // Get the updated filtered list
+            renderAdminReports(filteredReports); // Re-render the reports
+        }
     }
+}
+
+// Modified renderAdminReports function to include a delete button
+function renderAdminReports(filteredReports) {
+    const adminReportsContainer = document.getElementById('admin-reports-container');
+    adminReportsContainer.innerHTML = ''; // Clear existing content
+    filteredReports.forEach(report => {
+        const li = document.createElement('li');
+        li.setAttribute('data-report-id', report.id);
+        li.innerHTML = `
+            <p><strong>Location:</strong> ${report.locationName}</p>
+            <p><strong>Category:</strong> ${report.category}</p>
+            <p><strong>Description:</strong> ${report.description}</p>
+            <p><strong>Urgency:</strong> ${report.urgency}</p>
+            <p><strong>Threat:</strong> ${report.threat}</p>
+            <p><strong>Status:</strong> <span class="report-status">${report.status}</span></p>
+            ${report.imageDataUrl ? `<img src="${report.imageDataUrl}" alt="Report Image">` : ''}
+            ${createStatusDropdown(report.status)} <!-- Assuming this function exists -->
+            <button class="button danger-button delete-report-btn" data-report-id="${report.id}">Delete</button>
+        `;
+        adminReportsContainer.appendChild(li);
+    });
+    renderAdminMap(filteredReports); // Update the map with the current reports
+}
+
+// Event listener for delete buttons using event delegation
+document.getElementById('admin-reports-container').addEventListener('click', (e) => {
+    if (e.target.classList.contains('delete-report-btn')) {
+        const reportId = parseInt(e.target.getAttribute('data-report-id'));
+        deleteReport(reportId);
+    }
+});
 
     function renderAdminMap(filteredReports) {
         reportMarkers.forEach(marker => adminMap.removeLayer(marker));

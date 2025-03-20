@@ -449,7 +449,7 @@ async function autoDetect() {
 
     try {
         console.log('Sending description:', description); // Debug
-        const response = await fetch('https://auto-detect-model-production.up.railway.app/predict', {
+        const response = await fetch('https://auto-detect-model-production.up.railway.app//predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: description })

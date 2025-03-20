@@ -607,98 +607,273 @@
   /* ============================================================================
      07. Admin Dashboard
      ============================================================================ */
-  #admin-page {
-    padding: 2rem;
-  }
-  
-  .admin-container {
-    max-width: 1000px;
-    margin: 0 auto;
-    background: var(--white);
-    padding: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-light);
-  }
+/* Root page styling */
+#admin-page {
+  padding: 2rem;
+  background-color: #f9f9f9; /* Subtle background for contrast with white container */
+  min-height: 100vh; /* Ensures the page fills the viewport */
+}
 
+/* Main container */
+.admin-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: var(--white);
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+}
+
+/* Dashboard heading */
+#admin-page h1 {
+  font-size: 2rem;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+/* Reports section heading */
+.admin-reports h2 {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  margin-bottom: 1.5rem;
+}
+
+/* Map styling */
+#admin-map {
+  height: 400px;
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+}
+
+/* Filters section */
 .admin-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: 1.5rem;
   align-items: center;
 }
 
 .admin-filters label {
-  margin-right: 0.5rem;
   font-weight: 500;
+  color: var(--text-color);
+  margin-right: 0.5rem;
 }
 
 .admin-filters select {
-  padding: 0.5rem;
-  border-radius: var(--input-radius);
+  padding: 0.5rem 2rem 0.5rem 0.5rem; /* Extra padding on right for dropdown arrow */
   border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background-color: var(--white);
   font-size: 1rem;
   min-width: 150px;
+  appearance: none; /* Remove default browser arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><path fill="%23666" d="M0 0l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.7rem top 50%;
+  background-size: 10px;
+  transition: border-color 0.2s ease;
+}
+
+.admin-filters select:hover,
+.admin-filters select:focus {
+  border-color: var(--primary-color);
+  outline: none;
 }
 
 .admin-filters button {
   padding: 0.5rem 1rem;
 }
-  
-  #admin-reports-container li {
-    background: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: var(--shadow-light);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  #admin-reports-container li:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-medium);
-  }
-  
-  .status-update {
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--input-radius);
-    font-size: 0.9rem;
-    margin-right: 0.5rem;
-  }
-  
-  .update-status-btn {
-    padding: 0.5rem 1rem;
-    background-color: var(--primary-color);
-    color: var(--white);
-    border-radius: var(--border-radius);
-  }
-  
-  .update-status-btn:hover {
-    background-color: var(--primary-dark);
-  }
-  
-  .admin-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1rem;
-  }
-  
-  .admin-actions .secondary-button {
-    background-color: var(--accent-color);
-    color: var(--white);
-  }
-  
-  .admin-actions .secondary-button:hover {
-    background-color: darkorange;
-  }
-  
-  .admin-logout {
-    text-align: center;
-    margin-top: 1.5rem;
-  }
-  
+
+/* Actions section (filters + buttons) */
+.admin-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-actions .admin-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Report list */
+#admin-reports-container li {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-light);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+#admin-reports-container li:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Assumed structure for report content */
+.report-content {
+  flex: 1;
+  min-width: 0; /* Prevents overflow in flexbox */
+}
+
+.report-content h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.report-content p {
+  margin: 0 0 1rem 0;
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+.report-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+}
+
+/* Metadata styling (e.g., category, urgency, threat) */
+.report-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.category,
+.urgency,
+.threat {
+  display: inline-block;
+  padding: 0.2rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: white;
+}
+
+.category {
+  background-color: var(--accent-color);
+}
+
+.urgency-low {
+  background-color: #28a745; /* Green */
+}
+
+.urgency-medium {
+  background-color: #fd7e14; /* Orange */
+}
+
+.urgency-high {
+  background-color: #dc3545; /* Red */
+}
+
+.threat-minor {
+  background-color: #17a2b8; /* Cyan */
+}
+
+.threat-moderate {
+  background-color: #ffc107; /* Yellow */
+}
+
+.threat-severe {
+  background-color: #6c757d; /* Gray */
+}
+
+/* Report actions */
+.report-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 150px;
+}
+
+.status-update {
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+  background-color: var(--white);
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><path fill="%23666" d="M0 0l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.7rem top 50%;
+  background-size: 10px;
+}
+
+.status-update:hover,
+.status-update:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.update-status-btn {
+  padding: 0.5rem 1rem;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.update-status-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* General button styles */
+.button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--primary-dark);
+}
+
+.secondary-button {
+  background-color: var(--accent-color);
+  color: var(--white);
+}
+
+.secondary-button:hover {
+  background-color: darkorange;
+}
+
+/* Logout section */
+.admin-logout {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.danger-button {
+  background-color: #dc3545; /* Red */
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.danger-button:hover {
+  background-color: #c82333; /* Darker red */
+}
   /* ============================================================================
      08. Reporting Page
      ============================================================================ */

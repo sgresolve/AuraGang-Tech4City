@@ -101,26 +101,64 @@
       <div id="register-error" class="error-message"></div>
     </div>
 
-    <!-- Admin Page -->
-    <div id="admin-page" class="page" style="display: none;">
-      <h1>Admin Dashboard</h1>
-      <div class="admin-container">
-        <div class="admin-reports">
-          <h2>Submitted Reports</h2>
-          <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-          <div class="admin-actions">
-            <button id="refresh-reports" class="button">Refresh Reports</button>
-            <button id="export-data" class="button secondary-button">Export Data</button>
-          </div>
-          <ul id="admin-reports-container">
-            <!-- Report items rendered dynamically -->
-          </ul>
-        </div>
-        <div class="admin-logout">
-          <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
-        </div>
-      </div>
+<div id="admin-page" class="page" style="display: none;">
+  <h1>Admin Dashboard</h1>
+  <div class="admin-container">
+    <!-- Existing Admin Reports Section -->
+    <div class="admin-reports">
+      <h2>Submitted Reports</h2>
+      <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+      <div class="admin-actions">
+            <!-- Add Filter Controls Here -->
+    <div class="admin-filters">
+      <label for="image-filter">Image:</label>
+      <select id="image-filter">
+        <option value="all" selected>All</option>
+        <option value="with">With Image</option>
+        <option value="without">Without Image</option>
+      </select>
+      
+      <label for="category-filter">Category:</label>
+      <select id="category-filter">
+        <option value="all" selected>All</option>
+        <option value="Infrastructure">Infrastructure</option>
+        <option value="Environmental">Environmental</option>
+        <option value="Safety">Safety</option>
+        <option value="Others">Others</option>
+      </select>
+      
+      <label for="urgency-filter">Urgency:</label>
+      <select id="urgency-filter">
+        <option value="all" selected>All</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+      </select>
+      
+      <label for="threat-filter">Threat:</label>
+      <select id="threat-filter">
+        <option value="all" selected>All</option>
+        <option value="Minor">Minor</option>
+        <option value="Moderate">Moderate</option>
+        <option value="Severe">Severe</option>
+      </select>
+      
+      <button id="apply-filters" class="button">Apply Filters</button>
+      <button id="reset-filters" class="button secondary-button">Reset Filters</button>
     </div>
+        <button id="refresh-reports" class="button">Refresh Reports</button>
+        <button id="export-data" class="button secondary-button">Export Data</button>
+      </div>
+      <ul id="admin-reports-container">
+        <!-- Report items rendered dynamically -->
+      </ul>
+    </div>
+    
+    <div class="admin-logout">
+      <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
+    </div>
+  </div>
+</div>
 
 <!-- Reporting Page with Auto Detect Button -->
 <div id="reporting-page" class="page" style="display: none;">

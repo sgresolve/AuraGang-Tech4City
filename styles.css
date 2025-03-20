@@ -874,6 +874,18 @@
 .danger-button:hover {
   background-color: #c82333; /* Darker red */
 }
+
+.button.danger-button {
+    background-color: #dc3545; /* Red color */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.button.danger-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
   /* ============================================================================
      08. Reporting Page
      ============================================================================ */

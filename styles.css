@@ -1,0 +1,1033 @@
+/* =============================================================================
+   SGResolve - Comprehensive CSS Redesign
+   =============================================================================
+   This CSS file revitalizes SGResolve's styling. The landing page remains intact
+   as per your preference, while all other pages (login, register, admin dashboard,
+   reporting, my reports, community forum, about, contact, and chatbot) are
+   enhanced with vibrant colors, engaging buttons with icons and animations,
+   and a cohesive, appealing aesthetic. White space is minimized with subtle
+   gradients and shadows, ensuring a professional yet lively interface.
+   
+   =============================================================================
+   Table of Contents:
+   01. CSS Variables & Base Settings
+   02. CSS Reset & Global Styles
+   03. Typography & Utility Classes
+   04. Navigation Bar
+   05. Landing Page (Hero, Features, CTA)
+   06. Login & Registration Pages
+   07. Admin Dashboard
+   08. Reporting Page
+   09. My Reports Page
+   10. Community Forum Page
+   11. About & Contact Pages
+   12. Chatbot Container
+   13. Animations & Transitions
+   14. Responsive Adjustments
+   15. Map Styling
+   ============================================================================= */
+
+/* ============================================================================
+   01. CSS Variables & Base Settings
+   ============================================================================ */
+   :root {
+    /* Existing Colors */
+    --primary-color: #0969da; /* Blue */
+    --primary-dark: #044289;  /* Darker blue */
+    --secondary-color: #2ea44f; /* Green */
+    --secondary-dark: #22863a; /* Darker green */
+    --accent-color: #f4a261; /* Light orange */
+    --background-color: #f0f2f5; /* Light gray */
+    --white: #ffffff;
+    --text-color: #24292e; /* Near black */
+    --muted-color: #586069; /* Gray */
+    --border-color: #d1d5da; /* Light border */
+    --error-color: #d73a49; /* Red */
+    --success-color: #155724; /* Dark green */
+  
+    /* New Gradient Colors */
+    --gradient-start: #4facfe; /* Light blue */
+    --gradient-end: #00f2fe; /* Cyan */
+  
+    /* Shadows */
+    --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 6px 10px rgba(0, 0, 0, 0.15);
+    --shadow-heavy: 0 10px 15px rgba(0, 0, 0, 0.2);
+  
+    /* Font Families */
+    --font-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-heading: 'Segoe UI', sans-serif;
+  
+    /* Sizing */
+    --max-width-content: 800px;
+    --container-padding: 20px;
+  
+    /* Radius */
+    --border-radius: 8px;
+    --input-radius: 6px;
+  }
+  
+  /* ============================================================================
+     02. CSS Reset & Global Styles
+     ============================================================================ */
+  *,
+  *::before,
+  *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: var(--font-base);
+    line-height: 1.6;
+    color: var(--text-color);
+    background: linear-gradient(135deg, var(--background-color), #e6e9ef); /* Subtle gradient */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  a:hover {
+    color: var(--primary-dark);
+  }
+  
+  ul, ol {
+    list-style: none;
+  }
+  
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  
+  #app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--container-padding);
+  }
+  
+  /* ============================================================================
+     03. Typography & Utility Classes
+     ============================================================================ */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+  }
+  
+  h1 { font-size: 2.5rem; font-weight: 600; }
+  h2 { font-size: 2rem; font-weight: 600; }
+  h3 { font-size: 1.75rem; font-weight: 600; }
+  
+  p {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  .page-container {
+    width: 90%;
+    max-width: var(--max-width-content);
+    margin: 2rem auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--input-radius);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--muted-color);
+    opacity: 0.7;
+  }
+  
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+    outline: none;
+  }
+  
+  select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5"><path fill="%23586069" d="M0 0l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+  }
+  
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+  
+  .button:hover::before {
+    transform: translateX(100%);
+  }
+  
+  .button::after {
+    content: ' →'; /* Default arrow icon */
+    margin-left: 0.5rem;
+  }
+  
+  .button:active {
+    transform: scale(0.98);
+  }
+  
+  .primary-button {
+    background-color: var(--primary-color);
+    color: var(--white);
+  }
+  
+  .primary-button:hover {
+    background-color: var(--primary-dark);
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+  }
+  
+  .secondary-button {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+  }
+  
+  .secondary-button:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+  }
+  
+  .danger-button {
+    background-color: var(--error-color);
+    color: var(--white);
+  }
+  
+  .danger-button:hover {
+    background-color: darkred;
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+  }
+  
+  .success-message {
+    background-color: #d4edda;
+    color: var(--success-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    animation: fadeOut 3s forwards;
+  }
+  
+  .error-message {
+    color: var(--error-color);
+    background: #f8d7da;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    margin-top: 1rem;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  /* Button Animations */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+  
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+  }
+  
+  /* General Button Styles for Disabled State */
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Login Button */
+  #login-form button[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #0969da, #044289); /* Blue gradient */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  #login-form button[type="submit"]::before {
+    content: '🔑'; /* Key icon */
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  #login-form button[type="submit"]:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  /* Register Button */
+  #register-form button[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #0969da, #044289); /* Blue gradient */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  #register-form button[type="submit"]::before {
+    content: '➕'; /* Plus icon */
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  #register-form button[type="submit"]:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.05);
+  }
+  
+  /* Detect Location Button */
+  #detectLocation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2ea44f; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    animation: pulse 2s infinite;
+  }
+  
+  #detectLocation::before {
+    content: '📍'; /* Location pin icon */
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  /* Auto Detect Button */
+  #autoDetect {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4a261; /* Orange */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  #autoDetect::before {
+    content: '✨'; /* Sparkles icon */
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  #autoDetect:enabled:hover {
+    animation: shake 0.5s;
+  }
+  
+  /* ============================================================================
+     04. Navigation Bar
+     ============================================================================ */
+  #navbar {
+    background: var(--white);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  
+  #navbar ul {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  
+  #navbar a {
+    color: var(--text-color);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  
+  #navbar a:hover {
+    background: var(--primary-color);
+    color: var(--white);
+  }
+  
+  /* ============================================================================
+     05. Landing Page (Hero, Features, CTA)
+     ============================================================================ */
+  #landing-page {
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  #hero-section {
+    background-color: #e6f3ff;
+    padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-out;
+  }
+  
+  @media (min-width: 768px) {
+    #hero-section {
+      flex-direction: row;
+      text-align: left;
+      padding: 80px 40px;
+      justify-content: space-between;
+    }
+  }
+  
+  .hero-content {
+    flex: 1;
+    padding-right: 20px;
+    animation: fadeInUp 1s ease-out;
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .hero-content .hero-tagline {
+    font-size: 1.2rem;
+    color: var(--muted-color);
+    margin-bottom: 2rem;
+  }
+  
+  .hero-buttons .button {
+    margin-right: 10px;
+  }
+  
+  .hero-buttons .button:last-child {
+    margin-right: 0;
+  }
+  
+  .hero-image {
+    flex: 1;
+    max-width: 400px;
+    margin-top: 20px;
+  }
+  
+  @media (min-width: 768px) {
+    .hero-image {
+      margin-top: 0;
+    }
+  }
+  
+  #features-section {
+    padding: 60px 20px;
+    text-align: center;
+  }
+  
+  #features-section h2 {
+    margin-bottom: 3rem;
+  }
+  
+  .features-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  @media (min-width: 768px) {
+    .features-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .features-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .feature-item {
+    padding: 30px;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+  
+  .feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .feature-item:nth-child(1) { animation-delay: 0.1s; }
+  .feature-item:nth-child(2) { animation-delay: 0.2s; }
+  .feature-item:nth-child(3) { animation-delay: 0.3s; }
+  .feature-item:nth-child(4) { animation-delay: 0.4s; }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+  }
+  
+  .feature-item h3 {
+    margin-bottom: 0.8rem;
+  }
+  
+  .feature-item p {
+    color: var(--muted-color);
+  }
+  
+  #cta-section {
+    padding: 60px 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  #cta-section h2 {
+    margin-bottom: 1rem;
+  }
+  
+  #cta-section p {
+    font-size: 1.1rem;
+    color: var(--muted-color);
+    margin-bottom: 2rem;
+  }
+  
+  .cta-buttons .button {
+    margin-right: 10px;
+  }
+  
+  .cta-buttons .button:last-child {
+    margin-right: 0;
+  }
+  
+  /* ============================================================================
+     06. Login & Registration Pages
+     ============================================================================ */
+  #login-page,
+  #register-page {
+    max-width: 450px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  #login-page h1,
+  #register-page h1 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* ============================================================================
+     07. Admin Dashboard
+     ============================================================================ */
+  #admin-page {
+    padding: 2rem;
+  }
+  
+  .admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  #admin-reports-container li {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-light);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  #admin-reports-container li:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+  }
+  
+  .status-update {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--input-radius);
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+  }
+  
+  .update-status-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-radius: var(--border-radius);
+  }
+  
+  .update-status-btn:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .admin-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+  }
+  
+  .admin-actions .secondary-button {
+    background-color: var(--accent-color);
+    color: var(--white);
+  }
+  
+  .admin-actions .secondary-button:hover {
+    background-color: darkorange;
+  }
+  
+  .admin-logout {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+  
+  /* ============================================================================
+     08. Reporting Page
+     ============================================================================ */
+  /* Reporting Page Image Preview */
+#imagePreview img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+}
+
+/* Admin Reports and User Reports Images */
+#admin-reports-container img,
+#user-reports-container img {
+  max-width: 200px;
+  max-height: 200px;
+  margin-top: 10px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+}
+
+/* Map Popup Images */
+.leaflet-popup-content img {
+  max-width: 150px;
+  max-height: 150px;
+  margin-top: 10px;
+  border-radius: var(--border-radius);
+}
+  
+  
+     #reporting-page {
+    max-width: 700px;
+    margin: 2rem auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  #report-form textarea {
+    min-height: 150px;
+    resize: vertical;
+  }
+  
+  #imageUpload {
+    display: none;
+  }
+  
+  label[for="imageUpload"] {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--accent-color);
+    color: var(--white);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  label[for="imageUpload"]:hover {
+    background: darkorange;
+  }
+  
+  label[for="imageUpload"]::before {
+    content: '📷 ';
+  }
+  
+  /* ============================================================================
+     09. My Reports Page
+     ============================================================================ */
+  #my-reports-page {
+    max-width: 700px;
+    margin: 2rem auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  #user-reports-container li {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-light);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  #user-reports-container li:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-medium);
+  }
+  
+  /* ============================================================================
+     10. Community Forum Page
+     ============================================================================ */
+  #community-forum-page {
+    max-width: 750px;
+    margin: 2rem auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  .forum-post {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+  }
+  
+  .forum-post:hover {
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-3px);
+  }
+  
+  .forum-post h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+  }
+  
+  #forum-post-form textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  /* ============================================================================
+     11. About & Contact Pages
+     ============================================================================ */
+  #about-page,
+  #contact-page {
+    max-width: 750px;
+    margin: 2rem auto;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }
+  
+  /* ============================================================================
+     12. Chatbot Container
+     ============================================================================ */
+  .chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+  
+  .chat-container {
+    width: 320px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(10px);
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    transform: translateY(140%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .chat-container.active {
+    transform: translateY(0);
+  }
+  
+  .chat-container h2 {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 12px;
+    text-align: center;
+    font-size: 1.2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .chat-box {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+  }
+  
+  .message {
+    margin-bottom: 12px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    max-width: 80%;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: messageAppear 0.3s ease forwards;
+  }
+  
+  .message.user {
+    background-color: rgba(63, 81, 181, 0.8);
+    align-self: flex-end;
+    text-align: right;
+  }
+  
+  .message.bot {
+    background-color: rgba(76, 175, 80, 0.8);
+    align-self: flex-start;
+  }
+  
+  .chat-input {
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+  }
+  
+  .input-box {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #000000;
+    outline: none;
+  }
+  
+  .send-button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background: var(--primary-color);
+    color: #fff;
+    border-radius: 8px;
+  }
+  
+  .send-button:hover {
+    background: var(--primary-dark);
+  }
+  
+  .chat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease;
+  }
+  
+  .chat-icon:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  .chat-box::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .chat-box::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  
+  /* ============================================================================
+     13. Animations & Transitions
+     ============================================================================ */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes messageAppear {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+  
+  .page {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .page.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* ============================================================================
+     14. Responsive Adjustments
+     ============================================================================ */
+  @media (max-width: 768px) {
+    #app { padding: 15px; }
+    #navbar ul { flex-direction: column; gap: 0.75rem; }
+    #hero-section {
+      padding: 40px 15px;
+      flex-direction: column;
+      text-align: center;
+    }
+    .hero-content {
+      padding-right: 0;
+      margin-bottom: 30px;
+    }
+    .hero-content h1 { font-size: 2.2rem; }
+    .hero-content .hero-tagline { font-size: 1.1rem; }
+    .hero-buttons .button { display: block; margin: 0 auto 10px; }
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea,
+    select { max-width: 100%; }
+    .page-container,
+    #login-page,
+    #register-page,
+    #reporting-page,
+    #my-reports-page,
+    #community-forum-page,
+    #about-page,
+    #contact-page { width: 95%; padding: 1.5rem; }
+  }
+  
+  @media (min-width: 1200px) {
+    .page-container,
+    #login-page,
+    #register-page,
+    #reporting-page,
+    #my-reports-page,
+    #community-forum-page,
+    #about-page,
+    #contact-page { max-width: 800px; }
+  }
+  
+  /* ============================================================================
+     15. Map Styling
+     ============================================================================ */
+  #map, #admin-map {
+    height: 400px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+    margin-bottom: 1.5rem;
+  }
+  
+  .leaflet-popup-content-wrapper,
+  .leaflet-popup-tip {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-light);
+  }

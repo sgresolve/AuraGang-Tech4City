@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SGResolve - AI in Smart City</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Add Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Add Leaflet CDN for maps -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+</head>
+<body>
+  <div id="app">
+
+    <nav id="navbar" style="display: none;">
+      <ul>
+        <li><a href="#" id="nav-home">Home</a></li>
+        <li><a href="#" id="nav-my-reports">My Reports</a></li>
+        <li><a href="#" id="nav-community">Community Forum</a></li>
+        <li><a href="#" id="nav-about">About</a></li>
+        <li><a href="#" id="nav-contact">Contact</a></li>
+        <li><a href="#" id="nav-logout">Logout</a></li>
+      </ul>
+    </nav>
+
+    <!-- Landing Page -->
+    <div id="landing-page" class="page show">
+      <section id="hero-section">
+        <div class="hero-content">
+          <h1>Welcome to SGResolve</h1>
+          <p class="hero-tagline">Making Singapore a Smarter, More Responsive City with AI.</p>
+          <div class="hero-buttons">
+            <a href="#" id="hero-report-issue" class="button primary-button">Report an Issue</a>
+            <a href="#" id="hero-learn-more" class="button secondary-button">Learn More</a>
+          </div>
+        </div>
+        <div class="hero-image">
+          <img src="images\green-city.png" alt="Smart City Illustration">
+        </div>
+      </section>
+      <section id="features-section">
+        <h2>Key Features</h2>
+        <div class="features-grid">
+          <div class="feature-item">
+            <i class="feature-icon">💡</i>
+            <h3>Easy Issue Reporting</h3>
+            <p>Report city issues quickly and easily with our intuitive interface.</p>
+          </div>
+          <div class="feature-item">
+            <i class="feature-icon">🤖</i>
+            <h3>AI-Powered Categorization</h3>
+            <p>AI intelligently categorizes reports for faster resolution.</p>
+          </div>
+          <div class="feature-item">
+            <i class="feature-icon">🗺️</i>
+            <h3>Real-time Tracking</h3>
+            <p>Track the status of your reports and stay informed every step of the way.</p>
+          </div>
+          <div class="feature-item">
+            <i class="feature-icon">💬</i>
+            <h3>Community Forum</h3>
+            <p>Engage with your community and discuss local issues.</p>
+          </div>
+        </div>
+      </section>
+      <section id="cta-section">
+        <h2>Join SGResolve Today</h2>
+        <p>Help us build a better Singapore. Report issues, track progress, and engage with your community.</p>
+        <div class="cta-buttons">
+          <a href="#" id="cta-register" class="button primary-button">Register Now</a>
+          <a href="#" id="cta-login" class="button secondary-button">Login</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-page" class="page" style="display: none;">
+      <h1>Login</h1>
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+      <p>Don't have an account? <a href="#" id="go-to-register">Register here</a></p>
+      <div id="login-error" class="error-message"></div>
+    </div>
+
+    
+    <!-- Register Page -->
+    <div id="register-page" class="page" style="display: none;">
+      <h1>Register</h1>
+      <form id="register-form">
+        <input type="text" id="register-name" placeholder="Full Name" required>
+        <input type="email" id="register-email" placeholder="Email" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+        <button type="submit">Register</button>
+      </form>
+      <p>Already have an account? <a href="#" id="go-to-login">Login here</a></p>
+      <div id="register-error" class="error-message"></div>
+    </div>
+
+    <!-- Admin Page -->
+    <div id="admin-page" class="page" style="display: none;">
+      <h1>Admin Dashboard</h1>
+      <div class="admin-container">
+        <div class="admin-reports">
+          <h2>Submitted Reports</h2>
+          <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+          <div class="admin-actions">
+            <button id="refresh-reports" class="button">Refresh Reports</button>
+            <button id="export-data" class="button secondary-button">Export Data</button>
+          </div>
+          <ul id="admin-reports-container">
+            <!-- Report items rendered dynamically -->
+          </ul>
+        </div>
+        <div class="admin-logout">
+          <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
+        </div>
+      </div>
+    </div>
+
+<!-- Reporting Page with Auto Detect Button -->
+<div id="reporting-page" class="page" style="display: none;">
+  <h1>Report an Issue</h1>
+  <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+  <form id="report-form">
+    <input type="text" id="locationName" placeholder="Location Name" required>
+    <input type="number" id="latitude" step="any" placeholder="Latitude" required>
+    <input type="number" id="longitude" step="any" placeholder="Longitude" required>
+    <button type="button" id="detectLocation">Detect Location</button>
+    <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
+    <button type="button" id="autoDetect" disabled>Auto Detect</button>
+    <select id="category" required>
+      <option value="">Select Category</option>
+      <option value="Infrastructure">Infrastructure</option>
+      <option value="Environmental">Environmental</option>
+      <option value="Safety">Safety</option>
+      <option value="Others">Others</option>
+    </select>
+    <select id="urgency" required>
+      <option value="">Select Urgency Level</option>
+      <option value="Low">Low</option>
+      <option value="Medium">Medium</option>
+      <option value="High">High</option>
+    </select>
+    <select id="threat" required>
+      <option value="">Select Threat Amount</option>
+      <option value="Minor">Minor</option>
+      <option value="Moderate">Moderate</option>
+      <option value="Severe">Severe</option>
+    </select>
+    <label for="imageUpload">Upload Image (optional)</label>
+    <input type="file" id="imageUpload" accept="image/*">
+    <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Added preview div -->
+    <button type="submit">Submit Report</button>
+  </form>
+  <div id="report-error" class="error-message"></div>
+</div>
+
+    <!-- My Reports Page -->
+    <div id="my-reports-page" class="page" style="display: none;">
+      <h1>My Reports</h1>
+      <ul id="user-reports-container">
+        <!-- User reports rendered dynamically -->
+      </ul>
+    </div>
+
+    <!-- Community Forum Page -->
+    <div id="community-forum-page" class="page" style="display: none;">
+      <h1>Community Forum</h1>
+      <div id="forum-posts">
+        <!-- Forum posts loaded dynamically -->
+      </div>
+      <div id="new-post">
+        <h2>Create a New Post</h2>
+        <form id="forum-post-form">
+          <input type="text" id="post-title" placeholder="Title" required>
+          <textarea id="post-content" placeholder="Share your thoughts..." required></textarea>
+          <button type="submit">Post</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="about-page" class="page" style="display: none;">
+      <h1>About SGResolve</h1>
+      <p>
+        SGResolve is dedicated to transforming Singapore into an AI-first Smart Nation.
+        Our platform enables citizens to report issues—from potholes to street light outages—and track the progress of their requests.
+        By leveraging cloud-based workflows and AI-powered categorization, we aim to enhance urban safety and efficiency.
+      </p>
+      <p>
+        Inspired by the mission to bring digital solutions to every person, home, and organization, SGResolve is your partner in creating a fully connected, intelligent city.
+      </p>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact-page" class="page" style="display: none;">
+      <h1>Contact Us</h1>
+      <p>
+        If you have any questions or need support, please contact us at
+        <a href="/cdn-cgi/l/email-protection#b0c3c5c0c0dfc2c4f0c3d7c2d5c3dfdcc6d59ed3dfdd"><span class="__cf_email__" data-cfemail="2a595f5a5a45585e6a594d584f5945465c4f04494547">[email&#160;protected]</span></a>.
+      </p>
+      <p>
+        You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
+      </p>
+    </div>
+
+    <!-- Custom Chatbot -->
+    <div class="chat-widget">
+      <div id="chat-container" class="chat-container">
+        <h2>SGResolve AI Chatbot</h2>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+          <input type="text" id="user-input" class="input-box" placeholder="Type a message...">
+          <button class="send-button" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+      <div id="chat-icon" class="chat-icon" onclick="toggleChat()">
+        <img src="images\chat-icon.png" alt="Chat">
+      </div>
+    </div>
+
+  </div>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <script src="script.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</body>
+</html>

@@ -421,38 +421,56 @@ document.getElementById('admin-reports-container').addEventListener('click', (e)
     });
 
     // **Auto Detect Feature**
-    const autoDetectButton = document.getElementById('autoDetect');
-    const problemDesc = document.getElementById('problemDesc');
-    const categorySelect = document.getElementById('category');
-    const urgencySelect = document.getElementById('urgency');
-    const threatSelect = document.getElementById('threat');
-    const reportError = document.getElementById('report-error');
+const autoDetectButton = document.getElementById('autoDetect');
+const problemDesc = document.getElementById('problemDesc');
+const categorySelect = document.getElementById('category');
+const urgencySelect = document.getElementById('urgency');
+const threatSelect = document.getElementById('threat');
+const reportError = document.getElementById('report-error');
 
-    problemDesc.addEventListener('input', () => {
-        autoDetectButton.disabled = !problemDesc.value.trim();
-    });
+// Enable button only when description has text
+problemDesc.addEventListener('input', () => {
+    autoDetectButton.disabled = !problemDesc.value.trim();
+});
 
+// Attach the autoDetect function to the button
+autoDetectButton.addEventListener('click', autoDetect);
 
 async function autoDetect() {
-    const description = document.getElementById('problemDesc').value.trim();
+    const description = problemDesc.value.trim(); // Use the variable, not getElementById again
     if (!description) {
         reportError.textContent = 'Please enter a description before using auto detect.';
         return;
     }
+
     reportError.textContent = '';
     autoDetectButton.disabled = true;
     autoDetectButton.textContent = 'Detecting...';
+
     try {
+        console.log('Sending description:', description); // Debug
         const response = await fetch('https://auto-detect-model-production.up.railway.app/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: description })
         });
-        if (!response.ok) throw new Error('API request failed');
+
+        if (!response.ok) {
+            throw new Error(`API request failed with status ${response.status}`);
+        }
+
         const data = await response.json();
-        document.getElementById('categorySelect').value = data.category;
-        document.getElementById('urgencySelect').value = data.urgency;
-        document.getElementById('threatSelect').value = data.threat;
+        console.log('API response:', data); // Debug
+
+        // Update dropdowns using the variables
+        categorySelect.value = data.category;
+        urgencySelect.value = data.urgency;
+        threatSelect.value = data.threat;
+
+        // Verify if values were set (debugging)
+        if (!categorySelect.value) console.warn('Category not set:', data.category);
+        if (!urgencySelect.value) console.warn('Urgency not set:', data.urgency);
+        if (!threatSelect.value) console.warn('Threat not set:', data.threat);
     } catch (error) {
         console.error('Error:', error);
         reportError.textContent = 'Failed to auto detect. Please try again.';

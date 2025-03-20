@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             category: 'Infrastructure',
             urgency: 'High',
             threat: 'Moderate',
-            imageDataUrl: 'images\broken-traffic-light.jpg',
+            imageDataUrl: 'images/broken-traffic-light.jpg',
             status: 'Pending'
         }
     ];

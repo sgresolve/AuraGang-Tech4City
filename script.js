@@ -437,7 +437,7 @@ problemDesc.addEventListener('input', () => {
 autoDetectButton.addEventListener('click', autoDetect);
 
 async function autoDetect() {
-    const description = problemDesc.value.trim(); // Use the variable, not getElementById again
+    const description = problemDesc.value.trim();
     if (!description) {
         reportError.textContent = 'Please enter a description before using auto detect.';
         return;
@@ -448,29 +448,31 @@ async function autoDetect() {
     autoDetectButton.textContent = 'Detecting...';
 
     try {
-        console.log('Sending description:', description); // Debug
-        const response = await fetch('https://auto-detect-model-production.up.railway.app//predict', {
+        console.log('Sending request with:', description);
+        const response = await fetch('https://auto-detect-model-production.up.railway.app/predict', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: description })
         });
 
+        console.log('Response status:', response.status); // Should be 200
         if (!response.ok) {
             throw new Error(`API request failed with status ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('API response:', data); // Debug
+        console.log('Response data:', data); // Log the full response
 
-        // Update dropdowns using the variables
         categorySelect.value = data.category;
         urgencySelect.value = data.urgency;
         threatSelect.value = data.threat;
 
-        // Verify if values were set (debugging)
-        if (!categorySelect.value) console.warn('Category not set:', data.category);
-        if (!urgencySelect.value) console.warn('Urgency not set:', data.urgency);
-        if (!threatSelect.value) console.warn('Threat not set:', data.threat);
+        // Check if values were set
+        console.log('Set values:', {
+            category: categorySelect.value,
+            urgency: urgencySelect.value,
+            threat: threatSelect.value
+        });
     } catch (error) {
         console.error('Error:', error);
         reportError.textContent = 'Failed to auto detect. Please try again.';

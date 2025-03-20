@@ -386,24 +386,220 @@ function mockPredict(description) {
     const words = lowerDesc.split(/\s+/);
 
     // Define keyword lists
-    const categoryKeywords = {
-        Infrastructure: ['road', 'pothole', 'traffic', 'light', 'sidewalk', 'bridge', 'street', 'pavement', 'sewer', 'drain', 'utility', 'power', 'water', 'gas', 'construction', 'building', 'facility', 'maintenance'],
-        Environmental: ['pollution', 'waste', 'recycling', 'green', 'park', 'tree', 'air', 'water', 'flood', 'trash', 'litter', 'noise', 'contamination', 'ecology', 'sustainability', 'conservation'],
-        Safety: ['crime', 'hazard', 'emergency', 'accident', 'fire', 'police', 'ambulance', 'dark', 'safety', 'theft', 'vandalism', 'assault', 'danger', 'risk', 'security', 'protection'],
-        Others: []
-    };
+const categoryKeywords = {
+    Infrastructure: [
+        'road', 'pothole', 'traffic', 'light', 'sidewalk', 'bridge', 'street', 'pavement', 'sewer', 'drain',
+        'utility', 'power', 'water', 'gas', 'construction', 'building', 'facility', 'maintenance',
+        'transport', 'mrt', 'bus', 'lrt', 'train', 'station', 'expressway', 'carpark', 'hdb', 'housing',
+        'town council', 'lift', 'escalator', 'town', 'planning', 'cycle path', 'pedestrian crossing',
+        'traffic congestion', 'roadworks', 'public transport', 'thomson east coast line', 'circle line',
+        'north south line', 'east west line', 'north east line', 'sengkang lrt', 'punggol lrt', 'bus interchange',
+        'mrt station', 'bus stop', 'taxi stand', 'erp', 'coe', 'ura', 'bto', 'srs', 'pr', 'foreign worker',
+        'infrastructure project', 'development', 'upgrading', 'woodlands checkpoint', 'tuas checkpoint', 'johor bahru',
+        'causeway', 'second link'
+    ],
+    Environmental: [
+        'pollution', 'waste', 'recycling', 'green', 'park', 'tree', 'air', 'water', 'flood', 'trash', 'litter',
+        'noise', 'contamination', 'ecology', 'sustainability', 'conservation', 'environment', 'nature',
+        'climate', 'sea level', 'carbon', 'emission', 'clean', 'energy', 'biodiversity', 'green building',
+        'carbon footprint', 'nature reserve', 'green space', 'urban heat island', 'water quality',
+        'air quality', 'nea', 'national environment agency', 'zero waste', 'circular economy',
+        'climate change', 'rising sea levels', 'flash flood', 'drainage', 'reservoir', 'water conservation',
+        'tree planting', 'park connector', 'community garden', 'eco link', 'green plan', '30 by 30'
+    ],
+    Safety: [
+        'crime', 'hazard', 'emergency', 'accident', 'fire', 'police', 'ambulance', 'dark', 'safety', 'theft',
+        'vandalism', 'assault', 'danger', 'risk', 'security', 'protection', 'threat', 'peril', 'cctv',
+        'patrol', 'incident', 'rescue', 'first aid', 'disaster', 'crisis', 'terrorism', 'public order',
+        'road safety', 'fire safety', 'workplace safety', 'nparks', 'spf', 'singapore police force', 'scdf',
+        'singapore civil defence force', 'sars', 'dengue', 'zika', 'covid', 'pandemic', 'outbreak',
+        'health crisis', 'food poisoning', 'haze', 'pm2.5', 'psi', 'singapore alerts'
+    ],
+    Others: [
+        'public health', 'healthcare', 'education', 'employment', 'poverty', 'homeless', 'community',
+        'social issue', 'elderly', 'youth', 'family', 'wellbeing', 'amenity', 'feedback', 'complaint',
+        'accessibility', 'inconvenience', 'nuisance', 'governance', 'regulation', 'policy', 'planning',
+        'social mobility', 'cost of living', 'income inequality', 'ageing population', 'cpf', 'medisave',
+        'mediShield', 'fairprice', 'ntuc', 'hdb living', 'singaporean', 'foreigner', 'expat', 'immigrant',
+        'migrant worker', 'lgbtq', 'mental health', 'special needs', 'inclusivity', 'meritocracy',
+        'racial harmony', 'religious harmony', 'multiculturalism', 'kampong spirit', 'kiasu', 'kiasi',
+        'pa', 'people association', 'grassroots', 'rc', 'residents committee', 'ncc', 'national day parade',
+        'general election', 'by election', 'parliament', 'white paper', 'budget', 'ndr', 'national day rally',
+        'noise complaint', 'odor complaint', 'pest control', 'littering', 'vandalism', 'antisocial behaviour',
+        'smoking ban', 'illegal parking', 'loan shark', 'ah long', 'disturbing the peace', 'minor dispute',
+        'neighbourhood dispute', 'community mediation', 'town council feedback'
+    ]
+};
 
-    const urgencyKeywords = {
-        High: ['urgent', 'immediate', 'critical', 'emergency', 'asap', 'now', 'quick', 'fast', 'pressing', 'vital', 'imperative'],
-        Medium: ['soon', 'timely', 'important', 'prompt', 'today', 'shortly', 'expedient'],
-        Low: ['not urgent', 'later', 'minor', 'eventually', 'whenever', 'non-critical', 'non-urgent', 'not a big issue', 'not pressing']
-    };
 
-    const threatKeywords = {
-        Severe: ['dangerous', 'hazardous', 'life-threatening', 'severe', 'critical', 'fatal', 'serious', 'grave', 'perilous'],
-        Moderate: ['concerning', 'problematic', 'significant', 'moderate', 'issue', 'troublesome', 'worrisome'],
-        Minor: ['small', 'insignificant', 'negligible', 'minor', 'tiny', 'trivial', 'slight', 'minimal', 'not a big issue', 'not serious']
-    };
+const urgencyKeywords = {
+    High: [
+        'urgent', 'immediate', 'critical', 'emergency', 'asap', 'now', 'quick', 'fast', 'pressing', 'vital', 'imperative',
+        'time-sensitive', 'rapid', 'swift', 'expedite', 'exigent', 'dire', 'crucial', 'essential', 'need immediately',
+        'requires immediate attention', 'on fire', 'cannot wait', 'no delay', 'act now', 'red alert', 'code red',
+        'stat', 'right away', 'forthwith', 'instantly', 'without delay', 'at once', 'immediately', 'urgently',
+        'most urgent', 'top priority', 'highest priority', 'most critical', 'most pressing', 'most vital',
+        'absolute necessity', 'burning issue', 'crisis', 'demands action', 'exigent circumstances', 'first priority',
+        'high-priority situation', 'most important', 'paramount', 'pressing need', 'requires action now',
+        'time is of the essence', 'zero delay', 'alarm', 'alert', 'rush', 'hasten', 'accelerate', 'precipitate',
+        'get it done now', 'move quickly', 'time critical', 'every second counts', 'mission critical', 'cannot be delayed',
+        'needs resolving immediately', 'needs addressing urgently', 'situation critical', 'grave situation', 'alarming situation',
+        'fire', 'explosion', 'collapse', 'active shooter', 'nuclear', 'biohazard', 'chemical spill', 'attack', 'breach',
+        'hostage', 'bomb', 'evacuate', 'mayday', 'meltdown', 'tsunami', 'earthquake', 'severe bleeding', 'cardiac arrest',
+        'unconscious', 'stroke', 'seizure', 'anaphylaxis'
+    ],
+    Medium: [
+        'soon', 'timely', 'important', 'prompt', 'today', 'shortly', 'expedient', 'relatively soon', 'in a timely manner',
+        'not urgent but important', 'needs attention', 'within a reasonable time', 'fairly quickly', 'decently fast',
+        'in due course', 'when possible', 'as soon as possible', 'before long', 'in the near future', 'not right now',
+        'need to address', 'should be handled', 'worth addressing', 'not critical', 'not life threatening',
+        'moderately urgent', 'reasonably urgent', 'somewhat urgent', 'important but not critical', 'needs prompt attention',
+        'needs addressing soon', 'should be handled promptly', 'worth addressing soon', 'not an emergency but important',
+        'not a crisis but needs attention', 'not a red alert but needs action', 'not a code red but needs addressing',
+        'not a stat situation but needs handling', 'not right away but needs to be done', 'not forthwith but needs action',
+        'not instantly but needs addressing', 'not without delay but needs attention', 'not at once but needs handling',
+        'not immediately but needs to be taken care of', 'not urgently but needs to be dealt with', 'requires attention in the short term',
+        'needs to be looked at soon', 'should be taken care of in a timely manner', 'merits attention soon',
+        'deserves attention soon', 'not a top priority but needs action', 'not the highest priority but needs addressing',
+        'not the most urgent but needs handling', 'not the most critical but needs attention', 'not the most pressing but needs addressing',
+        'power outage', 'broken gas line', 'water main break', 'serious injury', 'vandalism', 'theft', 'protest', 'riot',
+        'severe weather', 'blocked road', 'train derailment', 'plane crash', 'building collapse'
+    ],
+    Low: [
+        'not urgent', 'later', 'minor', 'eventually', 'whenever', 'non-critical', 'non-urgent', 'not a big issue', 'not pressing',
+        'low priority', 'can wait', 'no rush', 'take your time', 'at your convenience', 'no immediate action',
+        'when you get around to it', 'if you have time', 'no need to hurry', 'no stress', 'no worries', 'in the future',
+        'when convenient', 'no big deal', 'not an emergency', 'can be delayed', 'of little importance', 'least urgent',
+        'lowest priority', 'minimal urgency', 'negligible urgency', 'not a priority', 'not an issue of concern',
+        'not a cause for concern', 'not a problem', 'not a significant issue', 'not a major issue', 'not a serious issue',
+        'not a pressing issue', 'not a vital issue', 'not an imperative issue', 'not a time-sensitive issue',
+        'not a rapid issue', 'not a swift issue', 'not an expedite issue', 'not an exigent issue', 'not a dire issue',
+        'not a crucial issue', 'not an essential issue', 'not a need immediately issue', 'not a requires immediate attention issue',
+        'not an on fire issue', 'not a cannot wait issue', 'not a no delay issue', 'not an act now issue',
+        'not a red alert issue', 'not a code red issue', 'not a stat issue', 'not a right away issue',
+        'not a forthwith issue', 'not an instantly issue', 'not a without delay issue', 'not an at once issue',
+        'not an immediately issue', 'not an urgently issue', 'can be postponed', 'can be deferred', 'can be put off',
+        'can be rescheduled', 'can be delayed indefinitely', 'can be addressed later', 'can be handled later',
+        'can be dealt with later', 'can be taken care of later', 'can be resolved later', 'can be settled later',
+        'can be alleviated later', 'can be mitigated later', 'can be reduced later', 'can be lessened later',
+        'can be diminished later', 'can be abated later', 'can be eased later', 'can be relieved later',
+        'can be addressed at leisure', 'can be handled at leisure', 'can be dealt with at leisure',
+        'can be taken care of at leisure', 'can be resolved at leisure', 'can be settled at leisure',
+        'can be alleviated at leisure', 'can be mitigated at leisure', 'can be reduced at leisure',
+        'can be lessened at leisure', 'can be diminished at leisure', 'can be abated later',
+        'can be eased at leisure', 'can be relieved at leisure', 'no need for haste', 'no need for speed',
+        'no need for urgency', 'no need for promptness', 'no need for alacrity', 'no need for expedition',
+        'no need for dispatch', 'no need for celerity', 'no need for swiftness', 'no need for rapidity',
+        'no need for quickness', 'no need for fastness', 'no need for hastiness', 'no need for swiftness',
+        'noise complaint', 'minor flooding', 'small leak', 'lost item', 'parking violation', 'graffiti', 'littering',
+        'broken appliance', 'internet outage', 'cable outage'
+    ]
+};
+
+const threatKeywords = {
+    Severe: [
+        'dangerous', 'hazardous', 'life-threatening', 'severe', 'critical', 'fatal', 'serious', 'grave', 'perilous',
+        'high risk', 'extreme danger', 'imminent threat', 'catastrophic', 'disastrous', 'lethal', 'deadly', 'deadliest',
+        'highly dangerous', 'extremely hazardous', 'life threatening', 'severe damage', 'critical condition', 'fatal outcome',
+        'serious injury', 'grave consequences', 'perilous situation', 'dire straits', 'major incident', 'substantial risk',
+        'utter destruction', 'mass casualties', 'existential threat', 'total loss', 'complete annihilation', 'wipeout',
+        'extinction level event', 'unrecoverable', 'irreversible', 'beyond repair', 'no hope', 'worst case scenario',
+        'code black', 'level 5 threat', 'maximum threat', 'highest threat level', 'most severe threat', 'extreme hazard',
+        'deadly hazard', 'lethal danger', 'fatal danger', 'critical hazard', 'severe risk', 'extreme risk',
+        'imminent danger', 'catastrophic damage', 'disastrous consequences', 'lethal outcome', 'deadly result',
+        'deadliest consequences', 'highly dangerous situation', 'extremely hazardous condition', 'life-threatening situation',
+        'severe impact', 'critical impact', 'fatal impact', 'serious impact', 'grave impact', 'perilous impact',
+        'dire consequences', 'major crisis', 'substantial danger', 'utter devastation', 'mass destruction',
+        'existential risk', 'total ruin', 'complete obliteration', 'total destruction', 'complete devastation',
+        'absolute destruction', 'absolute devastation', 'irreparable damage', 'irreparable harm', 'irreparable loss',
+        'hopeless situation', 'hopeless case', 'worst possible scenario', 'worst-case scenario', 'code red situation',
+        'code red alert', 'level 5 emergency', 'level 5 crisis', 'maximum danger', 'highest level of threat',
+        'most severe danger', 'most extreme danger', 'most critical danger', 'most fatal danger', 'most serious danger',
+        'most grave danger', 'most perilous danger', 'most hazardous danger', 'most life-threatening danger',
+        'most severe hazard', 'most extreme hazard', 'most critical hazard', 'most fatal hazard', 'most serious hazard',
+        'most grave hazard', 'most perilous hazard', 'most dangerous hazard', 'most hazardous hazard',
+        'most life-threatening hazard', 'most severe risk', 'most extreme risk', 'most critical risk',
+        'most fatal risk', 'most serious risk', 'most grave risk', 'most perilous risk', 'most dangerous risk',
+        'most hazardous risk', 'most life-threatening risk', 'most catastrophic risk', 'most disastrous risk',
+        'most lethal risk', 'most deadly risk', 'most lethal danger', 'most deadly danger',
+        'fire', 'explosion', 'collapse', 'active shooter', 'nuclear', 'biohazard', 'chemical spill', 'attack', 'breach',
+        'hostage', 'bomb', 'meltdown', 'tsunami', 'earthquake', 'severe bleeding', 'cardiac arrest', 'unconscious',
+        'stroke', 'seizure', 'anaphylaxis', 'poisoning', 'radiation', 'terrorism', 'war', 'famine', 'pandemic',
+        'system failure', 'infrastructure collapse'
+    ],
+    Moderate: [
+        'concerning', 'problematic', 'significant', 'moderate', 'issue', 'troublesome', 'worrisome', 'substantial',
+        'considerable', 'notable', 'marked', 'material', 'weighty', 'alarming', 'disquieting', 'disturbing',
+        'of concern', 'presents a problem', 'significant impact', 'moderate damage', 'moderate risk', 'issue of concern',
+        'troublesome situation', 'worrisome development', 'worth noting', 'worth considering', 'not insignificant',
+        'potential problem', 'possible danger', 'some risk', 'bears watching', 'raises concerns', 'needs attention',
+        'could escalate', 'not ideal', 'sub-optimal', 'less than perfect', 'room for improvement', 'not the best',
+        'concerning trend', 'problem area', 'significant issue', 'moderate problem', 'medium threat',
+        'intermediate threat', 'noticeable threat', 'appreciable threat', 'detectable threat', 'perceptible threat',
+        'visible threat', 'evident threat', 'manifest threat', 'palpable threat', 'tangible threat', 'real threat',
+        'credible threat', 'believable threat', 'plausible threat', 'conceivable threat', 'imaginable threat',
+        'thinkable threat', 'possible threat', 'potential hazard', 'possible hazard', 'some danger', 'some hazard',
+        'some risk involved', 'some risk present', 'some risk exists', 'not negligible risk', 'not trivial risk',
+        'not insignificant risk', 'not minor risk', 'not small risk', 'not slight risk', 'not minimal risk',
+        'not a minor issue', 'not a small issue', 'not a slight issue', 'not a minimal issue', 'not a trivial issue',
+        'not an insignificant issue', 'not a negligible issue', 'not a petty issue', 'not a piddling issue',
+        'not a trifling issue', 'not a small matter', 'not of little consequence', 'not unworthy of attention',
+        'not undeserving of attention', 'not unworthy of consideration', 'not undeserving of consideration',
+        'not unworthy of notice', 'not undeserving of notice', 'not unworthy of regard', 'not undeserving of regard',
+        'not unworthy of respect', 'not undeserving of respect', 'not unworthy of concern', 'not undeserving of concern',
+        'not unworthy of worry', 'not undeserving of worry', 'not unworthy of anxiety', 'not undeserving of anxiety',
+        'not unworthy of apprehension', 'not undeserving of apprehension', 'not unworthy of alarm', 'not undeserving of alarm',
+        'not unworthy of disquiet', 'not undeserving of disquiet', 'not unworthy of disturbance', 'not undeserving of disturbance',
+        'power outage', 'broken gas line', 'water main break', 'serious injury', 'vandalism', 'theft', 'protest', 'riot',
+        'severe weather', 'blocked road', 'train derailment', 'plane crash', 'building collapse', 'gas leak',
+        'chemical exposure', 'radiation exposure', 'food poisoning', 'large crowd', 'public disturbance',
+        'cyberattack', 'data breach', 'equipment failure', 'structural damage'
+    ],
+    Minor: [
+        'small', 'insignificant', 'negligible', 'minor', 'tiny', 'trivial', 'slight', 'minimal', 'not a big issue', 'not serious',
+        'low risk', 'minimal impact', 'inconsequential', 'unimportant', 'petty', 'piddling', 'trifling', 'small matter',
+        'of little consequence', 'not worth worrying about', 'hardly noticeable', 'scarcely any', 'a drop in the bucket',
+        'no cause for alarm', 'nothing to worry about', 'not a major concern', 'not a threat', 'not dangerous',
+        'presents no danger', 'poses no threat', 'no harm', 'no foul', 'all clear', 'safe', 'secure', 'under control',
+        'contained', 'handled', 'dealt with', 'taken care of', 'resolved', 'settled', 'alleviated', 'mitigated',
+        'reduced', 'lessened', 'diminished', 'abated', 'eased', 'relieved', 'alleviated', 'mitigated', 'minimal threat',
+        'very low threat', 'extremely low threat', 'almost no threat', 'virtually no threat', 'practically no threat',
+        'scarcely any threat', 'hardly any threat', 'barely any threat', 'just about no threat', 'next to no threat',
+        'as good as no threat', 'tantamount to no threat', 'equivalent to no threat', 'amounting to no threat',
+        'approaching no threat', 'bordering on no threat', 'verging on no threat', 'akin to no threat', 'similar to no threat',
+        'comparable to no threat', 'analogous to no threat', 'parallel to no threat', 'corresponding to no threat',
+        'resembling no threat', 'like no threat', 'as if no threat', 'as though no threat', 'as it were no threat',
+        'in effect no threat', 'in essence no threat', 'in substance no threat', 'in reality no threat', 'in fact no threat',
+        'in truth no threat', 'in actuality no threat', 'in practice no threat', 'for all intents and purposes no threat',
+        'to all intents and purposes no threat', 'on the face of it no threat', 'at first glance no threat',
+        'at first sight no threat', 'on initial inspection no threat', 'on preliminary examination no threat',
+        'on cursory review no threat', 'on superficial analysis no threat', 'on brief consideration no threat',
+        'on slight acquaintance no threat', 'on casual observation no threat', 'on passing notice no threat',
+        'on a quick look no threat', 'on a short view no threat', 'on a limited perspective no threat',
+        'on a narrow outlook no threat', 'on a restricted viewpoint no threat', 'on a small scale no threat',
+        'on a reduced scale no threat', 'on a limited scale no threat', 'on a minor scale no threat',
+        'on a negligible scale no threat', 'on an insignificant scale no threat', 'on a trivial scale no threat',
+        'on a slight scale no threat', 'on a minimal scale no threat', 'on a petty scale no threat',
+        'on a piddling scale no threat', 'on a trifling scale no threat', 'on a small matter scale no threat',
+        'on an of little consequence scale no threat', 'on a not worth worrying about scale no threat',
+        'on a hardly noticeable scale no threat', 'on a scarcely any scale no threat', 'on a drop in the bucket scale no threat',
+        'on a no cause for alarm scale no threat', 'on a nothing to worry about scale no threat',
+        'on a not a major concern scale no threat', 'on a not a threat scale no threat', 'on a not dangerous scale no threat',
+        'on a presents no danger scale no threat', 'on a poses no threat scale no threat', 'on a no harm scale no threat',
+        'on a no foul scale no threat', 'on an all clear scale no threat', 'on a safe scale no threat', 'on a secure scale no threat',
+        'on an under control scale no threat', 'on a contained scale no threat', 'on a handled scale no threat',
+        'on a dealt with scale no threat', 'on a taken care of scale no threat', 'on a resolved scale no threat',
+        'on a settled scale no threat', 'on an alleviated scale no threat', 'on a mitigated scale no threat',
+        'on a reduced scale no threat', 'on a lessened scale no threat', 'on a diminished scale no threat',
+        'on an abated scale no threat', 'on an eased scale no threat', 'on a relieved scale no threat',
+        'on an alleviated scale no threat', 'on a mitigated scale no threat',
+        'noise complaint', 'minor flooding', 'small leak', 'lost item', 'parking violation', 'graffiti', 'littering',
+        'broken appliance', 'internet outage', 'cable outage', 'power flicker', 'dripping faucet', 'clogged drain',
+        'burnt out lightbulb', 'dead battery', 'low tire pressure', 'minor cut', 'headache', 'stomachache',
+        'feeling unwell', 'slightly ill', 'a bit under the weather'
+    ]
+};
+
 
     const negationWords = ['not', 'no', 'isn\'t', 'aren\'t', 'doesn\'t', 'don\'t', 'never', 'none', 'nothing', 'nobody', 'nowhere'];
 

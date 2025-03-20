@@ -380,39 +380,111 @@ document.addEventListener('DOMContentLoaded', () => {
         autoDetectButton.disabled = !problemDesc.value.trim();
     });
 
-    function mockPredict(description) {
-        const lowerDesc = description.toLowerCase();
-        let category = 'Others';
-        if (lowerDesc.includes('road') || lowerDesc.includes('pothole') || lowerDesc.includes('traffic')) category = 'Infrastructure';
-        else if (lowerDesc.includes('dark') || lowerDesc.includes('light') || lowerDesc.includes('safety')) category = 'Safety';
-        else if (lowerDesc.includes('environment') || lowerDesc.includes('pollution')) category = 'Environmental';
-        let urgency = 'Medium';
-        if (lowerDesc.includes('urgent') || lowerDesc.includes('immediate')) urgency = 'High';
-        else if (lowerDesc.includes('not urgent') || lowerDesc.includes('later')) urgency = 'Low';
-        let threat = 'Moderate';
-        if (lowerDesc.includes('dangerous') || lowerDesc.includes('hazard')) threat = 'Severe';
-        else if (lowerDesc.includes('minor') || lowerDesc.includes('small')) threat = 'Minor';
-        return { category, urgency, threat };
-    }
+function mockPredict(description) {
+    // Convert description to lowercase and split into words
+    const lowerDesc = description.toLowerCase();
+    const words = lowerDesc.split(/\s+/);
 
-    autoDetectButton.addEventListener('click', () => {
-        const description = problemDesc.value.trim();
-        if (!description) {
-            reportError.textContent = 'Please enter a description before using auto detect.';
-            return;
+    // Define keyword lists
+    const categoryKeywords = {
+        Infrastructure: ['road', 'pothole', 'traffic', 'light', 'sidewalk', 'bridge', 'street', 'pavement', 'sewer', 'drain', 'utility', 'power', 'water', 'gas', 'construction', 'building', 'facility', 'maintenance'],
+        Environmental: ['pollution', 'waste', 'recycling', 'green', 'park', 'tree', 'air', 'water', 'flood', 'trash', 'litter', 'noise', 'contamination', 'ecology', 'sustainability', 'conservation'],
+        Safety: ['crime', 'hazard', 'emergency', 'accident', 'fire', 'police', 'ambulance', 'dark', 'safety', 'theft', 'vandalism', 'assault', 'danger', 'risk', 'security', 'protection'],
+        Others: []
+    };
+
+    const urgencyKeywords = {
+        High: ['urgent', 'immediate', 'critical', 'emergency', 'asap', 'now', 'quick', 'fast', 'pressing', 'vital', 'imperative'],
+        Medium: ['soon', 'timely', 'important', 'prompt', 'today', 'shortly', 'expedient'],
+        Low: ['not urgent', 'later', 'minor', 'eventually', 'whenever', 'non-critical', 'non-urgent', 'not a big issue', 'not pressing']
+    };
+
+    const threatKeywords = {
+        Severe: ['dangerous', 'hazardous', 'life-threatening', 'severe', 'critical', 'fatal', 'serious', 'grave', 'perilous'],
+        Moderate: ['concerning', 'problematic', 'significant', 'moderate', 'issue', 'troublesome', 'worrisome'],
+        Minor: ['small', 'insignificant', 'negligible', 'minor', 'tiny', 'trivial', 'slight', 'minimal', 'not a big issue', 'not serious']
+    };
+
+    const negationWords = ['not', 'no', 'isn\'t', 'aren\'t', 'doesn\'t', 'don\'t', 'never', 'none', 'nothing', 'nobody', 'nowhere'];
+
+    // Predict Category
+    const categoryScores = {};
+    for (const [category, keywords] of Object.entries(categoryKeywords)) {
+        categoryScores[category] = keywords.reduce((score, keyword) => {
+            return score + (words.includes(keyword) ? 1 : 0);
+        }, 0);
+    }
+    const maxCategoryScore = Math.max(...Object.values(categoryScores));
+    let category = Object.entries(categoryScores).find(([cat, score]) => score === maxCategoryScore)[0];
+    if (maxCategoryScore === 0) category = 'Others';
+
+    // Predict Urgency
+    const urgencyScores = { High: 0, Medium: 0, Low: 0 };
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        const prevWord = i > 0 ? words[i - 1] : '';
+        if (urgencyKeywords.High.includes(word)) {
+            if (!negationWords.includes(prevWord)) {
+                urgencyScores.High++;
+            } else {
+                urgencyScores.Low++;
+            }
+        } else if (urgencyKeywords.Medium.includes(word)) {
+            urgencyScores.Medium++;
         }
-        reportError.textContent = '';
-        autoDetectButton.disabled = true;
-        autoDetectButton.textContent = 'Detecting...';
-        setTimeout(() => {
-            const mockData = mockPredict(description);
-            if (mockData.category) categorySelect.value = mockData.category;
-            if (mockData.urgency) urgencySelect.value = mockData.urgency;
-            if (mockData.threat) threatSelect.value = mockData.threat;
-            autoDetectButton.disabled = false;
-            autoDetectButton.textContent = 'Auto Detect';
-        }, 1000);
-    });
+        // Check for Low urgency phrases in the full description
+        if (urgencyKeywords.Low.some(keyword => lowerDesc.includes(keyword))) {
+            urgencyScores.Low++;
+        }
+    }
+    const maxUrgencyScore = Math.max(...Object.values(urgencyScores));
+    let urgency = Object.entries(urgencyScores).find(([level, score]) => score === maxUrgencyScore)[0];
+    if (maxUrgencyScore === 0) urgency = 'Medium';
+
+    // Predict Threat
+    const threatScores = { Severe: 0, Moderate: 0, Minor: 0 };
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
+        const prevWord = i > 0 ? words[i - 1] : '';
+        if (threatKeywords.Severe.includes(word)) {
+            if (!negationWords.includes(prevWord)) {
+                threatScores.Severe++;
+            } else {
+                threatScores.Minor++;
+            }
+        } else if (threatKeywords.Moderate.includes(word)) {
+            threatScores.Moderate++;
+        }
+        // Check for Minor threat phrases in the full description
+        if (threatKeywords.Minor.some(keyword => lowerDesc.includes(keyword))) {
+            threatScores.Minor++;
+        }
+    }
+    const maxThreatScore = Math.max(...Object.values(threatScores));
+    let threat = Object.entries(threatScores).find(([level, score]) => score === maxThreatScore)[0];
+    if (maxThreatScore === 0) threat = 'Moderate';
+
+    return { category, urgency, threat };
+}
+
+autoDetectButton.addEventListener('click', () => {
+    const description = problemDesc.value.trim();
+    if (!description) {
+        reportError.textContent = 'Please enter a description before using auto detect.';
+        return;
+    }
+    reportError.textContent = '';
+    autoDetectButton.disabled = true;
+    autoDetectButton.textContent = 'Detecting...';
+    setTimeout(() => {
+        const prediction = mockPredict(description);
+        categorySelect.value = prediction.category;
+        urgencySelect.value = prediction.urgency;
+        threatSelect.value = prediction.threat;
+        autoDetectButton.disabled = false;
+        autoDetectButton.textContent = 'Auto Detect';
+    }, 1000); // Simulate processing delay
+});
 
     // **Report Submission**
     document.getElementById('report-form').addEventListener('submit', (e) => {

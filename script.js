@@ -293,10 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showPage(pages.about);
     });
 
-    document.getElementById('nav-contact').addEventListener('click', (e) => {
-        e.preventDefault();
-        showPage(pages.contact);
-    });
 
     document.getElementById('hero-report-issue').addEventListener('click', (e) => {
         e.preventDefault();

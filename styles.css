@@ -20,7 +20,7 @@
    08. Reporting Page
    09. My Reports Page
    10. Community Forum Page
-   11. About & Contact Pages
+   11. About Page
    12. Chatbot Container
    13. Animations & Transitions
    14. Responsive Adjustments
@@ -1821,7 +1821,7 @@ label[for="imageUpload"]::before {
   }
   
   /* ============================================================================
-     11. About & Contact Pages
+     11. About Page
      ============================================================================ */
 /* Global styles */
 body {
@@ -2235,8 +2235,7 @@ a:hover {
     #reporting-page,
     #my-reports-page,
     #community-forum-page,
-    #about-page,
-    #contact-page { width: 95%; padding: 1.5rem; }
+    #about-page{ width: 95%; padding: 1.5rem; }
   }
   
   @media (min-width: 1200px) {
@@ -2246,8 +2245,7 @@ a:hover {
     #reporting-page,
     #my-reports-page,
     #community-forum-page,
-    #about-page,
-    #contact-page { max-width: 800px; }
+    #about-page{ max-width: 800px; }
   }
   
   /* ============================================================================

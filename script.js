@@ -704,3 +704,18 @@ async function sendMessage() {
 
 document.getElementById('chat-icon').addEventListener('click', toggleChat);
 document.querySelector('.send-button').addEventListener('click', sendMessage);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sections = document.querySelectorAll('.about-section');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 }); // Trigger when 10% of the section is visible
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+  });
+

@@ -20,7 +20,6 @@
         <li><a href="#" id="nav-my-reports">My Reports</a></li>
         <li><a href="#" id="nav-community">Community Forum</a></li>
         <li><a href="#" id="nav-about">About</a></li>
-        <li><a href="#" id="nav-contact">Contact</a></li>
         <li><a href="#" id="nav-logout">Logout</a></li>
       </ul>
     </nav>
@@ -73,6 +72,21 @@
           <a href="#" id="cta-login" class="button secondary-button">Login</a>
         </div>
       </section>
+    </div>
+
+    <!-- Custom Chatbot -->
+    <div class="chat-widget">
+      <div id="chat-container" class="chat-container">
+        <h2>SGResolve AI Chatbot</h2>
+        <div class="chat-box" id="chat-box"></div>
+        <div class="chat-input">
+          <input type="text" id="user-input" class="input-box" placeholder="Type a message...">
+          <button class="send-button">Send</button>
+        </div>
+      </div>
+      <div id="chat-icon" class="chat-icon">
+        <img src="images\chat-icon.png" alt="Chat">
+    </div>
     </div>
 
     <!-- Login Page -->
@@ -222,9 +236,13 @@
       </div>
     </div>
 
-    <!-- About Page -->
-    <div id="about-page" class="page" style="display: none;">
-      <h1>About SGResolve</h1>
+<!-- About Page -->
+<div id="about-page" class="page" style="display: none;">
+  <h1>About SGResolve</h1>
+  
+  <section class="about-section">
+    <div class="content">
+      <h2>Our Mission</h2>
       <p>
         SGResolve is dedicated to transforming Singapore into an AI-first Smart Nation.
         Our platform enables citizens to report issues—from potholes to street light outages—and track the progress of their requests.
@@ -234,33 +252,150 @@
         Inspired by the mission to bring digital solutions to every person, home, and organization, SGResolve is your partner in creating a fully connected, intelligent city.
       </p>
     </div>
+  </section>
+
+  <section class="about-section">
+    <div class="content">
+      <h2>How We Help Citizens</h2>
+      <ul>
+        <li><strong>Simplified Reporting:</strong> Report community issues in under 2 minutes with our user-friendly mobile app or web interface</li>
+        <li><strong>Real-time Updates:</strong> Receive notifications as your reported issues progress through resolution stages</li>
+        <li><strong>Community Transparency:</strong> View issues reported by others in your neighborhood and their resolution status</li>
+        <li><strong>Multiple Reporting Methods:</strong> Submit via app, website, SMS, or our 24/7 hotline at 1800-SGR-HELP</li>
+        <li><strong>Accessible Design:</strong> Our platform meets WCAG 2.1 AA standards, ensuring all citizens can access our services</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <div class="content">
+      <h2>Our Impact</h2>
+      <div class="stats-container">
+        <div class="stat-box">
+          <span class="stat-number">95%</span>
+          <span class="stat-description">Issues resolved within 7 days</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">500K+</span>
+          <span class="stat-description">Active citizen users</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-number">25K+</span>
+          <span class="stat-description">Monthly reports processed</span>
+        </div>
+      </div>
+      <p>Through collaborative efforts between citizens and government agencies, SGResolve has helped improve neighborhood safety, infrastructure maintenance, and community satisfaction across Singapore.</p>
+    </div>
+  </section>
+
+  <!--Horizontal Slideshow -->
+  <section class="about-section">
+    <div class="content">
+      <h2>How It Works</h2>
+      <div class="slideshow-container">
+        <div class="slide-track">
+          <!-- Original slides -->
+          <div class="slide">
+            <h3>Report</h3>
+            <p>Submit an issue through our app, website, or hotline with photos and location.</p>
+          </div>
+          <div class="slide">
+            <h3>AI Analysis</h3>
+            <p>Our system automatically categorizes and prioritizes your report.</p>
+          </div>
+          <div class="slide">
+            <h3>Assignment</h3>
+            <p>The appropriate government agency or town council receives your report.</p>
+          </div>
+          <div class="slide">
+            <h3>Resolution</h3>
+            <p>Work crews address the issue and document their solution.</p>
+          </div>
+          <div class="slide">
+            <h3>Verification</h3>
+            <p>You receive an update and can confirm if the issue is resolved.</p>
+          </div>
+          <!-- Duplicate slides for seamless looping -->
+          <div class="slide">
+            <h3>Report</h3>
+            <p>Submit an issue through our app, website, or hotline with photos and location.</p>
+          </div>
+          <div class="slide">
+            <h3>AI Analysis</h3>
+            <p>Our system automatically categorizes and prioritizes your report.</p>
+          </div>
+          <div class="slide">
+            <h3>Assignment</h3>
+            <p>The appropriate government agency or town council receives your report.</p>
+          </div>
+          <div class="slide">
+            <h3>Resolution</h3>
+            <p>Work crews address the issue and document their solution.</p>
+          </div>
+          <div class="slide">
+            <h3>Verification</h3>
+            <p>You receive an update and can confirm if the issue is resolved.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supported Issue Categories -->
+  <section class="about-section">
+    <div class="content">
+      <h2>Supported Issue Categories</h2>
+      <div class="categories-grid">
+        <div class="category-item"><i class="icon-road"></i><span>Road & Sidewalk</span></div>
+        <div class="category-item"><i class="icon-light"></i><span>Street Lighting</span></div>
+        <div class="category-item"><i class="icon-trash"></i><span>Waste & Cleanliness</span></div>
+        <div class="category-item"><i class="icon-nature"></i><span>Trees & Greenery</span></div>
+        <div class="category-item"><i class="icon-construction"></i><span>Construction Safety</span></div>
+        <div class="category-item"><i class="icon-pest"></i><span>Pest Control</span></div>
+        <div class="category-item"><i class="icon-noise"></i><span>Noise Concerns</span></div>
+        <div class="category-item"><i class="icon-facilities"></i><span>Public Facilities</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy & Security -->
+  <section class="about-section">
+    <div class="content">
+      <h2>Privacy & Security</h2>
+      <p>SGResolve prioritizes your data security. Personal information is protected using enterprise-grade encryption, and we maintain compliance with Singapore's Personal Data Protection Act (PDPA). Your contact details are shared only with relevant agencies for issue resolution.</p>
+      <p>For full details on our data handling practices, please refer to our <a href="#privacy">Privacy Policy</a>.</p>
+    </div>
+  </section>
+
+  <!-- Contact Us -->
+  <section class="about-section">
+    <div class="content">
+      <h2>Contact Us</h2>
+      <p>Have questions or feedback about SGResolve? We're here to help:</p>
+      <ul class="contact-list">
+        <li><strong>Customer Support:</strong> <a href="tel:18007474357">1800-SGR-HELP (1800-747-4357)</a></li>
+        <li><strong>Email:</strong> <a href="mailto:support@sgresolve.gov.sg">support@sgresolve.gov.sg</a></li>
+        <li><strong>Office Address:</strong> 1 North Buona Vista Drive, Singapore 138675</li>
+        <li><strong>Operating Hours:</strong> Support available 24/7</li>
+      </ul>
+      <p>For urgent matters requiring immediate attention (e.g., safety hazards), please contact emergency services at 999 or 995.</p>
+    </div>
+  </section>
+</div>
 
     <!-- Contact Page -->
     <div id="contact-page" class="page" style="display: none;">
       <h1>Contact Us</h1>
       <p>
         If you have any questions or need support, please contact us at
-        <a href="/cdn-cgi/l/email-protection#b0c3c5c0c0dfc2c4f0c3d7c2d5c3dfdcc6d59ed3dfdd"><span class="__cf_email__" data-cfemail="2a595f5a5a45585e6a594d584f5945465c4f04494547">[email&#160;protected]</span></a>.
+        <a>contact@sgresolve.com</a>.
       </p>
       <p>
         You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
       </p>
     </div>
 
-    <!-- Custom Chatbot -->
-    <div class="chat-widget">
-      <div id="chat-container" class="chat-container">
-        <h2>SGResolve AI Chatbot</h2>
-        <div class="chat-box" id="chat-box"></div>
-        <div class="chat-input">
-          <input type="text" id="user-input" class="input-box" placeholder="Type a message...">
-          <button class="send-button">Send</button>
-        </div>
-      </div>
-      <div id="chat-icon" class="chat-icon">
-        <img src="images\chat-icon.png" alt="Chat">
-    </div>
-    </div>
+
 
   </div>
 

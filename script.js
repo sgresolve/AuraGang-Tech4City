@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         myReports: document.getElementById('my-reports-page'),
         community: document.getElementById('community-forum-page'),
         about: document.getElementById('about-page'),
-        contact: document.getElementById('contact-page')
+
     };
     const navbar = document.getElementById('navbar');
 

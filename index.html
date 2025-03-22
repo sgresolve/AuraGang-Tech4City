@@ -116,9 +116,18 @@
       <div id="register-error" class="error-message"></div>
     </div>
 
-<div id="admin-page" class="page" style="display: none;">
-  <h1>Admin Dashboard</h1>
-  <div class="admin-container">
+  <div id="admin-page" class="page" style="display: none;">
+      <h1>Admin Dashboard</h1>
+      <div class="admin-container">
+        <!-- New Analytics Section -->
+        <div class="admin-analytics">
+          <h2>Reports This Month</h2>
+          <p id="total-reports">Total reports: 0</p>
+          <div id="no-reports-message" style="display: none;">No reports this month.</div>
+          <div class="chart-container" style="position: relative; height:200px; width:100%">
+            <canvas id="reports-chart"></canvas>
+          </div>
+        </div>
     <!-- Existing Admin Reports Section -->
     <div class="admin-reports">
       <h2>Submitted Reports</h2>

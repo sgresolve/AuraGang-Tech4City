@@ -1,5 +1,13 @@
 /* =============================================================================
-   SGResolve - CSS 
+   SGResolve - Comprehensive CSS Redesign
+   =============================================================================
+   This CSS file revitalizes SGResolve's styling. The landing page remains intact
+   as per your preference, while all other pages (login, register, admin dashboard,
+   reporting, my reports, community forum, about, contact, and chatbot) are
+   enhanced with vibrant colors, engaging buttons with icons and animations,
+   and a cohesive, appealing aesthetic. White space is minimized with subtle
+   gradients and shadows, ensuring a professional yet lively interface.
+   
    =============================================================================
    Table of Contents:
    01. CSS Variables & Base Settings
@@ -1685,6 +1693,47 @@ label[for="imageUpload"]::before {
   20%, 80% { transform: translateX(2px); }
   30%, 50%, 70% { transform: translateX(-4px); }
   40%, 60% { transform: translateX(4px); }
+}
+
+/* Add to styles.css under "07. Admin Dashboard" section */
+
+/* Analytics Section */
+.admin-analytics {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  transition: box-shadow 0.3s ease;
+}
+
+.admin-analytics:hover {
+  box-shadow: var(--shadow-medium);
+}
+
+.admin-analytics h2 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}
+
+#total-reports {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+#no-reports-message {
+  text-align: center;
+  color: var(--muted-color);
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 200px;
+  width: 100%;
 }
   
   /* ============================================================================

@@ -1,13 +1,5 @@
 /* =============================================================================
-   SGResolve - Comprehensive CSS Redesign
-   =============================================================================
-   This CSS file revitalizes SGResolve's styling. The landing page remains intact
-   as per your preference, while all other pages (login, register, admin dashboard,
-   reporting, my reports, community forum, about, contact, and chatbot) are
-   enhanced with vibrant colors, engaging buttons with icons and animations,
-   and a cohesive, appealing aesthetic. White space is minimized with subtle
-   gradients and shadows, ensuring a professional yet lively interface.
-   
+   SGResolve - CSS 
    =============================================================================
    Table of Contents:
    01. CSS Variables & Base Settings
@@ -1156,6 +1148,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+.report-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-top: 10px;
 }
 
 .category,

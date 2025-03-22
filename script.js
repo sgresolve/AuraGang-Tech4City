@@ -112,10 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
         page.style.display = 'block';
         if (page === pages.reporting) reportingMap.invalidateSize();
         else if (page === pages.admin) {
-            adminMap.invalidateSize();
-            renderAdminReports();  // No arguments needed
+          adminMap.invalidateSize();
+          renderAdminReports();
+          renderAdminAnalytics(); // Add analytics rendering
         }
-    }
+      }
+      
+
     function updateNavbar() {
         navbar.style.display = currentUser ? 'block' : 'none';
     }
@@ -705,10 +708,11 @@ document.getElementById('admin-reports-container').addEventListener('click', asy
     }
 });
 
-document.getElementById('refresh-reports').addEventListener('click', (e) => {
+document.getElementById('refresh-reports').addEventListener('click', async (e) => {
     e.preventDefault();
-    renderAdminReports();
-});
+    await renderAdminReports();
+    await renderAdminAnalytics(); // Refresh analytics too
+  });
 // Forum Post Submission
 document.getElementById('forum-post-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -844,3 +848,88 @@ document.addEventListener('DOMContentLoaded', () => {
       observer.observe(section);
     });
   });
+
+  async function fetchReportsThisMonth() {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  
+    const q = query(
+      collection(db, "reports"),
+      where("timestamp", ">=", startOfMonth),
+      where("timestamp", "<=", now)
+    );
+  
+    const querySnapshot = await getDocs(q);
+    const reports = [];
+    querySnapshot.forEach((doc) => {
+      reports.push({ id: doc.id, ...doc.data() });
+    });
+    return reports;
+  }
+
+  async function renderAdminAnalytics() {
+    const reportsThisMonth = await fetchReportsThisMonth();
+    const totalReports = reportsThisMonth.length;
+    document.getElementById('total-reports').textContent = `Total reports: ${totalReports}`;
+  
+    const categoryCounts = {};
+    reportsThisMonth.forEach(report => {
+      const category = report.category;
+      categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+    });
+  
+    const allCategories = ['Infrastructure', 'Environmental', 'Safety', 'Others'];
+    const categoryColors = {
+      'Infrastructure': 'rgba(255, 99, 132, 0.6)',  // Red
+      'Environmental': 'rgba(54, 162, 235, 0.6)',   // Blue
+      'Safety': 'rgba(255, 206, 86, 0.6)',          // Yellow
+      'Others': 'rgba(75, 192, 192, 0.6)'           // Teal
+    };
+  
+    const ctx = document.getElementById('reports-chart').getContext('2d');
+  
+    // Destroy existing chart if it exists to prevent overlap
+    if (window.reportsChart) {
+      window.reportsChart.destroy();
+    }
+  
+    // Handle no reports case
+    if (totalReports === 0) {
+      document.getElementById('reports-chart').style.display = 'none';
+      document.getElementById('no-reports-message').style.display = 'block';
+    } else {
+      document.getElementById('reports-chart').style.display = 'block';
+      document.getElementById('no-reports-message').style.display = 'none';
+  
+      window.reportsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: allCategories,
+          datasets: [{
+            label: 'Reports This Month',
+            data: allCategories.map(cat => categoryCounts[cat] || 0),
+            backgroundColor: allCategories.map(cat => categoryColors[cat]),
+            borderColor: allCategories.map(cat => categoryColors[cat].replace('0.6', '1')),
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Number of Reports' }
+            },
+            x: {
+              title: { display: true, text: 'Categories' }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            title: { display: false }
+          }
+        }
+      });
+    }
+  }

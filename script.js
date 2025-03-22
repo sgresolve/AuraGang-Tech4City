@@ -7,6 +7,18 @@ import {
   onAuthStateChanged,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  query, 
+  where, 
+  doc, 
+  updateDoc, 
+  deleteDoc 
+} from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -21,7 +33,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
+const db = getFirestore(app);
 document.addEventListener('DOMContentLoaded', () => {
     // Singapore's Geographical Boundaries
     const SINGAPORE_BOUNDS = {
@@ -51,23 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let reportMarkers = [];
     let imageDataUrl = null;
     let currentUser = null;
-    let reports = [
-        {
-            id: 1,
-            userId: 'demo',
-            locationName: 'Punggol',
-            latitude: 1.3984,
-            longitude: 103.9072,
-            description: 'Broken Traffic Light',
-            category: 'Infrastructure',
-            urgency: 'High',
-            threat: 'Moderate',
-            imageDataUrl: 'images/broken-traffic-light.jpg',
-            status: 'Pending'
-        }
-    ];
     let forumPosts = [];
-    let reportIdCounter = 2;
     let forumPostIdCounter = 1;
 
     // Page Elements
@@ -91,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (user) {
             if (user.email === 'admin@sgresolve.com') {
-                renderAdminReports(reports);
+                console.log('Admin detected, rendering reports');
+                renderAdminReports();
                 showPage(pages.admin);
             } else {
                 showPage(pages.reporting);
@@ -116,17 +113,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (page === pages.reporting) reportingMap.invalidateSize();
         else if (page === pages.admin) {
             adminMap.invalidateSize();
-            renderAdminReports(reports);
+            renderAdminReports();  // No arguments needed
         }
     }
-
     function updateNavbar() {
         navbar.style.display = currentUser ? 'block' : 'none';
     }
 
-    function createStatusDropdown(currentStatus) {
+    function createStatusDropdown(currentStatus, reportId) {
         return `
-            <select class="status-update">
+            <select class="status-update" data-report-id="${reportId}">
                 <option value="Pending" ${currentStatus === 'Pending' ? 'selected' : ''}>Pending</option>
                 <option value="In Progress" ${currentStatus === 'In Progress' ? 'selected' : ''}>In Progress</option>
                 <option value="Resolved" ${currentStatus === 'Resolved' ? 'selected' : ''}>Resolved</option>
@@ -146,6 +142,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    //delete functions
+    document.getElementById('admin-reports-container').addEventListener('click', async (e) => {
+        if (e.target.classList.contains('delete-report-btn')) {
+            const reportId = e.target.getAttribute('data-report-id');
+            if (confirm('Are you sure you want to delete this report?')) {
+                try {
+                    await deleteDoc(doc(db, "reports", reportId));
+                    await renderAdminReports();
+                } catch (error) {
+                    console.error('Error deleting report:', error);
+                    alert('Failed to delete report. Please try again.');
+                }
+            }
+        }
+    });
 
     function renderAdminReports(filteredReports) {
         const adminReportsContainer = document.getElementById('admin-reports-container');
@@ -169,55 +181,120 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAdminMap(filteredReports);
     }
 
-    function renderAdminMap(filteredReports) {
-        reportMarkers.forEach(marker => adminMap.removeLayer(marker));
-        reportMarkers = [];
-        filteredReports.forEach(report => {
-            if (report.latitude && report.longitude) {
-                const marker = L.marker([report.latitude, report.longitude]).addTo(adminMap);
-                const popupContent = `
-                    <b>${report.locationName}</b><br>
-                    Category: ${report.category}<br>
-                    Description: ${report.description}<br>
-                    Urgency: ${report.urgency}<br>
-                    Threat: ${report.threat}<br>
-                    Status: <select class="status-update" data-report-id="${report.id}">
-                        <option value="Pending" ${report.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                        <option value="In Progress" ${report.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                        <option value="Resolved" ${report.status === 'Resolved' ? 'selected' : ''}>Resolved</option>
-                    </select><br>
-                    ${report.imageDataUrl ? `<img src="${report.imageDataUrl}" alt="Report Image">` : ''}
-                `;
-                marker.bindPopup(popupContent);
-                reportMarkers.push(marker);
-            }
-        });
-    }
-
-    function renderUserReports() {
-        const userReportsContainer = document.getElementById('user-reports-container');
-        userReportsContainer.innerHTML = '';
-        const userReports = reports.filter(report => report.userId === currentUser.uid);
-        if (userReports.length === 0) {
-            userReportsContainer.innerHTML = 'No reports submitted yet.';
-            return;
+    function applyFilters(reports) {
+        const imageFilter = document.getElementById('image-filter').value;
+        const categoryFilter = document.getElementById('category-filter').value;
+        const urgencyFilter = document.getElementById('urgency-filter').value;
+        const threatFilter = document.getElementById('threat-filter').value;
+    
+        let filteredReports = reports.slice();
+    
+        if (imageFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => 
+                imageFilter === 'with' ? report.imageUrl : !report.imageUrl
+            );
         }
-        userReports.forEach(report => {
-            const li = document.createElement('li');
-            li.setAttribute('data-report-id', report.id);
-            li.innerHTML = `
-                <p><strong>Location:</strong> ${report.locationName}</p>
-                <p><strong>Category:</strong> ${report.category}</p>
-                <p><strong>Description:</strong> ${report.description}</p>
-                <p><strong>Urgency:</strong> ${report.urgency}</p>
-                <p><strong>Threat:</strong> ${report.threat}</p>
-                <p><strong>Status:</strong> ${report.status}</p>
-                ${report.imageDataUrl ? `<img src="${report.imageDataUrl}" alt="Report Image">` : ''}
-            `;
-            userReportsContainer.appendChild(li);
-        });
+    
+        if (categoryFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => report.category === categoryFilter);
+        }
+    
+        if (urgencyFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => report.urgency === urgencyFilter);
+        }
+    
+        if (threatFilter !== 'all') {
+            filteredReports = filteredReports.filter(report => report.threat === threatFilter);
+        }
+    
+        return filteredReports;
     }
 
+    function renderAdminMap(reports) {
+        // Clear existing markers from the adminMap
+        reportMarkers.forEach(marker => adminMap.removeLayer(marker));
+        reportMarkers = []; // Reset the global reportMarkers array
+    
+        // Add new markers for each report
+        reports.forEach(report => {
+            const marker = L.marker([report.latitude, report.longitude]).addTo(adminMap);
+            marker.bindPopup(`
+                <strong>Location:</strong> ${report.locationName}<br>
+                <strong>Category:</strong> ${report.category}<br>
+                <strong>Description:</strong> ${report.description}<br>
+                <strong>Urgency:</strong> ${report.urgency}<br>
+                <strong>Threat:</strong> ${report.threat}<br>
+                <strong>Status:</strong> ${report.status}
+            `);
+            reportMarkers.push(marker); // Store the marker in the global array
+        });
+    }
+    
+    async function renderAdminReports() {
+        const adminReportsContainer = document.getElementById('admin-reports-container');
+        adminReportsContainer.innerHTML = '<p>Loading reports...</p>';
+        
+        try {
+            const allReports = await fetchReports();
+            const filteredReports = applyFilters(allReports);
+            adminReportsContainer.innerHTML = '';
+            if (filteredReports.length === 0) {
+                adminReportsContainer.innerHTML = '<p>No reports found.</p>';
+                return;
+            }
+            filteredReports.forEach(report => {
+                const li = document.createElement('li');
+                li.setAttribute('data-report-id', report.id);
+                li.innerHTML = `
+                    <p><strong>Location:</strong> ${report.locationName}</p>
+                    <p><strong>Category:</strong> ${report.category}</p>
+                    <p><strong>Description:</strong> ${report.description}</p>
+                    <p><strong>Urgency:</strong> ${report.urgency}</p>
+                    <p><strong>Threat:</strong> ${report.threat}</p>
+                    <p><strong>Status:</strong> <span class="report-status">${report.status}</span></p>
+                    ${report.imageUrl ? `<img src="${report.imageUrl}" alt="Report Image">` : ''}
+                    ${createStatusDropdown(report.status)}
+                    <button class="button danger-button delete-report-btn" data-report-id="${report.id}">Delete</button>
+                `;
+                adminReportsContainer.appendChild(li);
+            });
+            renderAdminMap(filteredReports);
+        } catch (error) {
+            console.error('Error fetching reports:', error);
+            adminReportsContainer.innerHTML = '<p>Error loading reports. Please try again later.</p>';
+        }
+    }
+
+    async function renderUserReports() {
+        if (!currentUser) return;
+        const userReportsContainer = document.getElementById('user-reports-container');
+        userReportsContainer.innerHTML = '<p>Loading reports...</p>';
+    
+        try {
+            const userReports = await fetchReports(currentUser.uid);
+            userReportsContainer.innerHTML = '';
+            if (userReports.length === 0) {
+                userReportsContainer.innerHTML = 'No reports submitted yet.';
+                return;
+            }
+            userReports.forEach(report => {
+                const li = document.createElement('li');
+                li.setAttribute('data-report-id', report.id);
+                li.innerHTML = `
+                    <p><strong>Location:</strong> ${report.locationName}</p>
+                    <p><strong>Category:</strong> ${report.category}</p>
+                    <p><strong>Description:</strong> ${report.description}</p>
+                    <p><strong>Urgency:</strong> ${report.urgency}</p>
+                    <p><strong>Threat:</strong> ${report.threat}</p>
+                    <p><strong>Status:</strong> ${report.status}</p>
+                    ${report.imageUrl ? `<img src="${report.imageUrl}" alt="Report Image">` : ''}
+                `;
+                userReportsContainer.appendChild(li);
+            });
+        } catch (error) {
+            userReportsContainer.innerHTML = '<p>Error loading reports. Please try again later.</p>';
+        }
+    }
     function renderForumPosts() {
         const forumPostsContainer = document.getElementById('forum-posts');
         forumPostsContainer.innerHTML = forumPosts.length === 0 ? 'No posts yet. Be the first to post!' : '';
@@ -499,9 +576,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Report Submission
-document.getElementById('report-form').addEventListener('submit', (e) => {
+document.getElementById('report-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentUser) return;
+
     const locationName = document.getElementById('locationName').value.trim();
     const latitude = parseFloat(document.getElementById('latitude').value);
     const longitude = parseFloat(document.getElementById('longitude').value);
@@ -512,6 +590,7 @@ document.getElementById('report-form').addEventListener('submit', (e) => {
     const errorDiv = document.getElementById('report-error');
     errorDiv.textContent = '';
 
+    // Validation
     if (!locationName || isNaN(latitude) || isNaN(longitude) || !description || !category || !urgency || !threat) {
         errorDiv.textContent = 'Please fill in all required fields.';
         return;
@@ -523,8 +602,30 @@ document.getElementById('report-form').addEventListener('submit', (e) => {
         return;
     }
 
+    // Handle image upload to ImgBB
+    let imageUrl = null;
+    if (imageDataUrl) {
+        try {
+            const formData = new FormData();
+            formData.append('image', imageDataUrl.split(',')[1]); // Extract base64 data
+            formData.append('key', '8c3ac5bab399ca801e354b900052510d');
+
+            const response = await fetch('https://api.imgbb.com/1/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (!data.success) throw new Error('ImgBB upload failed');
+            imageUrl = data.data.url;
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            errorDiv.textContent = 'Error uploading image. Please try again.';
+            return;
+        }
+    }
+    // Create report object
     const report = {
-        id: reportIdCounter++,
         userId: currentUser.uid,
         locationName,
         latitude,
@@ -533,64 +634,81 @@ document.getElementById('report-form').addEventListener('submit', (e) => {
         category,
         urgency,
         threat,
-        imageDataUrl,
-        status: 'Pending'
+        imageUrl, // Store the download URL instead of imageDataUrl
+        status: 'Pending',
+        timestamp: new Date() // Add timestamp for sorting
     };
 
-    reports.push(report);
-    document.getElementById('report-form').reset();
-    imageDataUrl = null;
-    imagePreview.innerHTML = '';
+    // Save to Firestore
+    try {
+        const docRef = await addDoc(collection(db, "reports"), report);
+        console.log('Report added with ID:', docRef.id);
 
-    if (tempMarker) {
-        reportingMap.removeLayer(tempMarker);
-        tempMarker = null;
-    }
+        // Reset form
+        document.getElementById('report-form').reset();
+        imageDataUrl = null;
+        imagePreview.innerHTML = '';
+        if (tempMarker) {
+            reportingMap.removeLayer(tempMarker);
+            tempMarker = null;
+        }
 
-    alert('Report submitted successfully!');
-    renderUserReports();
-
-    if (currentUser.email === 'admin@sgresolve.com') {
-        renderAdminReports(getFilteredReports());
+        alert('Report submitted successfully!');
+        await renderUserReports();
+        if (currentUser.email === 'admin@sgresolve.com') {
+            await renderAdminReports();
+        }
+    } catch (error) {
+        console.error('Error adding report:', error);
+        errorDiv.textContent = 'Error submitting report. Please try again.';
     }
 });
+
+//Fetch Reports
+async function fetchReports(userId = null) {
+    try {
+        let q;
+        if (userId) {
+            q = query(collection(db, "reports"), where("userId", "==", userId));
+        } else {
+            q = collection(db, "reports");
+        }
+        const querySnapshot = await getDocs(q);
+        const reports = [];
+        querySnapshot.forEach((doc) => {
+            reports.push({ id: doc.id, ...doc.data() });
+        });
+        return reports;
+    } catch (error) {
+        console.error('Error fetching reports:', error);
+        throw error;
+    }
+}
 
 // Admin Status Updates
-document.addEventListener('change', function(e) {
-    if (e.target.classList.contains('status-update')) {
-        const reportId = parseInt(e.target.getAttribute('data-report-id'));
-        const newStatus = e.target.value;
-        const report = reports.find(r => r.id === reportId);
-        if (report) {
-            report.status = newStatus;
-            const filteredReports = getFilteredReports();
-            renderAdminReports(filteredReports);
-            if (currentUser && currentUser.email !== 'admin@sgresolve.com') renderUserReports();
-        }
-    }
-});
 
-document.getElementById('admin-reports-container').addEventListener('click', (e) => {
+
+document.getElementById('admin-reports-container').addEventListener('click', async (e) => {
     if (e.target.classList.contains('update-status-btn')) {
         const li = e.target.closest('li');
-        const reportId = parseInt(li.getAttribute('data-report-id'));
+        const reportId = li.getAttribute('data-report-id');
         const select = li.querySelector('.status-update');
         const newStatus = select.value;
-        const report = reports.find(r => r.id === reportId);
-        if (report) {
-            report.status = newStatus;
-            const filteredReports = getFilteredReports();
-            renderAdminReports(filteredReports);
-            if (currentUser && currentUser.email !== 'admin@sgresolve.com') renderUserReports();
+        try {
+            await updateDoc(doc(db, "reports", reportId), { status: newStatus });
+            await renderAdminReports();
+            if (currentUser && currentUser.email !== 'admin@sgresolve.com') await renderUserReports();
+        } catch (error) {
+            console.error('Error updating status:', error);
+            alert('Failed to update status. Please try again.');
         }
     }
 });
 
 document.getElementById('refresh-reports').addEventListener('click', (e) => {
     e.preventDefault();
-    renderAdminReports(reports);
+    renderAdminReports();
 });
-
 // Forum Post Submission
 document.getElementById('forum-post-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -614,37 +732,49 @@ document.getElementById('forum-post-form').addEventListener('submit', (e) => {
 });
 
 // Export Reports as CSV
-function exportReports() {
-    const csvRows = [];
-    const headers = ['ID', 'User ID', 'Location Name', 'Latitude', 'Longitude', 'Description', 'Category', 'Urgency', 'Threat', 'Image Data URL', 'Status'];
-    csvRows.push(headers.join(','));
-    reports.forEach(report => {
-        const row = [
-            report.id,
-            report.userId,
-            report.locationName,
-            report.latitude,
-            report.longitude,
-            `"${report.description.replace(/"/g, '""')}"`,
-            report.category,
-            report.urgency,
-            report.threat,
-            report.imageDataUrl || '',
-            report.status
-        ];
-        csvRows.push(row.join(','));
-    });
-    const csvString = csvRows.join('\n');
-    const blob = new Blob([csvString], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'sgresolve-reports.csv';
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
+async function exportReports() {
+    try {
+        const allReports = await fetchReports();
+        const csvRows = [];
+        const headers = ['ID', 'User ID', 'Location Name', 'Latitude', 'Longitude', 'Description', 'Category', 'Urgency', 'Threat', 'Image URL', 'Status', 'Timestamp'];
+        csvRows.push(headers.join(','));
+        allReports.forEach(report => {
+            const row = [
+                report.id,
+                report.userId,
+                report.locationName,
+                report.latitude,
+                report.longitude,
+                `"${report.description.replace(/"/g, '""')}"`,
+                report.category,
+                report.urgency,
+                report.threat,
+                report.imageUrl || '',
+                report.status,
+                report.timestamp.toDate().toISOString()
+            ];
+            csvRows.push(row.join(','));
+        });
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sgresolve-reports.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    } catch (error) {
+        console.error('Error exporting reports:', error);
+        alert('Failed to export reports. Please try again.');
+    }
 }
+
+document.getElementById('export-data').addEventListener('click', (e) => {
+    e.preventDefault();
+    exportReports();
+});
 
 document.getElementById('export-data').addEventListener('click', (e) => {
     e.preventDefault();
@@ -714,4 +844,3 @@ document.addEventListener('DOMContentLoaded', () => {
       observer.observe(section);
     });
   });
-

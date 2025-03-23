@@ -1,14 +1,6 @@
 /* =============================================================================
    SGResolve - Comprehensive CSS Redesign
    =============================================================================
-   This CSS file revitalizes SGResolve's styling. The landing page remains intact
-   as per your preference, while all other pages (login, register, admin dashboard,
-   reporting, my reports, community forum, about,  and chatbot) are
-   enhanced with vibrant colors, engaging buttons with icons and animations,
-   and a cohesive, appealing aesthetic. White space is minimized with subtle
-   gradients and shadows, ensuring a professional yet lively interface.
-   
-   =============================================================================
    Table of Contents:
    01. CSS Variables & Base Settings
    02. CSS Reset & Global Styles
@@ -25,6 +17,7 @@
    13. Animations & Transitions
    14. Responsive Adjustments
    15. Map Styling
+   16. Popup Styling
    ============================================================================= */
 
 /* ============================================================================
@@ -2616,3 +2609,69 @@ a:hover {
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-light);
   }
+
+  /* ============================================================================
+     16. Popup Styling
+     ============================================================================ */
+/* Popup Styling */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup {
+  background: var(--white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: var(--muted-color);
+  transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+  color: var(--text-color);
+}
+
+.popup-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* Type-specific styling */
+.popup.success {
+  border-left: 5px solid var(--secondary-color); /* Green */
+}
+
+.popup.error {
+  border-left: 5px solid var(--error-color); /* Red */
+}
+
+.popup.info {
+  border-left: 5px solid var(--primary-color); /* Blue */
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

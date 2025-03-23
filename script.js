@@ -129,6 +129,61 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.style.display = currentUser ? 'block' : 'none';
     }
 
+// Popup Function
+function showPopup(message, type = 'info', autoClose = true) {
+  const popupOverlay = document.getElementById('popup-overlay');
+  const popupMessage = document.getElementById('popup-message');
+  const popupIcon = document.getElementById('popup-icon');
+  const popup = document.getElementById('popup');
+
+  // Set message and type
+  popupMessage.textContent = message;
+  popup.className = `popup ${type}`; // Reset and apply type class
+
+  // Set icon based on type
+  switch (type) {
+    case 'success':
+      popupIcon.innerHTML = '✅';
+      break;
+    case 'error':
+      popupIcon.innerHTML = '❌';
+      break;
+    case 'info':
+      popupIcon.innerHTML = 'ℹ️';
+      break;
+    default:
+      popupIcon.innerHTML = '';
+  }
+
+  // Show popup
+  popupOverlay.style.display = 'flex';
+
+  // Accessibility enhancements
+  popup.setAttribute('role', 'alert');
+  popup.setAttribute('tabindex', '-1');
+  popup.focus();
+
+  // Auto-close if enabled
+  if (autoClose) {
+    setTimeout(() => {
+      popupOverlay.style.display = 'none';
+    }, 3000); // Closes after 3 seconds
+  }
+}
+
+// Close button event listener
+document.getElementById('popup-close').addEventListener('click', () => {
+  document.getElementById('popup-overlay').style.display = 'none';
+});
+
+// Escape key to close
+document.addEventListener('keydown', (e) => {
+  const popupOverlay = document.getElementById('popup-overlay');
+  if (e.key === 'Escape' && popupOverlay.style.display === 'flex') {
+    popupOverlay.style.display = 'none';
+  }
+});
+
     function createStatusDropdown(currentStatus, reportId) {
         return `
             <select class="status-update" data-report-id="${reportId}">
@@ -727,22 +782,26 @@ async function renderForumPosts() {
         const errorDiv = document.getElementById('login-error');
         
         signInWithEmailAndPassword(auth, email, password)
-            .catch((error) => {
-                let message = 'Login failed. ';
-                switch (error.code) {
-                    case 'auth/invalid-email':
-                        message += 'Invalid email format';
-                        break;
-                    case 'auth/user-not-found':
-                    case 'auth/wrong-password':
-                        message += 'Invalid email or password';
-                        break;
-                    default:
-                        message += error.message;
-                }
-                errorDiv.textContent = message;
-            });
+        .then(() => {
+          showPopup('Logged in successfully!', 'success');
+        })
+        .catch((error) => {
+          let message = 'Login failed. ';
+          switch (error.code) {
+            case 'auth/invalid-email':
+              message += 'Invalid email format';
+              break;
+            case 'auth/user-not-found':
+            case 'auth/wrong-password':
+              message += 'Invalid email or password';
+              break;
+            default:
+              message += error.message;
+          }
+          showPopup(message, 'error');
+        });
     });
+
 
     // Registration Form
     document.getElementById('register-form').addEventListener('submit', (e) => {
@@ -920,14 +979,14 @@ document.getElementById('report-form').addEventListener('submit', async (e) => {
 
     // Validation
     if (!locationName || isNaN(latitude) || isNaN(longitude) || !description || !category || !urgency || !threat) {
-        errorDiv.textContent = 'Please fill in all required fields.';
+      showPopup('Please fill in all required fields.', 'error');
         return;
     }
 
     if (latitude < SINGAPORE_BOUNDS.latMin || latitude > SINGAPORE_BOUNDS.latMax ||
         longitude < SINGAPORE_BOUNDS.lonMin || longitude > SINGAPORE_BOUNDS.lonMax) {
-        errorDiv.textContent = 'The selected location is not within Singapore.';
-        return;
+          showPopup('The selected location is not within Singapore.', 'error');
+          return;
     }
 
     // Handle image upload to ImgBB
@@ -981,14 +1040,14 @@ document.getElementById('report-form').addEventListener('submit', async (e) => {
             tempMarker = null;
         }
 
-        alert('Report submitted successfully!');
+        showPopup('Report submitted successfully!', 'success');
         await renderUserReports();
         if (currentUser.email === 'admin@sgresolve.com') {
             await renderAdminReports();
         }
     } catch (error) {
         console.error('Error adding report:', error);
-        errorDiv.textContent = 'Error submitting report. Please try again.';
+        showPopup('Error submitting report. Please try again.', 'error');
     }
 });
 
@@ -1257,4 +1316,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
+
+
   }

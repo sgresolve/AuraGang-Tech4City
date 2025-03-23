@@ -841,16 +841,14 @@ async function renderForumPosts() {
     });
 
     document.getElementById('go-to-register').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('login-error').textContent = '';
-        showPage(pages.register);
-    });
-
-    document.getElementById('go-to-login').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('register-error').textContent = '';
-        showPage(pages.login);
-    });
+      e.preventDefault();
+      showPage(pages.register);
+  });
+  
+  document.getElementById('go-to-login').addEventListener('click', (e) => {
+      e.preventDefault();
+      showPage(pages.login);
+  });
 
     // Logout
     document.getElementById('nav-logout').addEventListener('click', (e) => {

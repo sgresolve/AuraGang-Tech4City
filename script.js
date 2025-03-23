@@ -184,6 +184,8 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+
+
     function createStatusDropdown(currentStatus, reportId) {
         return `
             <select class="status-update" data-report-id="${reportId}">
@@ -813,26 +815,28 @@ async function renderForumPosts() {
         
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
-                return updateProfile(userCredential.user, {
-                    displayName: name
-                });
+          return updateProfile(userCredential.user, {
+              displayName: name
+          }).then(() => {
+              showPopup('Registered successfully!', 'success');
+          });
             })
             .catch((error) => {
-                let message = 'Registration failed. ';
-                switch (error.code) {
-                    case 'auth/email-already-in-use':
-                        message += 'Email already registered';
-                        break;
-                    case 'auth/invalid-email':
-                        message += 'Invalid email format';
-                        break;
-                    case 'auth/weak-password':
-                        message += 'Password should be at least 6 characters';
-                        break;
-                    default:
-                        message += error.message;
-                }
-                errorDiv.textContent = message;
+          let message = 'Registration failed. ';
+          switch (error.code) {
+              case 'auth/email-already-in-use':
+            message += 'Email already registered';
+            break;
+              case 'auth/invalid-email':
+            message += 'Invalid email format';
+            break;
+              case 'auth/weak-password':
+            message += 'Password should be at least 6 characters';
+            break;
+              default:
+            message += error.message;
+          }
+          showPopup(message, 'error');
             });
     });
 

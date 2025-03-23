@@ -11,10 +11,10 @@ CORS(app)  # Enable CORS for all routes, allowing all origins by default
 
 # Define keywords for categories, urgency, and threat
 category_keywords = {
-    "Infrastructure": ["road", "pothole", "traffic", "light", "sidewalk", "bridge", "street", "pavement", "sewer", "drain"],
-    "Environmental": ["pollution", "waste", "recycling", "green", "park", "tree", "air", "water", "flood", "trash", "litter"],
-    "Safety": ["crime", "hazard", "emergency", "accident", "fire", "police", "ambulance", "dark", "safety", "theft"],
-    "Others": ["public health", "healthcare", "education", "employment", "poverty", "homeless", "community"]
+    "Infrastructure": ["road", "pothole", "traffic", "light", "sidewalk", "bridge", "street", "pavement", "sewer", "drain", "highway", "railway", "airport", "pipeline", "subway", "tunnel", "canal", "utility", "powerline", "interchange", "terminal", "station", "reservoir"],
+    "Environmental": ["pollution", "waste", "recycling", "green", "park", "tree", "air", "water", "flood", "trash", "litter", "ecosystem", "conservation", "biodiversity", "sustainability", "climate", "emissions", "habitat", "erosion", "deforestation", "wetland", "contamination",  "drought", "renewable", "wildlife", "fog", "runoff", "preservation"],
+    "Safety": ["crime", "hazard", "emergency", "accident", "fire", "police", "ambulance", "dark", "safety", "theft", "security", "violence", "prevention", "patrol", "surveillance", "protection", "disaster", "evacuation", "warning", "rescue", "violation", "vandalism", "assault", "alarm", "enforcement", "inspection", "risk", "defence", "incident", "shelter"],
+    "Others": ["public health", "healthcare", "education", "employment", "poverty", "homeless", "community"," welfare", "accessibility", "displacement", "transportation", "recreation", "services", "housing", "maintenance", "utilities", "infrastructure", "funding", "inclusion", "development", "outreach", "diversity", "governance"]
 }
 
 urgency_keywords = {

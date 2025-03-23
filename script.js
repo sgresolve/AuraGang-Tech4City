@@ -8,17 +8,20 @@ import {
   updateProfile
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
 import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  getDocs, 
-  query, 
-  where, 
-  doc, 
-  updateDoc, 
-  deleteDoc 
+    getFirestore, 
+    collection, 
+    addDoc, 
+    getDocs, 
+    getDoc,
+    query, 
+    where, 
+    doc, 
+    updateDoc, 
+    deleteDoc,
+    orderBy, 
+    limit,
+    increment 
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
-
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -65,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUser = null;
     let forumPosts = [];
     let forumPostIdCounter = 1;
+    let lastVisiblePost = null;
+    let isLoading = false;
+    
 
     // Page Elements
     const pages = {
@@ -298,21 +304,340 @@ document.addEventListener('DOMContentLoaded', () => {
             userReportsContainer.innerHTML = '<p>Error loading reports. Please try again later.</p>';
         }
     }
-    function renderForumPosts() {
-        const forumPostsContainer = document.getElementById('forum-posts');
-        forumPostsContainer.innerHTML = forumPosts.length === 0 ? 'No posts yet. Be the first to post!' : '';
-        forumPosts.forEach(post => {
+// Render Forum Posts
+async function renderForumPosts() {
+    try {
+      const forumPostsContainer = document.getElementById('forum-posts'); // Add this line
+      const postsQuery = query(collection(db, "forumPosts"), orderBy("timestamp", "desc"), limit(10));
+      const querySnapshot = await getDocs(postsQuery);
+      const posts = [];
+      querySnapshot.forEach((doc) => posts.push({ id: doc.id, ...doc.data() }));
+      lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
+      forumPostsContainer.innerHTML = '';
+      if (posts.length === 0) {
+        forumPostsContainer.innerHTML = 'No posts yet. Be the first to post!';
+        return;
+      }
+      posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.classList.add('forum-post');
+        postDiv.setAttribute('data-post-id', post.id);
+        postDiv.innerHTML = `
+          <div class="post-header">
+            <span class="post-author"><a href="#" class="user-link" data-user="${post.author}">${post.author}</a></span>
+            <span class="post-meta"> • ${new Date(post.timestamp.toDate()).toLocaleDateString()} • 
+              <span class="post-category" style="background-color: ${getCategoryColor(post.category)}">${post.category}</span>
+            </span>
+          </div>
+          <h3>${post.title}</h3>
+          <p>${formatRichText(post.content)}</p>
+          <div class="post-actions">
+            <button class="upvote-btn" data-post-id="${post.id}">👍 ${post.upvotes || 0}</button>
+            <button class="downvote-btn" data-post-id="${post.id}">👎 ${post.downvotes || 0}</button>
+          </div>
+          <div class="comments-section">
+            <h4>Comments</h4>
+            <ul class="comments-list"></ul>
+            <form class="comment-form">
+              <textarea placeholder="Add a comment..." required></textarea>
+              <button type="submit">Comment</button>
+            </form>
+          </div>
+        `;
+        forumPostsContainer.appendChild(postDiv);
+        renderComments(post.id);
+      });
+      renderTrendingPosts(posts);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      forumPostsContainer.innerHTML = '<p>Error loading posts. Please try again later.</p>';
+    }
+  }
+  
+  // Render Comments
+  async function renderComments(postId) {
+    const commentsList = document.querySelector(`.forum-post[data-post-id="${postId}"] .comments-list`);
+    commentsList.innerHTML = '';
+    try {
+      const commentsQuery = query(collection(db, "forumPosts", postId, "comments"), orderBy("timestamp", "asc"));
+      const querySnapshot = await getDocs(commentsQuery);
+      querySnapshot.forEach((doc) => {
+        const comment = doc.data();
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <p>${formatRichText(comment.content)}</p>
+          <p>By <a href="#" class="user-link" data-user="${comment.author}">${comment.author}</a> on ${new Date(comment.timestamp.toDate()).toLocaleDateString()}</p>
+          <button class="upvote-btn" data-comment-id="${doc.id}">👍 ${comment.upvotes || 0}</button>
+          <button class="downvote-btn" data-comment-id="${doc.id}">👎 ${comment.downvotes || 0}</button>
+        `;
+        commentsList.appendChild(li);
+      });
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  }
+  
+  // Render Trending Posts
+  function renderTrendingPosts(posts) {
+    const trendingContainer = document.getElementById('trending-container');
+    trendingContainer.innerHTML = '';
+    const trending = posts
+      .sort((a, b) => (b.upvotes || 0) - (b.downvotes || 0) - ((a.upvotes || 0) - (a.downvotes || 0)))
+      .slice(0, 3);
+    trending.forEach(post => {
+      const postDiv = document.createElement('div');
+      postDiv.classList.add('trending-post');
+      postDiv.innerHTML = `
+        <h3>${post.title}</h3>
+        <p>By ${post.author} • ${post.upvotes - post.downvotes} Votes</p>
+      `;
+      trendingContainer.appendChild(postDiv);
+    });
+  }
+  
+  // Helper Functions
+  function formatRichText(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+  }
+  
+  function getCategoryColor(category) {
+    const colors = {
+      General: '#4facfe',
+      Issues: '#ff6b6b',
+      Ideas: '#2ea44f',
+      Events: '#f4a261'
+    };
+    return colors[category] || '#586069';
+  }
+  
+  // Event Listeners
+  document.getElementById('forum-post-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    
+    const title = document.getElementById('post-title').value.trim();
+    const content = document.getElementById('post-content').value.trim();
+    const category = document.getElementById('post-category').value;
+  
+    try {
+      await addDoc(collection(db, "forumPosts"), {
+        title,
+        content,
+        category,
+        author: currentUser.displayName || 'Anonymous',
+        authorId: currentUser.uid, // Add this for security rules
+        timestamp: new Date(),
+        upvotes: 0,
+        downvotes: 0
+      });
+      
+      document.getElementById('forum-post-form').reset();
+      await renderForumPosts();
+    } catch (error) {
+      console.error('Error adding post:', error);
+      alert('Error submitting post. Please try again.');
+    }
+  });
+  
+  // Comment Submission
+  document.getElementById('forum-posts').addEventListener('submit', async (e) => {
+    if (e.target.classList.contains('comment-form')) {
+      e.preventDefault();
+      
+      if (!currentUser) {
+        alert('Please login to comment.');
+        showPage(pages.login);
+        return;
+      }
+  
+      const postId = e.target.closest('.forum-post').getAttribute('data-post-id');
+      const content = e.target.querySelector('textarea').value.trim();
+      
+      if (!content) return;
+  
+      const comment = {
+        content,
+        author: currentUser.displayName || 'Anonymous',
+        authorId: currentUser.uid,
+        timestamp: new Date(),
+        upvotes: 0,
+        downvotes: 0
+      };
+  
+      try {
+        await addDoc(collection(db, "forumPosts", postId, "comments"), comment);
+        e.target.querySelector('textarea').value = '';
+        await renderComments(postId);
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        alert('Failed to post comment. Please try again.');
+      }
+    }
+  });
+  
+  // Voting System
+  document.getElementById('forum-posts').addEventListener('click', async (e) => {
+    if (e.target.classList.contains('upvote-btn') || e.target.classList.contains('downvote-btn')) {
+      const postElement = e.target.closest('.forum-post');
+      const postId = postElement.getAttribute('data-post-id');
+      const commentId = e.target.getAttribute('data-comment-id');
+      const isUpvote = e.target.classList.contains('upvote-btn');
+      
+      const ref = commentId ? 
+        doc(db, "forumPosts", postId, "comments", commentId) : 
+        doc(db, "forumPosts", postId);
+  
+      try {
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          await updateDoc(ref, {
+            upvotes: increment(isUpvote ? 1 : 0),
+            downvotes: increment(isUpvote ? 0 : 1)
+          });
+          
+          // Refresh appropriate section
+          if (commentId) {
+            await renderComments(postId);
+          } else {
+            await renderForumPosts();
+          }
+        }
+      } catch (error) {
+        console.error('Error voting:', error);
+      }
+    }
+  });
+  // Infinite Scrolling
+  window.addEventListener('scroll', async () => {
+    if (isLoading || !lastVisiblePost) return;
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+      isLoading = true;
+      try {
+        const nextQuery = query(
+          collection(db, "forumPosts"),
+          orderBy("timestamp", "desc"),
+          startAfter(lastVisiblePost),
+          limit(10)
+        );
+        const querySnapshot = await getDocs(nextQuery);
+        if (!querySnapshot.empty) {
+          lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
+          querySnapshot.forEach((doc) => {
+            const post = { id: doc.id, ...doc.data() };
             const postDiv = document.createElement('div');
             postDiv.classList.add('forum-post');
             postDiv.setAttribute('data-post-id', post.id);
             postDiv.innerHTML = `
-                <h3>${post.title}</h3>
-                <p>${post.content}</p>
-                <p>Posted by ${post.author} on ${post.date}</p>
+              <div class="post-header">
+                <span class="post-author"><a href="#" class="user-link" data-user="${post.author}">${post.author}</a></span>
+                <span class="post-meta"> • ${new Date(post.timestamp.toDate()).toLocaleDateString()} • 
+                  <span class="post-category" style="background-color: ${getCategoryColor(post.category)}">${post.category}</span>
+                </span>
+              </div>
+              <h3>${post.title}</h3>
+              <p>${formatRichText(post.content)}</p>
+              <div class="post-actions">
+                <button class="upvote-btn" data-post-id="${post.id}">👍 ${post.upvotes || 0}</button>
+                <button class="downvote-btn" data-post-id="${post.id}">👎 ${post.downvotes || 0}</button>
+              </div>
+              <div class="comments-section">
+                <h4>Comments</h4>
+                <ul class="comments-list"></ul>
+                <form class="comment-form">
+                  <textarea placeholder="Add a comment..." required></textarea>
+                  <button type="submit">Comment</button>
+                </form>
+              </div>
             `;
-            forumPostsContainer.appendChild(postDiv);
-        });
+            document.getElementById('forum-posts').appendChild(postDiv);
+            renderComments(post.id);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading more posts:', error);
+      } finally {
+        isLoading = false;
+      }
     }
+  });
+  
+  // Search Functionality
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.placeholder = 'Search posts...';
+  searchInput.classList.add('search-input');
+  document.getElementById('community-forum-page').insertBefore(searchInput, document.getElementById('forum-posts'));
+  
+  searchInput.addEventListener('input', async () => {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    if (!searchTerm) {
+      renderForumPosts();
+      return;
+    }
+    try {
+      const postsQuery = query(collection(db, "forumPosts"));
+      const querySnapshot = await getDocs(postsQuery);
+      const posts = [];
+      querySnapshot.forEach((doc) => {
+        const post = { id: doc.id, ...doc.data() };
+        if (post.title.toLowerCase().includes(searchTerm) || post.content.toLowerCase().includes(searchTerm)) {
+          posts.push(post);
+        }
+      });
+      const forumPostsContainer = document.getElementById('forum-posts');
+      forumPostsContainer.innerHTML = '';
+      posts.forEach(post => {
+        const postDiv = document.createElement('div');
+        postDiv.classList.add('forum-post');
+        postDiv.setAttribute('data-post-id', post.id);
+        postDiv.innerHTML = `
+          <div class="post-header">
+            <span class="post-author"><a href="#" class="user-link" data-user="${post.author}">${post.author}</a></span>
+            <span class="post-meta"> • ${new Date(post.timestamp.toDate()).toLocaleDateString()} • 
+              <span class="post-category" style="background-color: ${getCategoryColor(post.category)}">${post.category}</span>
+            </span>
+          </div>
+          <h3>${post.title}</h3>
+          <p>${formatRichText(post.content)}</p>
+          <div class="post-actions">
+            <button class="upvote-btn" data-post-id="${post.id}">👍 ${post.upvotes || 0}</button>
+            <button class="downvote-btn" data-post-id="${post.id}">👎 ${post.downvotes || 0}</button>
+          </div>
+          <div class="comments-section">
+            <h4>Comments</h4>
+            <ul class="comments-list"></ul>
+            <form class="comment-form">
+              <textarea placeholder="Add a comment..." required></textarea>
+              <button type="submit">Comment</button>
+            </form>
+          </div>
+        `;
+        forumPostsContainer.appendChild(postDiv);
+        renderComments(post.id);
+      });
+    } catch (error) {
+      console.error('Error searching posts:', error);
+    }
+  });
+  
+  // Basic Notification System (Placeholder)
+  function notifyPostOwner(postId) {
+    // In a real implementation, this would use a notification service
+    console.log(`Notification: New comment on post ${postId}`);
+  }
+  
+  // User Profile Link (Placeholder)
+  document.getElementById('forum-posts').addEventListener('click', (e) => {
+    if (e.target.classList.contains('user-link')) {
+      e.preventDefault();
+      const user = e.target.getAttribute('data-user');
+      alert(`Viewing profile for ${user} (placeholder)`);
+      // Future: Redirect to a user profile page
+    }
+  });
 
     // Filter Function
     function getFilteredReports() {

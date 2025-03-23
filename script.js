@@ -129,6 +129,26 @@ document.addEventListener('DOMContentLoaded', () => {
         navbar.style.display = currentUser ? 'block' : 'none';
     }
 
+    // Add this to your existing script.js file
+
+// Back to Landing Page from Login
+document.getElementById('back-to-landing-from-login').addEventListener('click', (e) => {
+  e.preventDefault();
+  showPage(pages.landing);
+});
+
+// Back to Landing Page from Register
+document.getElementById('back-to-landing-from-register').addEventListener('click', (e) => {
+  e.preventDefault();
+  showPage(pages.landing);
+});
+
+// Back to Landing Page from About (Learn More)
+document.getElementById('back-to-landing-from-about').addEventListener('click', (e) => {
+  e.preventDefault();
+  showPage(pages.landing);
+});
+
 // Popup Function
 function showPopup(message, type = 'info', autoClose = true) {
   const popupOverlay = document.getElementById('popup-overlay');

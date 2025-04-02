@@ -19,6 +19,7 @@
       <ul>
         <li><a href="#" id="nav-home">Home</a></li>
         <li><a href="#" id="nav-my-reports">My Reports</a></li>
+        <li><a href="#" id="nav-nearby-reports">Nearby Reports</a></li> <!-- Added Link -->
         <li><a href="#" id="nav-community">Community Forum</a></li>
         <li><a href="#" id="nav-about">About</a></li>
         <li><a href="#" id="nav-logout">Logout</a></li>
@@ -37,7 +38,7 @@
           </div>
         </div>
         <div class="hero-image">
-          <img src="images\green-city.png" alt="Smart City Illustration">
+          <img src="images/green-city.png" alt="Smart City Illustration">
         </div>
       </section>
       <section id="features-section">
@@ -86,7 +87,7 @@
         </div>
       </div>
       <div id="chat-icon" class="chat-icon">
-        <img src="images\chat-icon.png" alt="Chat">
+        <img src="images/chat-icon.png" alt="Chat">
     </div>
     </div>
 
@@ -102,7 +103,7 @@
       <p><a href="#" id="back-to-landing-from-login" class="back-link">← Back to Home</a></p>
     </div>
 
-    
+
     <!-- Register Page -->
     <div id="register-page" class="page" style="display: none;">
       <h1>Register</h1>
@@ -116,320 +117,383 @@
       <p><a href="#" id="back-to-landing-from-register" class="back-link">← Back to Home</a></p>
     </div>
 
-  <div id="admin-page" class="page" style="display: none;">
-      <h1>Admin Dashboard</h1>
-      <div class="admin-container">
-        <!-- New Analytics Section -->
-        <div class="admin-analytics">
-          <h2>Reports This Month</h2>
-          <p id="total-reports">Total reports: 0</p>
-          <div id="no-reports-message" style="display: none;">No reports this month.</div>
-          <div class="chart-container" style="position: relative; height:200px; width:100%">
-            <canvas id="reports-chart"></canvas>
-          </div>
-        </div>
-    <!-- Existing Admin Reports Section -->
-    <div class="admin-reports">
-      <h2>Submitted Reports</h2>
-      <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-      <div class="admin-actions">
-            <!-- Add Filter Controls Here -->
-    <div class="admin-filters">
-      <label for="image-filter">Image:</label>
-      <select id="image-filter">
-        <option value="all" selected>All</option>
-        <option value="with">With Image</option>
-        <option value="without">Without Image</option>
-      </select>
-      
-      <label for="category-filter">Category:</label>
-      <select id="category-filter">
-        <option value="all" selected>All</option>
-        <option value="Infrastructure">Infrastructure</option>
-        <option value="Environmental">Environmental</option>
-        <option value="Safety">Safety</option>
-        <option value="Others">Others</option>
-      </select>
-      
-      <label for="urgency-filter">Urgency:</label>
-      <select id="urgency-filter">
-        <option value="all" selected>All</option>
-        <option value="Low">Low</option>
-        <option value="Medium">Medium</option>
-        <option value="High">High</option>
-      </select>
-      
-      <label for="threat-filter">Threat:</label>
-      <select id="threat-filter">
-        <option value="all" selected>All</option>
-        <option value="Minor">Minor</option>
-        <option value="Moderate">Moderate</option>
-        <option value="Severe">Severe</option>
-      </select>
-      
-      <button id="apply-filters" class="button">Apply Filters</button>
-      <button id="reset-filters" class="button secondary-button">Reset Filters</button>
-    </div>
-        <button id="refresh-reports" class="button">Refresh Reports</button>
-        <button id="export-data" class="button secondary-button">Export Data</button>
-      </div>
-      <ul id="admin-reports-container">
-        <!-- Report items rendered dynamically -->
-      </ul>
-    </div>
-    
-    <div class="admin-logout">
-      <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
-    </div>
-  </div>
-</div>
+    <!-- Admin Page -->
+    <div id="admin-page" class="page" style="display: none;">
+        <h1>Admin Dashboard</h1>
+        <div class="admin-container">
+            <!-- New Analytics Section -->
+            <div class="admin-analytics">
+            <h2>Reports This Month</h2>
+            <p id="total-reports">Total reports: 0</p>
+            <div id="no-reports-message" style="display: none;">No reports this month.</div>
+            <div class="chart-container" style="position: relative; height:200px; width:100%">
+                <canvas id="reports-chart"></canvas>
+            </div>
+            </div>
+            <!-- Existing Admin Reports Section -->
+            <div class="admin-reports">
+            <h2>Submitted Reports</h2>
+            <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+            <div class="admin-actions">
+                    <!-- Add Filter Controls Here -->
+                <div class="admin-filters">
+                    <label for="image-filter">Image:</label>
+                    <select id="image-filter">
+                        <option value="all" selected>All</option>
+                        <option value="with">With Image</option>
+                        <option value="without">Without Image</option>
+                    </select>
 
-<!-- Reporting Page with Auto Detect Button -->
-<div id="reporting-page" class="page" style="display: none;">
-  <h1>Report an Issue</h1>
-  <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-  <form id="report-form">
-    <input type="text" id="locationName" placeholder="Location Name" required>
-    <input type="number" id="latitude" step="any" placeholder="Latitude" required>
-    <input type="number" id="longitude" step="any" placeholder="Longitude" required>
-    <button type="button" id="detectLocation">Detect Location</button>
-    <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
-    <button type="button" id="autoDetect" disabled>Auto Detect</button>
-    <select id="category" required>
-      <option value="">Select Category</option>
-      <option value="Infrastructure">Infrastructure</option>
-      <option value="Environmental">Environmental</option>
-      <option value="Safety">Safety</option>
-      <option value="Others">Others</option>
-    </select>
-    <select id="urgency" required>
-      <option value="">Select Urgency Level</option>
-      <option value="Low">Low</option>
-      <option value="Medium">Medium</option>
-      <option value="High">High</option>
-    </select>
-    <select id="threat" required>
-      <option value="">Select Threat Amount</option>
-      <option value="Minor">Minor</option>
-      <option value="Moderate">Moderate</option>
-      <option value="Severe">Severe</option>
-    </select>
-    <label for="imageUpload">Upload Image (optional)</label>
-    <input type="file" id="imageUpload" accept="image/*">
-    <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Added preview div -->
-    <button type="submit">Submit Report</button>
-  </form>
-  <div id="report-error" class="error-message"></div>
-</div>
+                    <label for="category-filter">Category:</label>
+                    <select id="category-filter">
+                        <option value="all" selected>All</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Environmental">Environmental</option>
+                        <option value="Safety">Safety</option>
+                        <option value="Others">Others</option>
+                    </select>
+
+                    <label for="urgency-filter">Urgency:</label>
+                    <select id="urgency-filter">
+                        <option value="all" selected>All</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+
+                    <label for="threat-filter">Threat:</label>
+                    <select id="threat-filter">
+                        <option value="all" selected>All</option>
+                        <option value="Minor">Minor</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Severe">Severe</option>
+                    </select>
+
+                    <button id="apply-filters" class="button">Apply Filters</button>
+                    <button id="reset-filters" class="button secondary-button">Reset Filters</button>
+                </div>
+                <button id="refresh-reports" class="button">Refresh Reports</button>
+                <button id="export-data" class="button secondary-button">Export Data</button>
+            </div>
+            <ul id="admin-reports-container">
+                <!-- Report items rendered dynamically -->
+            </ul>
+            </div>
+
+            <div class="admin-logout">
+                <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reporting Page -->
+    <div id="reporting-page" class="page" style="display: none;">
+        <h1>Report an Issue</h1>
+        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+        <form id="report-form">
+            <input type="text" id="locationName" placeholder="Location Name" required>
+            <input type="number" id="latitude" step="any" placeholder="Latitude" required>
+            <input type="number" id="longitude" step="any" placeholder="Longitude" required>
+            <button type="button" id="detectLocation">Detect Location</button>
+            <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
+            <button type="button" id="autoDetect" disabled>Auto Detect</button>
+            <select id="category" required>
+            <option value="">Select Category</option>
+            <option value="Infrastructure">Infrastructure</option>
+            <option value="Environmental">Environmental</option>
+            <option value="Safety">Safety</option>
+            <option value="Others">Others</option>
+            </select>
+            <select id="urgency" required>
+            <option value="">Select Urgency Level</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            </select>
+            <select id="threat" required>
+            <option value="">Select Threat Amount</option>
+            <option value="Minor">Minor</option>
+            <option value="Moderate">Moderate</option>
+            <option value="Severe">Severe</option>
+            </select>
+            <label for="imageUpload">Upload Image (optional)</label>
+            <input type="file" id="imageUpload" accept="image/*">
+            <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Added preview div -->
+            <button type="submit">Submit Report</button>
+        </form>
+        <div id="report-error" class="error-message"></div>
+    </div>
 
     <!-- My Reports Page -->
     <div id="my-reports-page" class="page" style="display: none;">
-      <h1>My Reports</h1>
-      <ul id="user-reports-container">
-        <!-- User reports rendered dynamically -->
+        <h1>My Reports</h1>
+        <ul id="user-reports-container">
+            <!-- User reports rendered dynamically -->
+        </ul>
+    </div>
+
+    <!-- Nearby Reports Page -->
+    <div id="nearby-reports-page" class="page" style="display: none;">
+      <h1>Nearby Reports</h1>
+      <div class="nearby-controls">
+        <label for="location-selector">Show reports near:</label>
+        <select id="location-selector">
+          <option value="current">My Current Location</option>
+          <!-- North-East -->
+          <option value="punggol">Punggol</option>
+          <option value="sengkang">Sengkang</option>
+          <option value="hougang">Hougang</option>
+          <option value="serangoon">Serangoon</option>
+
+          <!-- East -->
+          <option value="tampines">Tampines</option>
+          <option value="pasir_ris">Pasir Ris</option>
+          <option value="bedok">Bedok</option>
+          <option value="changi_airport">Changi Airport</option>
+
+          <!-- North -->
+          <option value="woodlands">Woodlands</option>
+          <option value="yishun">Yishun</option>
+          <option value="sembawang">Sembawang</option>
+
+          <!-- Central -->
+          <option value="ang_mo_kio">Ang Mo Kio</option>
+          <option value="bishan">Bishan</option>
+          <option value="toa_payoh">Toa Payoh</option>
+          <option value="orchard">Orchard Road</option>
+          <option value="city_hall">City Hall</option>
+          <option value="raffles_place">Raffles Place</option>
+
+          <!-- West -->
+          <option value="jurong_east">Jurong East</option>
+          <option value="clementi">Clementi</option>
+          <option value="bukit_batok">Bukit Batok</option>
+          <option value="choa_chu_kang">Choa Chu Kang</option>
+          <option value="boon_lay">Boon Lay</option>
+
+          <!-- South -->
+          <option value="harbourfront">HarbourFront</option>
+          <option value="marina_bay">Marina Bay Sands</option>
+
+          <!-- Add more options here if needed -->
+          <!-- Add more predefined locations as needed -->
+        </select>
+        <label for="radius-selector" style="margin-left: 15px;">Within:</label>
+        <select id="radius-selector">
+            <option value="1000">1 km</option>
+            <option value="2000" selected>2 km</option>
+            <option value="5000">5 km</option>
+        </select>
+        <button id="load-nearby-reports" class="button">Load Reports</button>
+      </div>
+      <div id="nearby-map" style="height: 400px; width: 100%; margin: 20px 0;"></div>
+      <div id="nearby-status" style="margin-bottom: 15px;">Select a location and click Load.</div>
+      <ul id="nearby-reports-container">
+        <!-- Nearby reports will be loaded here -->
       </ul>
     </div>
 
-<!-- Community Forum Page -->
-<div id="community-forum-page" class="page" style="display: none;">
-  <h1>Community Forum</h1>
-  <div id="trending-posts">
-    <h2>Trending Posts</h2>
-    <div id="trending-container"></div>
-  </div>
-  <div id="new-post">
-    <h2>Create a New Post</h2>
-    <form id="forum-post-form">
-      <input type="text" id="post-title" placeholder="Title" required>
-      <select id="post-category" required>
-        <option value="">Select Category</option>
-        <option value="General">General</option>
-        <option value="Issues">Issues</option>
-        <option value="Ideas">Ideas</option>
-        <option value="Events">Events</option>
-      </select>
-      <textarea id="post-content" placeholder="Share your thoughts..." required></textarea>
-      <button id="submit-button" type="submit">Post</button>
-    </form>
-  </div>
-  <div id="forum-posts">
-    <!-- Forum posts loaded dynamically -->
-  </div>
-
-</div>
-
-<!-- About Page -->
-<div id="about-page" class="page" style="display: none;">
-  <p><a href="#" id="back-to-landing-from-about" class="back-link">← Back to Home</a></p>
-  <h1>About SGResolve</h1>
-  
-  <section class="about-section">
-    <div class="content">
-      <h2>Our Mission</h2>
-      <p>
-        SGResolve is dedicated to transforming Singapore into an AI-first Smart Nation.
-        Our platform enables citizens to report issues—from potholes to street light outages—and track the progress of their requests.
-        By leveraging cloud-based workflows and AI-powered categorization, we aim to enhance urban safety and efficiency.
-      </p>
-      <p>
-        Inspired by the mission to bring digital solutions to every person, home, and organization, SGResolve is your partner in creating a fully connected, intelligent city.
-      </p>
-    </div>
-  </section>
-
-  <section class="about-section">
-    <div class="content">
-      <h2>How We Help Citizens</h2>
-      <ul>
-        <li><strong>Simplified Reporting:</strong> Report community issues in under 2 minutes with our user-friendly mobile app or web interface</li>
-        <li><strong>Real-time Updates:</strong> Receive notifications as your reported issues progress through resolution stages</li>
-        <li><strong>Community Transparency:</strong> View issues reported by others in your neighborhood and their resolution status</li>
-        <li><strong>Multiple Reporting Methods:</strong> Submit via app, website, SMS, or our 24/7 hotline at 1800-SGR-HELP</li>
-        <li><strong>Accessible Design:</strong> Our platform meets WCAG 2.1 AA standards, ensuring all citizens can access our services</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="about-section">
-    <div class="content">
-      <h2>Our Impact</h2>
-      <div class="stats-container">
-        <div class="stat-box">
-          <span class="stat-number">95%</span>
-          <span class="stat-description">Issues resolved within 7 days</span>
+    <!-- Community Forum Page -->
+    <div id="community-forum-page" class="page" style="display: none;">
+        <h1>Community Forum</h1>
+        <div id="trending-posts">
+            <h2>Trending Posts</h2>
+            <div id="trending-container"></div>
         </div>
-        <div class="stat-box">
-          <span class="stat-number">500K+</span>
-          <span class="stat-description">Active citizen users</span>
+        <div id="new-post">
+            <h2>Create a New Post</h2>
+            <form id="forum-post-form">
+            <input type="text" id="post-title" placeholder="Title" required>
+            <select id="post-category" required>
+                <option value="">Select Category</option>
+                <option value="General">General</option>
+                <option value="Issues">Issues</option>
+                <option value="Ideas">Ideas</option>
+                <option value="Events">Events</option>
+            </select>
+            <textarea id="post-content" placeholder="Share your thoughts..." required></textarea>
+            <button id="submit-button" type="submit">Post</button>
+            </form>
         </div>
-        <div class="stat-box">
-          <span class="stat-number">25K+</span>
-          <span class="stat-description">Monthly reports processed</span>
+        <div id="forum-posts">
+            <!-- Forum posts loaded dynamically -->
         </div>
-      </div>
-      <p>Through collaborative efforts between citizens and government agencies, SGResolve has helped improve neighborhood safety, infrastructure maintenance, and community satisfaction across Singapore.</p>
     </div>
-  </section>
 
-  <!--Horizontal Slideshow -->
-  <section class="about-section">
-    <div class="content">
-      <h2>How It Works</h2>
-      <div class="slideshow-container">
-        <div class="slide-track">
-          <!-- Original slides -->
-          <div class="slide">
-            <h3>Report</h3>
-            <p>Submit an issue through our app, website, or hotline with photos and location.</p>
-          </div>
-          <div class="slide">
-            <h3>AI Analysis</h3>
-            <p>Our system automatically categorizes and prioritizes your report.</p>
-          </div>
-          <div class="slide">
-            <h3>Assignment</h3>
-            <p>The appropriate government agency or town council receives your report.</p>
-          </div>
-          <div class="slide">
-            <h3>Resolution</h3>
-            <p>Work crews address the issue and document their solution.</p>
-          </div>
-          <div class="slide">
-            <h3>Verification</h3>
-            <p>You receive an update and can confirm if the issue is resolved.</p>
-          </div>
-          <!-- Duplicate slides for seamless looping -->
-          <div class="slide">
-            <h3>Report</h3>
-            <p>Submit an issue through our app, website, or hotline with photos and location.</p>
-          </div>
-          <div class="slide">
-            <h3>AI Analysis</h3>
-            <p>Our system automatically categorizes and prioritizes your report.</p>
-          </div>
-          <div class="slide">
-            <h3>Assignment</h3>
-            <p>The appropriate government agency or town council receives your report.</p>
-          </div>
-          <div class="slide">
-            <h3>Resolution</h3>
-            <p>Work crews address the issue and document their solution.</p>
-          </div>
-          <div class="slide">
-            <h3>Verification</h3>
-            <p>You receive an update and can confirm if the issue is resolved.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- About Page -->
+    <div id="about-page" class="page" style="display: none;">
+        <p><a href="#" id="back-to-landing-from-about" class="back-link">← Back to Home</a></p>
+        <h1>About SGResolve</h1>
 
-  <!-- Supported Issue Categories -->
-  <section class="about-section">
-    <div class="content">
-      <h2>Supported Issue Categories</h2>
-      <div class="categories-grid">
-        <div class="category-item"><i class="icon-road"></i><span>Road & Sidewalk</span></div>
-        <div class="category-item"><i class="icon-light"></i><span>Street Lighting</span></div>
-        <div class="category-item"><i class="icon-trash"></i><span>Waste & Cleanliness</span></div>
-        <div class="category-item"><i class="icon-nature"></i><span>Trees & Greenery</span></div>
-        <div class="category-item"><i class="icon-construction"></i><span>Construction Safety</span></div>
-        <div class="category-item"><i class="icon-pest"></i><span>Pest Control</span></div>
-        <div class="category-item"><i class="icon-noise"></i><span>Noise Concerns</span></div>
-        <div class="category-item"><i class="icon-facilities"></i><span>Public Facilities</span></div>
-      </div>
-    </div>
-  </section>
+        <section class="about-section">
+            <div class="content">
+            <h2>Our Mission</h2>
+            <p>
+                SGResolve is dedicated to transforming Singapore into an AI-first Smart Nation.
+                Our platform enables citizens to report issues—from potholes to street light outages—and track the progress of their requests.
+                By leveraging cloud-based workflows and AI-powered categorization, we aim to enhance urban safety and efficiency.
+            </p>
+            <p>
+                Inspired by the mission to bring digital solutions to every person, home, and organization, SGResolve is your partner in creating a fully connected, intelligent city.
+            </p>
+            </div>
+        </section>
 
-  <!-- Privacy & Security -->
-  <section class="about-section">
-    <div class="content">
-      <h2>Privacy & Security</h2>
-      <p>SGResolve prioritizes your data security. Personal information is protected using enterprise-grade encryption, and we maintain compliance with Singapore's Personal Data Protection Act (PDPA). Your contact details are shared only with relevant agencies for issue resolution.</p>
-      <p>For full details on our data handling practices, please refer to our <a href="#privacy">Privacy Policy</a>.</p>
-    </div>
-  </section>
+        <section class="about-section">
+            <div class="content">
+            <h2>How We Help Citizens</h2>
+            <ul>
+                <li><strong>Simplified Reporting:</strong> Report community issues in under 2 minutes with our user-friendly mobile app or web interface</li>
+                <li><strong>Real-time Updates:</strong> Receive notifications as your reported issues progress through resolution stages</li>
+                <li><strong>Community Transparency:</strong> View issues reported by others in your neighborhood and their resolution status</li>
+                <li><strong>Multiple Reporting Methods:</strong> Submit via app, website, SMS, or our 24/7 hotline at 1800-SGR-HELP</li>
+                <li><strong>Accessible Design:</strong> Our platform meets WCAG 2.1 AA standards, ensuring all citizens can access our services</li>
+            </ul>
+            </div>
+        </section>
 
-  <!-- Contact Us -->
-  <section class="about-section">
-    <div class="content">
-      <h2>Contact Us</h2>
-      <p>Have questions or feedback about SGResolve? We're here to help:</p>
-      <ul class="contact-list">
-        <li><strong>Customer Support:</strong> <a href="tel:18007474357">1800-SGR-HELP (1800-747-4357)</a></li>
-        <li><strong>Email:</strong> <a href="mailto:support@sgresolve.gov.sg">support@sgresolve.gov.sg</a></li>
-        <li><strong>Office Address:</strong> 1 North Buona Vista Drive, Singapore 138675</li>
-        <li><strong>Operating Hours:</strong> Support available 24/7</li>
-      </ul>
-      <p>For urgent matters requiring immediate attention (e.g., safety hazards), please contact emergency services at 999 or 995.</p>
+        <section class="about-section">
+            <div class="content">
+            <h2>Our Impact</h2>
+            <div class="stats-container">
+                <div class="stat-box">
+                <span class="stat-number">95%</span>
+                <span class="stat-description">Issues resolved within 7 days</span>
+                </div>
+                <div class="stat-box">
+                <span class="stat-number">500K+</span>
+                <span class="stat-description">Active citizen users</span>
+                </div>
+                <div class="stat-box">
+                <span class="stat-number">25K+</span>
+                <span class="stat-description">Monthly reports processed</span>
+                </div>
+            </div>
+            <p>Through collaborative efforts between citizens and government agencies, SGResolve has helped improve neighborhood safety, infrastructure maintenance, and community satisfaction across Singapore.</p>
+            </div>
+        </section>
+
+        <!--Horizontal Slideshow -->
+        <section class="about-section">
+            <div class="content">
+            <h2>How It Works</h2>
+            <div class="slideshow-container">
+                <div class="slide-track">
+                <!-- Original slides -->
+                <div class="slide">
+                    <h3>Report</h3>
+                    <p>Submit an issue through our app, website, or hotline with photos and location.</p>
+                </div>
+                <div class="slide">
+                    <h3>AI Analysis</h3>
+                    <p>Our system automatically categorizes and prioritizes your report.</p>
+                </div>
+                <div class="slide">
+                    <h3>Assignment</h3>
+                    <p>The appropriate government agency or town council receives your report.</p>
+                </div>
+                <div class="slide">
+                    <h3>Resolution</h3>
+                    <p>Work crews address the issue and document their solution.</p>
+                </div>
+                <div class="slide">
+                    <h3>Verification</h3>
+                    <p>You receive an update and can confirm if the issue is resolved.</p>
+                </div>
+                <!-- Duplicate slides for seamless looping -->
+                <div class="slide">
+                    <h3>Report</h3>
+                    <p>Submit an issue through our app, website, or hotline with photos and location.</p>
+                </div>
+                <div class="slide">
+                    <h3>AI Analysis</h3>
+                    <p>Our system automatically categorizes and prioritizes your report.</p>
+                </div>
+                <div class="slide">
+                    <h3>Assignment</h3>
+                    <p>The appropriate government agency or town council receives your report.</p>
+                </div>
+                <div class="slide">
+                    <h3>Resolution</h3>
+                    <p>Work crews address the issue and document their solution.</p>
+                </div>
+                <div class="slide">
+                    <h3>Verification</h3>
+                    <p>You receive an update and can confirm if the issue is resolved.</p>
+                </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Supported Issue Categories -->
+        <section class="about-section">
+            <div class="content">
+            <h2>Supported Issue Categories</h2>
+            <div class="categories-grid">
+                <div class="category-item"><i class="icon-road"></i><span>Road & Sidewalk</span></div>
+                <div class="category-item"><i class="icon-light"></i><span>Street Lighting</span></div>
+                <div class="category-item"><i class="icon-trash"></i><span>Waste & Cleanliness</span></div>
+                <div class="category-item"><i class="icon-nature"></i><span>Trees & Greenery</span></div>
+                <div class="category-item"><i class="icon-construction"></i><span>Construction Safety</span></div>
+                <div class="category-item"><i class="icon-pest"></i><span>Pest Control</span></div>
+                <div class="category-item"><i class="icon-noise"></i><span>Noise Concerns</span></div>
+                <div class="category-item"><i class="icon-facilities"></i><span>Public Facilities</span></div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Privacy & Security -->
+        <section class="about-section">
+            <div class="content">
+            <h2>Privacy & Security</h2>
+            <p>SGResolve prioritizes your data security. Personal information is protected using enterprise-grade encryption, and we maintain compliance with Singapore's Personal Data Protection Act (PDPA). Your contact details are shared only with relevant agencies for issue resolution.</p>
+            <p>For full details on our data handling practices, please refer to our <a href="#privacy">Privacy Policy</a>.</p>
+            </div>
+        </section>
+
+        <!-- Contact Us -->
+        <section class="about-section">
+            <div class="content">
+            <h2>Contact Us</h2>
+            <p>Have questions or feedback about SGResolve? We're here to help:</p>
+            <ul class="contact-list">
+                <li><strong>Customer Support:</strong> <a href="tel:18007474357">1800-SGR-HELP (1800-747-4357)</a></li>
+                <li><strong>Email:</strong> <a href="mailto:support@sgresolve.gov.sg">support@sgresolve.gov.sg</a></li>
+                <li><strong>Office Address:</strong> 1 North Buona Vista Drive, Singapore 138675</li>
+                <li><strong>Operating Hours:</strong> Support available 24/7</li>
+            </ul>
+            <p>For urgent matters requiring immediate attention (e.g., safety hazards), please contact emergency services at 999 or 995.</p>
+            </div>
+        </section>
     </div>
-  </section>
-</div>
 
     <!-- Contact Page -->
     <div id="contact-page" class="page" style="display: none;">
-      <h1>Contact Us</h1>
-      <p>
-        If you have any questions or need support, please contact us at
-        <a>contact@sgresolve.com</a>.
-      </p>
-      <p>
-        You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
-      </p>
+        <h1>Contact Us</h1>
+        <p>
+            If you have any questions or need support, please contact us at
+            <a href="mailto:contact@sgresolve.com">contact@sgresolve.com</a>.
+        </p>
+        <p>
+            You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
+        </p>
     </div>
 
+    <!-- Popup Overlay -->
     <div id="popup-overlay" class="popup-overlay">
-      <div id="popup" class="popup">
-        <span id="popup-close" class="popup-close">&times;</span>
-        <div id="popup-icon" class="popup-icon"></div>
-        <p id="popup-message"></p>
-      </div>
+        <div id="popup" class="popup">
+            <span id="popup-close" class="popup-close">×</span>
+            <div id="popup-icon" class="popup-icon"></div>
+            <p id="popup-message"></p>
+        </div>
     </div>
 
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+  <!-- Scripts -->
   <script type="module" src="script.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet JS (Redundant if already included above, ensure only one) -->
+  <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> -->
 </body>
 </html>

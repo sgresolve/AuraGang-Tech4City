@@ -70,20 +70,62 @@ document.addEventListener('DOMContentLoaded', () => {
     let forumPostIdCounter = 1;
     let lastVisiblePost = null;
     let isLoading = false;
+    let nearbyMap = null; // To hold the Leaflet map instance for this page
+    let nearbyMarkers = []; // To hold markers for the nearby map
+
+    const PREDEFINED_LOCATIONS = {
+      // North-East
+      punggol: { lat: 1.4051, lon: 103.9025, name: "Punggol" },
+      sengkang: { lat: 1.3917, lon: 103.8954, name: "Sengkang" },
+      hougang: { lat: 1.3716, lon: 103.8931, name: "Hougang" },
+      serangoon: { lat: 1.3497, lon: 103.8731, name: "Serangoon" },
+    
+      // East
+      tampines: { lat: 1.3544, lon: 103.9439, name: "Tampines" },
+      pasir_ris: { lat: 1.3731, lon: 103.9493, name: "Pasir Ris" },
+      bedok: { lat: 1.3240, lon: 103.9298, name: "Bedok" },
+      changi_airport: { lat: 1.3592, lon: 103.9896, name: "Changi Airport" }, // General airport area
+    
+      // North
+      woodlands: { lat: 1.4360, lon: 103.7860, name: "Woodlands" },
+      yishun: { lat: 1.4295, lon: 103.8350, name: "Yishun" },
+      sembawang: { lat: 1.4491, lon: 103.8200, name: "Sembawang" },
+    
+      // Central
+      ang_mo_kio: { lat: 1.3699, lon: 103.8496, name: "Ang Mo Kio" },
+      bishan: { lat: 1.3508, lon: 103.8484, name: "Bishan" },
+      toa_payoh: { lat: 1.3324, lon: 103.8497, name: "Toa Payoh" },
+      orchard: { lat: 1.3048, lon: 103.8318, name: "Orchard Road" }, // Shopping belt
+      city_hall: { lat: 1.2931, lon: 103.8525, name: "City Hall" }, // Civic District
+      raffles_place: { lat: 1.2839, lon: 103.8515, name: "Raffles Place" }, // CBD
+    
+      // West
+      jurong_east: { lat: 1.3331, lon: 103.7422, name: "Jurong East" },
+      clementi: { lat: 1.3150, lon: 103.7651, name: "Clementi" },
+      bukit_batok: { lat: 1.3490, lon: 103.7496, name: "Bukit Batok" },
+      choa_chu_kang: { lat: 1.3854, lon: 103.7446, name: "Choa Chu Kang" },
+      boon_lay: { lat: 1.3386, lon: 103.7060, name: "Boon Lay" },
+    
+      // South
+      harbourfront: { lat: 1.2659, lon: 103.8214, name: "HarbourFront" }, // Gateway to Sentosa
+      marina_bay: { lat: 1.2808, lon: 103.8596, name: "Marina Bay Sands" }, // Landmark
+    
+      // Add more locations here if needed
+    };
     
 
     // Page Elements
     const pages = {
-        landing: document.getElementById('landing-page'),
-        login: document.getElementById('login-page'),
-        register: document.getElementById('register-page'),
-        admin: document.getElementById('admin-page'),
-        reporting: document.getElementById('reporting-page'),
-        myReports: document.getElementById('my-reports-page'),
-        community: document.getElementById('community-forum-page'),
-        about: document.getElementById('about-page'),
-
-    };
+      landing: document.getElementById('landing-page'),
+      login: document.getElementById('login-page'),
+      register: document.getElementById('register-page'),
+      admin: document.getElementById('admin-page'),
+      reporting: document.getElementById('reporting-page'),
+      myReports: document.getElementById('my-reports-page'),
+      community: document.getElementById('community-forum-page'),
+      about: document.getElementById('about-page'),
+      nearbyReports: document.getElementById('nearby-reports-page'), // Added Page
+  };
     const navbar = document.getElementById('navbar');
 
     // Auth State Listener
@@ -1095,8 +1137,6 @@ async function fetchReports(userId = null) {
 }
 
 // Admin Status Updates
-
-
 document.getElementById('admin-reports-container').addEventListener('click', async (e) => {
     if (e.target.classList.contains('update-status-btn')) {
         const li = e.target.closest('li');
@@ -1140,6 +1180,249 @@ document.getElementById('forum-post-form').addEventListener('submit', (e) => {
     document.getElementById('forum-post-form').reset();
     renderForumPosts();
 });
+
+function initializeNearbyMap() {
+  if (!nearbyMap) { // Initialize only once
+      nearbyMap = L.map('nearby-map').setView([1.3521, 103.8198], 11); // Default Singapore view
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: '© OpenStreetMap contributors'
+      }).addTo(nearbyMap);
+  }
+}
+
+// Function to get user's current location (returns a Promise)
+function getDeviceLocation() {
+  return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+          reject(new Error("Geolocation is not supported by your browser."));
+      } else {
+          navigator.geolocation.getCurrentPosition(
+              (position) => {
+                  resolve({
+                      lat: position.coords.latitude,
+                      lon: position.coords.longitude
+                  });
+              },
+              (error) => {
+                  switch (error.code) {
+                      case error.PERMISSION_DENIED:
+                          reject(new Error("User denied the request for Geolocation."));
+                          break;
+                      case error.POSITION_UNAVAILABLE:
+                          reject(new Error("Location information is unavailable."));
+                          break;
+                      case error.TIMEOUT:
+                          reject(new Error("The request to get user location timed out."));
+                          break;
+                      default:
+                          reject(new Error("An unknown error occurred while getting location."));
+                          break;
+                  }
+              }
+          );
+      }
+  });
+}
+
+// Function to clear markers from the nearby map
+function clearNearbyMapMarkers() {
+  nearbyMarkers.forEach(marker => nearbyMap.removeLayer(marker));
+  nearbyMarkers = [];
+}
+
+// Function to render a single nearby report item
+function renderNearbyReportItem(report, distance) {
+  const li = document.createElement('li');
+  const distanceText = distance < 1000
+      ? `${Math.round(distance)} m away`
+      : `${(distance / 1000).toFixed(1)} km away`;
+
+  li.innerHTML = `
+      <p><strong>Location:</strong> ${report.locationName}</p>
+      <p><strong>Category:</strong> ${report.category}</p>
+      <p><strong>Description:</strong> ${report.description}</p>
+      <p><strong>Status:</strong> ${report.status}</p>
+      <p class="report-distance">${distanceText}</p>
+      ${report.imageUrl ? `<img src="${report.imageUrl}" alt="Report Image" style="max-width: 100%; height: auto; margin-top: 10px;">` : ''}
+  `;
+  return li;
+}
+
+// --- Main function to load and display nearby reports ---
+async function displayNearbyReports() {
+  const locationSelector = document.getElementById('location-selector');
+  const radiusSelector = document.getElementById('radius-selector');
+  const container = document.getElementById('nearby-reports-container');
+  const statusDiv = document.getElementById('nearby-status');
+  const selectedLocationType = locationSelector.value;
+  const selectedRadius = parseInt(radiusSelector.value, 10); // Radius in meters
+
+  container.innerHTML = ''; // Clear previous results
+  statusDiv.textContent = 'Loading...';
+  clearNearbyMapMarkers(); // Clear map markers
+
+  let centerCoords;
+  let centerName = "Selected Area";
+
+  try {
+      // 1. Determine Center Coordinates
+      if (selectedLocationType === 'current') {
+          statusDiv.textContent = 'Getting your current location...';
+          centerCoords = await getDeviceLocation();
+          centerName = "Your Location";
+          // Add a marker for the user's location
+          const userMarker = L.marker([centerCoords.lat, centerCoords.lon], {
+              icon: L.icon({ // Optional: Custom icon for user
+                  iconUrl: 'images/user-location-pin.png', // Provide a path to a user pin image
+                  iconSize: [25, 41],
+                  iconAnchor: [12, 41],
+                  popupAnchor: [1, -34],
+              })
+          }).addTo(nearbyMap);
+          userMarker.bindPopup("Your Location");
+          nearbyMarkers.push(userMarker);
+
+      } else if (PREDEFINED_LOCATIONS[selectedLocationType]) {
+          centerCoords = PREDEFINED_LOCATIONS[selectedLocationType];
+          centerName = PREDEFINED_LOCATIONS[selectedLocationType].name;
+      } else {
+          throw new Error("Invalid location selected.");
+      }
+
+      statusDiv.textContent = `Fetching reports near ${centerName}...`;
+
+      // 2. Fetch All Reports (Consider optimization for large datasets later)
+      const allReports = await fetchReports(); // Assuming fetchReports gets all if no userId
+
+      // 3. Filter Reports by Distance
+      const nearbyReports = [];
+      const centerLatLng = L.latLng(centerCoords.lat, centerCoords.lon);
+
+      allReports.forEach(report => {
+          if (report.latitude && report.longitude) {
+              const reportLatLng = L.latLng(report.latitude, report.longitude);
+              const distance = centerLatLng.distanceTo(reportLatLng); // Distance in meters
+
+              if (distance <= selectedRadius) {
+                  nearbyReports.push({ ...report, distance }); // Add distance to report object
+              }
+          }
+      });
+
+      // Sort by distance (closest first)
+      nearbyReports.sort((a, b) => a.distance - b.distance);
+
+      // 4. Render Reports and Map Markers
+      if (nearbyReports.length === 0) {
+          statusDiv.textContent = `No reports found within ${selectedRadius / 1000} km of ${centerName}.`;
+          container.innerHTML = '<p>No nearby reports found.</p>';
+      } else {
+          statusDiv.textContent = `Showing ${nearbyReports.length} reports near ${centerName}.`;
+          nearbyReports.forEach(report => {
+              // Add to list
+              container.appendChild(renderNearbyReportItem(report, report.distance));
+
+              // Add marker to map
+              const marker = L.marker([report.latitude, report.longitude]).addTo(nearbyMap);
+              marker.bindPopup(`
+                  <strong>${report.locationName}</strong><br>
+                  Category: ${report.category}<br>
+                  Status: ${report.status}<br>
+                  Distance: ${report.distance < 1000 ? Math.round(report.distance) + ' m' : (report.distance / 1000).toFixed(1) + ' km'}
+              `);
+              nearbyMarkers.push(marker);
+          });
+      }
+
+      // 5. Adjust Map View
+      if (nearbyReports.length > 0) {
+          const group = new L.featureGroup(nearbyMarkers); // Use FeatureGroup to get bounds
+          nearbyMap.fitBounds(group.getBounds().pad(0.1)); // Fit map to markers with padding
+      } else {
+          // If no reports, center on the selected location with appropriate zoom
+           nearbyMap.setView(centerLatLng, 13); // Zoom level 13 might be suitable
+      }
+
+
+  } catch (error) {
+      console.error("Error loading nearby reports:", error);
+      statusDiv.textContent = `Error: ${error.message}`;
+      container.innerHTML = '<p>Could not load nearby reports. Please try again.</p>';
+  }
+}
+
+// --- Modify the showPage function ---
+function showPage(page) {
+  hideAllPages();
+  page.classList.add('show');
+  page.style.display = 'block';
+
+  // Invalidate map size when specific pages are shown
+  if (page === pages.reporting) reportingMap.invalidateSize();
+  else if (page === pages.admin) {
+    adminMap.invalidateSize();
+    renderAdminReports();
+    renderAdminAnalytics();
+  } else if (page === pages.nearbyReports) { // Added check for nearby page
+    initializeNearbyMap(); // Make sure map is initialized
+    nearbyMap.invalidateSize(); // Adjust map size
+    // Optional: Load default view or prompt user?
+    // displayNearbyReports(); // Could load default on page show, but button click is clearer
+  }
+}
+
+// --- Add Event Listeners ---
+
+// Navigation Link
+document.getElementById('nav-nearby-reports').addEventListener('click', (e) => {
+  e.preventDefault();
+  if (currentUser) { // Only accessible when logged in
+      showPage(pages.nearbyReports);
+  } else {
+      showPage(pages.login); // Or redirect to login
+  }
+});
+
+// Button to load reports
+document.getElementById('load-nearby-reports').addEventListener('click', displayNearbyReports);
+
+// --- Ensure fetchReports can be called without args to get all reports ---
+// Check your existing fetchReports function. It should look something like this:
+async function fetchReports(userId = null) {
+  try {
+      let reportsQuery;
+      const reportsCollection = collection(db, "reports");
+
+      if (userId) {
+          // Query for a specific user's reports
+          reportsQuery = query(reportsCollection, where("userId", "==", userId), orderBy("timestamp", "desc"));
+      } else {
+          // Query for all reports (or maybe add a limit for performance later)
+          // Ordering by timestamp descending might be good practice
+           reportsQuery = query(reportsCollection, orderBy("timestamp", "desc")); // Example: get all, ordered
+      }
+
+      const querySnapshot = await getDocs(reportsQuery);
+      const reports = [];
+      querySnapshot.forEach((doc) => {
+          // Ensure timestamp is converted if needed (might already be handled)
+          const data = doc.data();
+          reports.push({
+              id: doc.id,
+              ...data,
+              // Make sure latitude/longitude are numbers
+              latitude: parseFloat(data.latitude),
+              longitude: parseFloat(data.longitude),
+              // Convert Firestore Timestamp to JS Date if necessary for sorting/display
+              timestamp: data.timestamp?.toDate ? data.timestamp.toDate() : new Date()
+           });
+      });
+      return reports;
+  } catch (error) {
+      console.error('Error fetching reports:', error);
+      throw error; // Re-throw the error to be caught by the caller
+  }
+}
 
 // Export Reports as CSV
 async function exportReports() {

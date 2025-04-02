@@ -1272,8 +1272,7 @@ async function displayNearbyReports() {
           centerName = "Your Location";
           // Add a marker for the user's location
           const userMarker = L.marker([centerCoords.lat, centerCoords.lon], {
-              icon: L.icon({ // Optional: Custom icon for user
-                  iconUrl: 'images/user-location-pin.png', // Provide a path to a user pin image
+              icon: L.icon({
                   iconSize: [25, 41],
                   iconAnchor: [12, 41],
                   popupAnchor: [1, -34],

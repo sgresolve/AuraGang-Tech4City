@@ -15,13 +15,17 @@
 <body>
   <div id="app">
 
-    <nav id="navbar" style="display: none;">
+    <nav id="navbar" style="display: show;">
       <ul>
         <li><a href="#" id="nav-home">Home</a></li>
         <li><a href="#" id="nav-my-reports">My Reports</a></li>
-        <li><a href="#" id="nav-nearby-reports">Nearby Reports</a></li> <!-- Added Link -->
+        <li><a href="#" id="nav-nearby-reports">Nearby Reports</a></li>
         <li><a href="#" id="nav-community">Community Forum</a></li>
         <li><a href="#" id="nav-about">About</a></li>
+        <!-- Gamification Display -->
+        <li class="gamification-nav"><span id="user-level-display">Level: 1</span></li>
+        <li class="gamification-nav"><span id="user-rp-display">RP: 0</span></li>
+        <li><a href="#" id="nav-profile">My Profile</a></li> <!-- Link to new Profile Page -->
         <li><a href="#" id="nav-logout">Logout</a></li>
       </ul>
     </nav>
@@ -310,18 +314,15 @@
           <option value="sengkang">Sengkang</option>
           <option value="hougang">Hougang</option>
           <option value="serangoon">Serangoon</option>
-
           <!-- East -->
           <option value="tampines">Tampines</option>
           <option value="pasir_ris">Pasir Ris</option>
           <option value="bedok">Bedok</option>
           <option value="changi_airport">Changi Airport</option>
-
           <!-- North -->
           <option value="woodlands">Woodlands</option>
           <option value="yishun">Yishun</option>
           <option value="sembawang">Sembawang</option>
-
           <!-- Central -->
           <option value="ang_mo_kio">Ang Mo Kio</option>
           <option value="bishan">Bishan</option>
@@ -329,19 +330,15 @@
           <option value="orchard">Orchard Road</option>
           <option value="city_hall">City Hall</option>
           <option value="raffles_place">Raffles Place</option>
-
           <!-- West -->
           <option value="jurong_east">Jurong East</option>
           <option value="clementi">Clementi</option>
           <option value="bukit_batok">Bukit Batok</option>
           <option value="choa_chu_kang">Choa Chu Kang</option>
           <option value="boon_lay">Boon Lay</option>
-
           <!-- South -->
           <option value="harbourfront">HarbourFront</option>
           <option value="marina_bay">Marina Bay Sands</option>
-
-          <!-- Add more options here if needed -->
           <!-- Add more predefined locations as needed -->
         </select>
         <label for="radius-selector" style="margin-left: 15px;">Within:</label>
@@ -386,6 +383,8 @@
                 <div id="forum-posts">
                     <!-- Forum posts loaded dynamically -->
                 </div>
+                <!-- Load More Button -->
+                <button id="load-more-posts" class="button secondary-button" style="display: none; margin-top: 20px;">Load More Posts</button>
             </div>
             <aside class="forum-sidebar">
                 <div id="trending-posts">
@@ -547,7 +546,7 @@
         </section>
     </div>
 
-    <!-- Contact Page -->
+    <!-- Contact Page (Original - kept for completeness) -->
     <div id="contact-page" class="page" style="display: none;">
         <h1>Contact Us</h1>
         <p>
@@ -559,12 +558,38 @@
         </p>
     </div>
 
+    <!-- Profile Page -->
+    <div id="profile-page" class="page" style="display: none;">
+      <h1>My Profile & Achievements</h1>
+      <div class="profile-summary card"> <!-- Added card class -->
+        <h2 id="profile-username">Username</h2>
+        <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
+        <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
+        <div class="progress-bar-container">
+          <div id="level-progress-bar" class="progress-bar-fill"></div>
+        </div>
+        <p><small id="rp-to-next-level">XXX RP to next level</small></p>
+      </div>
+
+      <div class="profile-badges card"> <!-- Added card class -->
+        <h2>My Badges</h2>
+        <div id="badges-container" class="badges-grid">
+          <!-- Badges loaded dynamically -->
+          <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
+        </div>
+      </div>
+
+      <!-- Optional: Add leaderboard opt-in/out setting here -->
+      <!-- Optional: Add recent activity log here -->
+    </div>
+
     <!-- Popup Overlay -->
     <div id="popup-overlay" class="popup-overlay">
         <div id="popup" class="popup">
             <span id="popup-close" class="popup-close">×</span>
             <div id="popup-icon" class="popup-icon"></div>
             <p id="popup-message"></p>
+            <!-- Points indicator will be added here by JS -->
         </div>
     </div>
 

@@ -117,74 +117,128 @@
       <p><a href="#" id="back-to-landing-from-register" class="back-link">← Back to Home</a></p>
     </div>
 
-    <!-- Admin Page -->
-    <div id="admin-page" class="page" style="display: none;">
-        <h1>Admin Dashboard</h1>
-        <div class="admin-container">
-            <!-- New Analytics Section -->
-            <div class="admin-analytics">
-            <h2>Reports This Month</h2>
-            <p id="total-reports">Total reports: 0</p>
-            <div id="no-reports-message" style="display: none;">No reports this month.</div>
-            <div class="chart-container" style="position: relative; height:200px; width:100%">
-                <canvas id="reports-chart"></canvas>
-            </div>
-            </div>
-            <!-- Existing Admin Reports Section -->
-            <div class="admin-reports">
-            <h2>Submitted Reports</h2>
-            <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-            <div class="admin-actions">
-                    <!-- Add Filter Controls Here -->
-                <div class="admin-filters">
-                    <label for="image-filter">Image:</label>
-                    <select id="image-filter">
-                        <option value="all" selected>All</option>
-                        <option value="with">With Image</option>
-                        <option value="without">Without Image</option>
-                    </select>
+<!-- Admin Page -->
+<div id="admin-page" class="page" style="display: none;">
+  <h1>Admin Dashboard</h1>
+  <div class="admin-container">
 
-                    <label for="category-filter">Category:</label>
-                    <select id="category-filter">
-                        <option value="all" selected>All</option>
-                        <option value="Infrastructure">Infrastructure</option>
-                        <option value="Environmental">Environmental</option>
-                        <option value="Safety">Safety</option>
-                        <option value="Others">Others</option>
-                    </select>
+      <!-- New Enhanced Analytics Section -->
+      <div class="admin-analytics-grid">
 
-                    <label for="urgency-filter">Urgency:</label>
-                    <select id="urgency-filter">
-                        <option value="all" selected>All</option>
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                    </select>
+          <!-- Stat Card: Total Reports -->
+          <div class="stat-card">
+              <div class="stat-icon"><i class="icon-files">📊</i></div>
+              <div class="stat-content">
+                  <span class="stat-value" id="stat-total-reports">0</span>
+                  <span class="stat-label">Total Reports</span>
+              </div>
+          </div>
 
-                    <label for="threat-filter">Threat:</label>
-                    <select id="threat-filter">
-                        <option value="all" selected>All</option>
-                        <option value="Minor">Minor</option>
-                        <option value="Moderate">Moderate</option>
-                        <option value="Severe">Severe</option>
-                    </select>
+          <!-- Stat Card: Pending Reports -->
+          <div class="stat-card">
+              <div class="stat-icon" style="color: #ffc107;"><i class="icon-clock">⏳</i></div>
+              <div class="stat-content">
+                  <span class="stat-value" id="stat-pending-reports">0</span>
+                  <span class="stat-label">Pending Reports</span>
+              </div>
+          </div>
 
-                    <button id="apply-filters" class="button">Apply Filters</button>
-                    <button id="reset-filters" class="button secondary-button">Reset Filters</button>
-                </div>
-                <button id="refresh-reports" class="button">Refresh Reports</button>
-                <button id="export-data" class="button secondary-button">Export Data</button>
-            </div>
-            <ul id="admin-reports-container">
-                <!-- Report items rendered dynamically -->
-            </ul>
-            </div>
+          <!-- Stat Card: Resolved Reports -->
+          <div class="stat-card">
+               <div class="stat-icon" style="color: var(--secondary-color);"><i class="icon-check">✅</i></div>
+              <div class="stat-content">
+                  <span class="stat-value" id="stat-resolved-reports">0</span>
+                  <span class="stat-label">Resolved Reports</span>
+              </div>
+          </div>
 
-            <div class="admin-logout">
-                <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
-            </div>
-        </div>
-    </div>
+          <!-- Chart: Reports by Status -->
+          <div class="chart-card">
+              <h3>Reports by Status</h3>
+              <div class="chart-wrapper" style="height:250px;">
+                  <canvas id="status-chart"></canvas>
+              </div>
+              <div id="no-status-data" class="no-data-message" style="display: none;">No status data available.</div>
+          </div>
+
+          <!-- Chart: Reports by Urgency -->
+          <div class="chart-card">
+              <h3>Reports by Urgency</h3>
+              <div class="chart-wrapper" style="height:250px;">
+                  <canvas id="urgency-chart"></canvas>
+              </div>
+              <div id="no-urgency-data" class="no-data-message" style="display: none;">No urgency data available.</div>
+          </div>
+
+           <!-- Chart: Reports by Category (Monthly) - Kept from before -->
+           <div class="chart-card">
+              <h3>Reports This Month by Category</h3>
+               <p id="total-reports-month" class="subtle-text">Total this month: 0</p>
+              <div class="chart-wrapper" style="height:250px;">
+                  <canvas id="reports-chart"></canvas> <!-- Keep original ID -->
+              </div>
+              <div id="no-reports-message" class="no-data-message" style="display: none;">No reports this month.</div>
+          </div>
+
+      </div>
+      <!-- End of Enhanced Analytics Section -->
+
+
+      <!-- Existing Admin Reports Section -->
+      <div class="admin-reports">
+          <h2>Submitted Reports</h2>
+          <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+          <div class="admin-actions">
+              <!-- Filter Controls Here -->
+              <div class="admin-filters">
+                  <label for="image-filter">Image:</label>
+                  <select id="image-filter">
+                      <option value="all" selected>All</option>
+                      <option value="with">With Image</option>
+                      <option value="without">Without Image</option>
+                  </select>
+
+                  <label for="category-filter">Category:</label>
+                  <select id="category-filter">
+                      <option value="all" selected>All</option>
+                      <option value="Infrastructure">Infrastructure</option>
+                      <option value="Environmental">Environmental</option>
+                      <option value="Safety">Safety</option>
+                      <option value="Others">Others</option>
+                  </select>
+
+                  <label for="urgency-filter">Urgency:</label>
+                  <select id="urgency-filter">
+                      <option value="all" selected>All</option>
+                      <option value="Low">Low</option>
+                      <option value="Medium">Medium</option>
+                      <option value="High">High</option>
+                  </select>
+
+                  <label for="threat-filter">Threat:</label>
+                  <select id="threat-filter">
+                      <option value="all" selected>All</option>
+                      <option value="Minor">Minor</option>
+                      <option value="Moderate">Moderate</option>
+                      <option value="Severe">Severe</option>
+                  </select>
+
+                  <button id="apply-filters" class="button">Apply Filters</button>
+                  <button id="reset-filters" class="button secondary-button">Reset Filters</button>
+              </div>
+              <button id="refresh-reports" class="button">Refresh Reports</button>
+              <button id="export-data" class="button secondary-button">Export Data</button>
+          </div>
+          <ul id="admin-reports-container">
+              <!-- Report items rendered dynamically -->
+          </ul>
+      </div>
+
+      <div class="admin-logout">
+          <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
+      </div>
+  </div>
+</div>
 
     <!-- Reporting Page -->
     <div id="reporting-page" class="page" style="display: none;">

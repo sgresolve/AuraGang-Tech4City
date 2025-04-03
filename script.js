@@ -1199,19 +1199,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (file) {
             try {
                 // Option 1: Use ImgBB (as before) - Requires enabling CORS on ImgBB or using a backend proxy if needed
-                // const formData = new FormData();
-                // formData.append('image', imageDataUrl.split(',')[1]); // Assumes imageDataUrl is populated from preview
-                // formData.append('key', 'YOUR_IMGBB_API_KEY'); // Replace with your key
-                // const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
-                // const imgbbData = await imgbbResponse.json();
-                // if (!imgbbData.success) throw new Error(imgbbData.error?.message || 'ImgBB upload failed');
-                // imageUrl = imgbbData.data.url;
+               const formData = new FormData();
+               formData.append('image', imageDataUrl.split(',')[1]); // Assumes imageDataUrl is populated from preview
+                formData.append('key', '8c3ac5bab399ca801e354b900052510d'); // Replace with your key
+               const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+                const imgbbData = await imgbbResponse.json();
+               if (!imgbbData.success) throw new Error(imgbbData.error?.message || 'ImgBB upload failed');
+               imageUrl = imgbbData.data.url;
 
-                // Option 2: Upload to Firebase Storage (Recommended)
-                const storageRef = ref(storage, `reports/${currentUser.uid}/${Date.now()}_${file.name}`);
-                const snapshot = await uploadBytes(storageRef, file);
-                imageUrl = await getDownloadURL(snapshot.ref);
-                console.log('Image uploaded to Firebase Storage:', imageUrl);
 
             } catch (error) {
                 console.error('Image Upload Error:', error);

@@ -898,10 +898,144 @@
     align-items: center;
   }
   
-  /* ============================================================================
-     07. Admin Dashboard
-     ============================================================================ */
-/* Root page styling with subtle background animation */
+/* ============================================================================
+   07. Admin Dashboard - Analytics Enhancements
+   ============================================================================ */
+
+/* Analytics Grid Layout */
+.admin-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive columns */
+  gap: 1.5rem; /* Space between cards */
+  margin-bottom: 2.5rem; /* Space below analytics */
+}
+
+/* Stat Card Styling */
+.stat-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-light);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
+}
+
+.stat-icon {
+  font-size: 2.5rem; /* Adjust icon size */
+  color: var(--primary-color); /* Default icon color */
+  flex-shrink: 0; /* Prevent icon shrinking */
+}
+/* Add dummy icon classes if you don't have a library */
+.icon-files::before { content: '📊'; }
+.icon-clock::before { content: '⏳'; }
+.icon-check::before { content: '✅'; }
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 2rem; /* Larger number */
+  font-weight: 600;
+  color: var(--text-color);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--muted-color);
+  margin-top: 0.2rem;
+}
+
+/* Chart Card Styling */
+.chart-card {
+  background: var(--white);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-light);
+  transition: box-shadow 0.3s ease;
+}
+
+.chart-card:hover {
+   box-shadow: var(--shadow-medium);
+}
+
+.chart-card h3 {
+  font-size: 1.2rem;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.chart-wrapper {
+  position: relative;
+  width: 100%;
+  /* Height is set inline in HTML for Chart.js */
+}
+
+.no-data-message {
+  text-align: center;
+  color: var(--muted-color);
+  padding: 2rem 0;
+  font-style: italic;
+}
+
+.subtle-text {
+    font-size: 0.9rem;
+    color: var(--muted-color);
+    text-align: center;
+    margin-bottom: 1rem; /* Add some space below */
+}
+
+/* Existing monthly chart styling (ensure it fits) */
+/* (The #reports-chart ID is kept, so existing styles might apply) */
+/* Make sure the container has appropriate height if needed */
+/* .chart-container { ... } */ /* You might not need this specific class anymore */
+
+
+/* Remove specific styles for old analytics section if they conflict */
+/* .admin-analytics { ... } */ /* Check if this needs removal/adjustment */
+/* #total-reports { ... } */ /* Replaced by stat card */
+/* #no-reports-message { ... } */ /* Replaced by class .no-data-message */
+
+/* Responsive adjustments for the grid */
+@media (max-width: 768px) {
+  .admin-analytics-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust min size */
+  }
+   .stat-card {
+      flex-direction: column; /* Stack icon and text */
+      text-align: center;
+   }
+   .stat-icon {
+      margin-bottom: 0.5rem;
+   }
+}
+
+@media (max-width: 500px) {
+  .admin-analytics-grid {
+    grid-template-columns: 1fr; /* Single column on very small screens */
+  }
+}
+
+.admin-analytics {
+  /* Remove or adjust styles if they conflict with the new grid/cards */
+  /* Example: margin-bottom might now be handled by .admin-analytics-grid */
+   margin-bottom: 0; /* Let the grid handle margin */
+   padding: 0; /* Let the cards handle padding */
+   background: none; /* Let cards handle background */
+   box-shadow: none; /* Let cards handle shadow */
+   /* Keep other relevant styles if any */
+}
+
 #admin-page {
   padding: 2rem;
   background: linear-gradient(120deg, #f9f9f9, #f0f0f0);
@@ -2206,6 +2340,50 @@ label[for="imageUpload"]::before {
   border-top-color: transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+/* Pinned Post Styling */
+.forum-post.pinned {
+  border: 2px solid var(--secondary-color); /* Green border for pinned posts */
+  background: linear-gradient(135deg, #f0fff0, #ffffff); /* Subtle green gradient */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.pinned-indicator {
+  margin-left: 0.5rem;
+  color: var(--secondary-color);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* Pin Button Styling */
+.pin-btn {
+  background: var(--secondary-color); /* Green */
+  color: var(--white);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pin-btn:hover {
+  background: var(--secondary-dark); /* Darker green */
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.pin-btn[data-pinned="true"] {
+  background: var(--error-color); /* Red for unpin */
+}
+
+.pin-btn[data-pinned="true"]:hover {
+  background: darkred;
 }
 
 @keyframes spin {

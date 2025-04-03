@@ -1063,107 +1063,401 @@
 }
 
 
+  /* ============================================================================
+     08. Reporting Page
+     ============================================================================ */
 /* ============================================================================
-   08. Reporting Page
-   ============================================================================ */
+  08. Reporting Page (Extensive Version with Photo-Based Reporting)
+  ============================================================================ */
 
-/* Inherits .page styles */
+/* Base Container */
 #reporting-page {
-  max-width: 700px; /* Keep smaller width for forms */
-}
-
-#reporting-page h1 {
-    text-align: center;
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-}
-
-#map { /* Reporting map */
-  height: 350px; /* Adjust height */
+  max-width: 960px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background: #f8f9fa; /* Slightly darker neutral white */
   border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-medium);
+  animation: slideUp 0.8s ease-out forwards;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 48, 135, 0.25); /* Darker border */
+  transition: box-shadow 0.3s ease;
 }
 
-#report-form label {
-    font-weight: 500;
-    display: block;
-    margin-top: 1rem;
-    margin-bottom: 0.3rem;
+#reporting-page:hover {
+  box-shadow: var(--shadow-heavy);
+}
+
+/* Background Pattern with Animation */
+#reporting-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><circle cx="60" cy="60" r="3" fill="rgba(0,48,135,0.15)"/><rect x="50" y="50" width="20" height="20" fill="rgba(0,169,206,0.1)" transform="rotate(45 60 60)"/></svg>');
+  opacity: 0.8; /* Slightly darker pattern */
+  z-index: 0;
+  animation: drift 25s linear infinite;
+}
+
+/* Content Layering */
+#reporting-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Heading with Subtitle */
+#reporting-page h1 {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #083d77; /* Darker blue */
+  margin-bottom: 0.75rem;
+  text-align: center;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+#reporting-page h1:hover {
+  transform: scale(1.03);
+  color: #1d92c0; /* Darker teal */
+}
+
+#reporting-page h1::after {
+  content: 'Report city issues quickly and efficiently';
+  display: block;
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 400;
+  color: #586069; /* Darker muted text */
+  margin-top: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#reporting-page h1:hover::after {
+  opacity: 1;
+}
+
+/* Map Container */
+#map {
+  height: 480px;
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  margin-bottom: 2.5rem;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border: 1px solid rgba(0, 168, 206, 0.993); /* Darker border */
+  position: relative;
+}
+
+#map:hover {
+  transform: scale(1.015);
+  box-shadow: var(--shadow-heavy);
+}
+
+#map::before {
+  content: 'Click to set location';
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: rgba(8, 61, 119, 0.9); /* Darker blue */
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#map:hover::before {
+  opacity: 1;
+}
+
+/* Form Wrapper */
+#report-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  background: #e9ecef; /* Slightly darker grey */
+  padding: 2rem;
+  border-radius: var(--border-radius);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Section Headers */
+#report-form::before {
+  content: 'Issue Details';
+  grid-column: 1 / -1;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #083d77; /* Darker blue */
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* Input Fields */
+#report-form input[type="text"],
+#report-form input[type="number"],
+#report-form textarea,
+#report-form select {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #586069; /* Darker muted border */
+  border-radius: var(--input-radius);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  background: #ffffff;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  box-shadow: inset 0 1px 3px rgb(22, 210, 243);
 }
 
 #report-form textarea {
-  min-height: 120px; /* Adjust height */
+  min-height: 140px;
   resize: vertical;
+  grid-column: 1 / -1;
 }
 
-.image-upload-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
+#report-form input::placeholder,
+#report-form textarea::placeholder {
+  color: #000000; /* Darker muted text */
+  opacity: 0.8;
 }
 
-input[type="file"]#imageUpload {
-    /* Style the file input itself if needed, or hide and use label */
-    border: 1px solid var(--border-color);
-    padding: 0.5rem;
-    border-radius: var(--input-radius);
-    flex-grow: 1; /* Allow it to take space */
+#report-form input:focus,
+#report-form textarea:focus,
+#report-form select:focus {
+  border-color: #46c4f7; /* Darker teal */
+  box-shadow: 0 0 0 4px rgb(255, 255, 255), inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  outline: none;
 }
 
-/* Custom file input appearance (optional) */
-input[type="file"]::file-selector-button {
-    padding: 0.5rem 1rem;
-    border: none;
-    background-color: var(--muted-color);
-    color: white;
-    border-radius: var(--input-radius);
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    margin-right: 1rem;
-}
-input[type="file"]::file-selector-button:hover {
-    background-color: var(--text-color);
+#report-form input:hover:not(:focus),
+#report-form textarea:hover:not(:focus),
+#report-form select:hover:not(:focus) {
+  border-color: #2d8ef5; /* Darker blue */
+  transform: translateY(-1px);
 }
 
-
-#imagePreview img {
-  max-width: 150px; /* Smaller preview */
-  max-height: 150px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-light);
-  border: 1px solid var(--border-color);
-  transition: transform 0.3s ease;
-}
-#imagePreview img:hover { transform: scale(1.05); }
-
-#report-form button[type="submit"] {
-  width: auto; /* Don't force full width for submit */
-  margin: 1.5rem auto 0; /* Center button */
+/* Labels with Tooltips */
+#report-form label {
+  font-family: var(--font-primary);
+  font-size: 0.95rem;
+  color: #000000; /* Darker text */
+  margin-bottom: 0.5rem;
   display: block;
-  background-color: var(--primary-color); /* Add primary color background */
-  color: var(--white); /* White text */
-  padding: 0.75rem 1.5rem; /* Adjust padding */
-  border-radius: var(--border-radius); /* Rounded corners */
-  font-size: 1rem; /* Standard font size */
-  font-weight: 500; /* Slightly bold */
-  cursor: pointer; /* Pointer cursor */
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  position: relative;
+}
+
+#report-form label:hover::after {
+  background: #05668d; /* Darker teal */
+}
+
+/* Buttons */
+#report-form button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border-radius: var(--border-radius);
+  font-family: var(--font-heading);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+/* Detect Location Button */
+#detectLocation {
+  background: #05668d; /* Darker teal */
+  color: #ffffff;
+  grid-column: 2 / 3;
+}
+
+#detectLocation:hover {
+  background: #045a75; /* Even darker teal */
+}
+
+/* Auto Detect Button */
+#autoDetect {
+  background: #e0e0e0; /* Slightly darker grey */
+  color: #24292e;
+  cursor: not-allowed;
+  grid-column: 1 / -1;
+}
+
+#autoDetect:not(:disabled):hover {
+  background: #083d77; /* Darker blue */
+  color: #ffffff;
+}
+
+/* Analyze Image Button */
+#analyzeImageBtn {
+  background: white;
+  border: 2px solid #083d77; /* Darker blue */
+  color: #083d77;
+}
+
+#analyzeImageBtn:not(:disabled):hover {
+  background: #083d77; /* Darker blue */
+  color: #ffffff;
+}
+
+/* Style the Choose File Button */
+#report-form input[type="file"] {
+  display: none; /* Hide the default file input */
+}
+
+#report-form label[for="imageUpload"] {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#report-form label[for="imageUpload"]:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+#report-form label[for="imageUpload"]:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-light);
+}
+
+/* Submit Button */
+#report-form button[type="submit"] {
+  background: linear-gradient(90deg, #083d77, #05668d); /* Darker gradient */
+  color: #ffffff;
+  grid-column: 1 / -1;
+  animation: pulseButton 2s infinite;
+  padding: 1.25rem 2.5rem;
+  font-size: 1.1rem;
 }
 
 #report-form button[type="submit"]:hover {
-  background-color: var(--primary-dark); /* Darker primary color on hover */
-  transform: translateY(-3px); /* Slight lift effect */
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+  background: linear-gradient(90deg, #045a75, #034a63); /* Even darker gradient */
 }
 
-#report-form button[type="submit"]:active {
-  transform: scale(0.98); /* Slightly shrink on click */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Adjust shadow on click */
+/* ============================================================================
+   Related Animations (Add to your animations section)
+   ============================================================================ */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseButton {
+  0% { box-shadow: 0 0 0 0 rgba(0, 48, 135, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(0, 48, 135, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 48, 135, 0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+@keyframes drift {
+  0% { background-position: 0 0; }
+  100% { background-position: 120px 120px; }
+}
+
+/* ============================================================================
+   Responsive Adjustments (Add to your media queries section)
+   ============================================================================ */
+@media (max-width: 960px) {
+  #reporting-page {
+    width: 90%;
+    margin: 2.5rem auto;
+    padding: 2rem;
+  }
+
+  #report-form {
+    grid-template-columns: 1fr;
+  }
+
+  #detectLocation {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  #reporting-page {
+    padding: 1.5rem;
+  }
+
+  #map {
+    height: 400px;
+  }
+
+  #report-form {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  .image-upload-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  #report-form button {
+    width: 100%;
+    padding: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #reporting-page h1 {
+    font-size: 2rem;
+  }
+
+  #reporting-page h1::after {
+    font-size: 0.9rem;
+  }
+
+  #map {
+    height: 320px;
+  }
+
+  #report-form::before {
+    font-size: 1.25rem;
+  }
+
+  #report-form input[type="text"],
+  #report-form input[type="number"],
+  #report-form textarea,
+  #report-form select {
+    padding: 0.75rem;
+  }
 }
 
 /* ============================================================================
@@ -1243,6 +1537,35 @@ input[type="file"]::file-selector-button:hover {
     .forum-layout {
         grid-template-columns: 1fr 300px; /* Main content and sidebar */
     }
+}
+
+#submit-button {
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#submit-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+#submit-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+#submit-button:disabled {
+  background-color: var(--muted-color);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 
@@ -1991,46 +2314,99 @@ input[type="file"]::file-selector-button:hover {
 }
 
 /* Nearby Reports Specific Styling */
-#nearby-reports-page h1 { text-align: center; color: var(--primary-color); margin-bottom: 1.5rem; }
-.nearby-controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: var(--border-radius);
+#nearby-reports-page h1 {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
-.nearby-controls label { font-weight: 500; margin-right: 0.5rem; font-size: 0.95rem; }
-.nearby-controls select { padding: 0.5rem 2rem 0.5rem 0.5rem; font-size: 0.9rem; min-width: 150px; }
-.nearby-controls button { padding: 0.5rem 1rem; font-size: 0.9rem; }
+
+.nearby-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  border: 1px solid var(--border-color);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.nearby-controls:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-3px);
+}
+.nearby-controls label {
+  font-weight: 600;
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: var(--text-color);
+}
+.nearby-controls select {
+  padding: 0.6rem 2rem 0.6rem 0.6rem;
+  font-size: 1rem;
+  min-width: 160px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background-color: var(--white);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.nearby-controls select:hover,
+.nearby-controls select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+  outline: none;
+}
+.nearby-controls button {
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: var(--input-radius);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+.nearby-controls button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
 
 #nearby-status {
-    text-align: center;
-    color: var(--muted-color);
-    margin-bottom: 1rem;
-    font-style: italic;
+  text-align: center;
+  color: var(--muted-color);
+  margin-bottom: 1rem;
+  font-style: italic;
+  font-size: 0.95rem;
 }
 
-#nearby-reports-container { padding-left: 0; }
+#nearby-reports-container {
+  padding-left: 0;
+}
 .nearby-report-item {
-    background: var(--white);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: var(--shadow-light);
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+  box-shadow: var(--shadow-light);
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .nearby-report-item:hover {
-    transform: translateX(5px);
-    box-shadow: var(--shadow-medium);
-    border-left: 3px solid var(--accent-color);
+  transform: translateX(6px);
+  box-shadow: var(--shadow-medium);
+  border-left: 4px solid var(--accent-color);
 }
 .nearby-report-info { flex-grow: 1; }
 .nearby-report-info p { margin-bottom: 0.3rem; font-size: 0.9rem; }

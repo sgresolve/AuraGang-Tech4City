@@ -1,6 +1,15 @@
 /* =============================================================================
    SGResolve - Comprehensive CSS Redesign
    =============================================================================
+   This CSS file revitalizes SGResolve's styling. The landing page remains intact
+   as per your preference, while all other pages (login, register, admin dashboard,
+   reporting, my reports, community forum, about, chatbot, and NEW profile page) are
+   enhanced with vibrant colors, engaging buttons with icons and animations,
+   and a cohesive, appealing aesthetic. White space is minimized with subtle
+   gradients and shadows, ensuring a professional yet lively interface.
+
+   Includes Gamification Styles.
+
    =============================================================================
    Table of Contents:
    01. CSS Variables & Base Settings
@@ -2535,4 +2544,33 @@
    margin-top: 1rem;
    font-size: 0.9rem;
    color: var(--muted-color);
+}
+
+/* ============================================================================
+  reCAPTCHA Styling
+  ============================================================================ */
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+
+.recaptcha-container iframe {
+  border: none;
+  box-shadow: var(--shadow-light);
+  border-radius: var(--border-radius);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.recaptcha-container iframe:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.recaptcha-container .recaptcha-error {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--error-color);
+  text-align: center;
 }

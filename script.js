@@ -5,7 +5,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile // Keep updateProfile
+  updateProfile, // Already present
+  EmailAuthProvider, // NEW: Needed for re-authentication
+  reauthenticateWithCredential, // NEW: Needed for sensitive operations
+  updatePassword // NEW: Needed for password change
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
 import {
     getFirestore,
@@ -16,14 +19,14 @@ import {
     query,
     where,
     doc,
-    updateDoc,
+    updateDoc, // Already present
     deleteDoc,
     orderBy,
     limit,
     startAfter,
     increment,
     runTransaction,
-    setDoc // Keep setDoc
+    setDoc // Already present
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
 // Import Storage only if using Firebase Storage for image uploads (ImgBB used instead here)
 // import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-storage.js";
@@ -572,98 +575,123 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render Profile Page Content
     function renderProfilePage() {
         const profilePage = pages.profile;
-        if (!profilePage || !currentUserData) {
-             console.log("Cannot render profile: Page element or user data missing.");
-             // Optionally show a loading or error message within the profile page div
+        if (!profilePage || !currentUserData || !currentUser) { // Also check currentUser for email
+             console.log("Cannot render profile: Page element, user data or current user missing.");
              if (profilePage) profilePage.innerHTML = '<p class="loading-message">Loading profile...</p>';
-             // Attempt to fetch data again if missing but user exists
              if (!currentUserData && currentUser) {
                  fetchAndSetCurrentUserData(currentUser.uid);
              }
              return;
         }
 
-        // Ensure the profile page structure exists (if cleared by error message)
-        // This check is basic; ideally, you wouldn't clear the whole page structure
-        if (!document.getElementById('profile-username')) {
+        // --- Ensure the FULL profile structure exists (important if it was cleared) ---
+        if (!document.getElementById('profile-username') || !document.getElementById('profile-email-display') || !document.getElementById('change-password-form')) {
              profilePage.innerHTML = `
                 <h1>My Profile & Achievements</h1>
                 <div class="profile-summary card">
-                  <h2 id="profile-username">Username</h2>
-                  <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
-                  <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
-                  <div class="progress-bar-container">
-                    <div id="level-progress-bar" class="progress-bar-fill"></div>
-                  </div>
-                  <p><small id="rp-to-next-level">XXX RP to next level</small></p>
+                    <h2 id="profile-username">Username</h2>
+                    <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
+                    <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
+                    <div class="progress-bar-container"><div id="level-progress-bar" class="progress-bar-fill"></div></div>
+                    <p><small id="rp-to-next-level">XXX RP to next level</small></p>
+                </div>
+                <div class="profile-details card">
+                    <h2>Account Details</h2>
+                    <p><strong>Email:</strong> <span id="profile-email-display">Loading...</span></p>
+                    <form id="update-profile-form">
+                        <label for="profile-new-name"><strong>Display Name:</strong></label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                            <input type="text" id="profile-new-name" placeholder="Your display name" required style="flex-grow: 1;">
+                            <button type="submit" id="update-profile-button" class="button primary-button">Update Name</button>
+                        </div>
+                    </form>
+                    <p id="update-profile-message" class="form-message"></p>
+                </div>
+                <div class="change-password card">
+                    <h2>Change Password</h2>
+                    <form id="change-password-form">
+                        <label for="current-password">Current Password:</label>
+                        <input type="password" id="current-password" required autocomplete="current-password">
+                        <label for="new-password">New Password:</label>
+                        <input type="password" id="new-password" required autocomplete="new-password" minlength="6">
+                        <label for="confirm-new-password">Confirm New Password:</label>
+                        <input type="password" id="confirm-new-password" required autocomplete="new-password">
+                        <button type="submit" id="change-password-button" class="button secondary-button">Change Password</button>
+                    </form>
+                    <p id="change-password-message" class="form-message"></p>
                 </div>
                 <div class="profile-badges card">
-                  <h2>My Badges</h2>
-                  <div id="badges-container" class="badges-grid">
-                    <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
-                  </div>
+                    <h2>My Badges</h2>
+                    <div id="badges-container" class="badges-grid"><p id="no-badges-message" style="display: none;">...</p></div>
                 </div>`;
         }
 
-
-        // Populate Summary - Use Firestore name first, fallback to Auth name
-        document.getElementById('profile-username').textContent = currentUserData.displayName || auth.currentUser?.displayName || 'User';
+        // Populate Summary (as before)
+        const currentDisplayName = currentUserData.displayName || currentUser.displayName || 'User'; // More robust fallback
+        document.getElementById('profile-username').textContent = currentDisplayName;
         const points = currentUserData.resolvePoints || 0;
         const level = currentUserData.level || 1;
-        const levelName = LEVEL_NAMES[level - 1] || 'Contributor'; // Get level name
-
+        const levelName = LEVEL_NAMES[level - 1] || 'Contributor';
         document.getElementById('profile-level').textContent = level;
         document.getElementById('profile-rp').textContent = points;
-        const levelNameEl = document.getElementById('profile-level-name'); // Get level name element
-        if (levelNameEl) levelNameEl.textContent = levelName; // Update level name
+        const levelNameEl = document.getElementById('profile-level-name');
+        if (levelNameEl) levelNameEl.textContent = levelName;
 
-        // Update Progress Bar
+        // Populate Progress Bar (as before)
         const progressBar = document.getElementById('level-progress-bar');
         const progressPercent = getLevelProgress(points);
         if (progressBar) progressBar.style.width = `${progressPercent}%`;
-
-        // Update RP to next level text
         const nextLevelInfo = getPointsForNextLevel(points);
         const rpToNextEl = document.getElementById('rp-to-next-level');
         if (rpToNextEl) {
             if (level >= LEVELS.length) {
                 rpToNextEl.textContent = "Max Level Reached!";
-                if(progressBar) progressBar.style.width = '100%'; // Ensure bar is full at max level
+                if (progressBar) progressBar.style.width = '100%';
             } else {
                 rpToNextEl.textContent = `${nextLevelInfo.pointsNeeded} RP to Level ${level + 1} (${LEVEL_NAMES[level] || ''})`;
             }
         }
 
-        // Populate Badges
+        // --- Populate NEW Profile Details ---
+        const emailDisplay = document.getElementById('profile-email-display');
+        const nameInput = document.getElementById('profile-new-name');
+        if (emailDisplay) emailDisplay.textContent = currentUser.email || 'N/A';
+        if (nameInput) nameInput.value = currentDisplayName; // Pre-fill input with current name
+
+        // Populate Badges (as before)
         const badgesContainer = document.getElementById('badges-container');
         const noBadgesMessage = document.getElementById('no-badges-message');
-        if (!badgesContainer) return; // Exit if container not found
-
-        badgesContainer.innerHTML = ''; // Clear previous badges
-
+        if (!badgesContainer || !noBadgesMessage) return;
+        badgesContainer.innerHTML = ''; // Clear previous
         const earnedBadges = currentUserData.earnedBadges || [];
-
         if (earnedBadges.length === 0) {
-            if (noBadgesMessage) noBadgesMessage.style.display = 'block';
+            noBadgesMessage.style.display = 'block';
         } else {
-            if (noBadgesMessage) noBadgesMessage.style.display = 'none';
-            earnedBadges.forEach(badgeId => {
+            noBadgesMessage.style.display = 'none';
+            earnedBadges.forEach(badgeId => { /* ... (badge rendering logic as before) ... */
                 const badgeInfo = BADGES[badgeId];
-                if (badgeInfo) {
-                    const badgeDiv = document.createElement('div');
-                    badgeDiv.classList.add('badge-item');
-                    badgeDiv.title = `${badgeInfo.name}: ${badgeInfo.description}`; // Add tooltip
-                    badgeDiv.innerHTML = `
-                        <span class="badge-icon" aria-hidden="true">${badgeInfo.icon}</span>
-                        <span class="badge-name">${badgeInfo.name}</span>
-                        <span class="badge-description">${badgeInfo.description}</span>
-                    `;
-                    badgesContainer.appendChild(badgeDiv);
-                } else {
-                     console.warn(`Badge info not found for ID: ${badgeId}`);
-                }
+                 if (badgeInfo) {
+                     const badgeDiv = document.createElement('div');
+                     badgeDiv.classList.add('badge-item');
+                     badgeDiv.title = `${badgeInfo.name}: ${badgeInfo.description}`;
+                     badgeDiv.innerHTML = `
+                         <span class="badge-icon" aria-hidden="true">${badgeInfo.icon}</span>
+                         <span class="badge-name">${badgeInfo.name}</span>
+                         <span class="badge-description">${badgeInfo.description}</span>
+                     `;
+                     badgesContainer.appendChild(badgeDiv);
+                 } else {
+                      console.warn(`Badge info not found for ID: ${badgeId}`);
+                 }
             });
         }
+         // Clear any previous messages
+        const updateMsg = document.getElementById('update-profile-message');
+        const changePwMsg = document.getElementById('change-password-message');
+        if(updateMsg) updateMsg.textContent = '';
+        if(changePwMsg) changePwMsg.textContent = '';
+        if(document.getElementById('change-password-form')) document.getElementById('change-password-form').reset(); // Clear password fields on render
+
     }
 
 
@@ -2778,6 +2806,141 @@ document.addEventListener('DOMContentLoaded', () => {
     //         displayNearbyReports();
     //     }
     // }
+
+    document.getElementById('update-profile-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentUser || !currentUserData) return; // Should be logged in
+
+        const nameInput = document.getElementById('profile-new-name');
+        const updateButton = document.getElementById('update-profile-button');
+        const messageArea = document.getElementById('update-profile-message');
+        const newName = nameInput?.value.trim();
+
+        if (!newName) {
+            if(messageArea) messageArea.textContent = 'Display name cannot be empty.';
+            if(messageArea) messageArea.className = 'form-message error';
+            return;
+        }
+
+        // Optional: Check if name actually changed
+        const currentName = currentUserData.displayName || currentUser.displayName || '';
+        if (newName === currentName) {
+             if(messageArea) messageArea.textContent = 'Name is already set to this value.';
+             if(messageArea) messageArea.className = 'form-message info';
+            return;
+        }
+
+        updateButton.disabled = true;
+        updateButton.textContent = 'Updating...';
+        if(messageArea) messageArea.textContent = '';
+        if(messageArea) messageArea.className = 'form-message';
+
+        try {
+            // 1. Update Firebase Auth profile
+            await updateProfile(auth.currentUser, { displayName: newName });
+            console.log("Firebase Auth profile updated.");
+
+            // 2. Update Firestore user document
+            const userRef = doc(db, "users", currentUser.uid);
+            await updateDoc(userRef, { displayName: newName });
+            console.log("Firestore user document updated.");
+
+            // 3. Refresh local data and UI
+            await fetchAndSetCurrentUserData(currentUser.uid); // This will re-render parts of the UI via updateGamificationUI/renderProfilePage
+
+            if(messageArea) messageArea.textContent = 'Display name updated successfully!';
+            if(messageArea) messageArea.className = 'form-message success';
+            showPopup('Display name updated!', 'success');
+
+        } catch (error) {
+            console.error("Error updating display name:", error);
+            if(messageArea) messageArea.textContent = `Error updating name: ${error.message}`;
+            if(messageArea) messageArea.className = 'form-message error';
+            showPopup(`Error updating name: ${error.message}`, 'error');
+        } finally {
+            updateButton.disabled = false;
+            updateButton.textContent = 'Update Name';
+        }
+    });
+
+    // Change Password Form
+    document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentUser) return; // Must be logged in
+
+        const currentPasswordInput = document.getElementById('current-password');
+        const newPasswordInput = document.getElementById('new-password');
+        const confirmPasswordInput = document.getElementById('confirm-new-password');
+        const changeButton = document.getElementById('change-password-button');
+        const messageArea = document.getElementById('change-password-message');
+
+        const currentPassword = currentPasswordInput?.value;
+        const newPassword = newPasswordInput?.value;
+        const confirmPassword = confirmPasswordInput?.value;
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+            if(messageArea) messageArea.textContent = 'Please fill in all password fields.';
+            if(messageArea) messageArea.className = 'form-message error';
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            if(messageArea) messageArea.textContent = 'New passwords do not match.';
+            if(messageArea) messageArea.className = 'form-message error';
+            return;
+        }
+
+        if (newPassword.length < 6) {
+             if(messageArea) messageArea.textContent = 'New password must be at least 6 characters long.';
+             if(messageArea) messageArea.className = 'form-message error';
+             return;
+        }
+
+        changeButton.disabled = true;
+        changeButton.textContent = 'Changing...';
+        if(messageArea) messageArea.textContent = 'Re-authenticating...';
+        if(messageArea) messageArea.className = 'form-message info';
+
+        try {
+            // 1. Re-authenticate the user (REQUIRED for password change)
+            const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+            await reauthenticateWithCredential(currentUser, credential);
+            console.log("User re-authenticated successfully.");
+            if(messageArea) messageArea.textContent = 'Updating password...'; // Update message
+
+            // 2. Update the password
+            await updatePassword(currentUser, newPassword);
+            console.log("Password updated successfully.");
+
+            if(messageArea) messageArea.textContent = 'Password changed successfully!';
+            if(messageArea) messageArea.className = 'form-message success';
+            showPopup('Password changed successfully!', 'success');
+
+            // Clear the form fields after success
+            currentPasswordInput.value = '';
+            newPasswordInput.value = '';
+            confirmPasswordInput.value = '';
+
+        } catch (error) {
+            console.error("Error changing password:", error);
+            let friendlyMessage = `Error: ${error.message}`;
+            if (error.code === 'auth/wrong-password') {
+                friendlyMessage = 'Incorrect current password.';
+            } else if (error.code === 'auth/weak-password') {
+                friendlyMessage = 'New password is too weak.';
+            } else if (error.code === 'auth/requires-recent-login') {
+                 friendlyMessage = 'This action requires a recent login. Please log out and log back in.';
+                 // Consider forcing logout here or guiding user
+            }
+            if(messageArea) messageArea.textContent = friendlyMessage;
+            if(messageArea) messageArea.className = 'form-message error';
+            showPopup(`Password change failed: ${friendlyMessage}`, 'error');
+        } finally {
+            changeButton.disabled = false;
+            changeButton.textContent = 'Change Password';
+        }
+    });
+
 
     // --- Chatbot ---
     document.getElementById('chat-icon')?.addEventListener('click', toggleChat);

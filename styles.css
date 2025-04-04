@@ -2415,3 +2415,133 @@
 .nearby-report-image { flex-shrink: 0; width: 80px; height: 80px; }
 .nearby-report-image img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--input-radius); }
 .nearby-report-image.no-image { background-color: #e9ecef; border-radius: var(--input-radius); /* Placeholder style */ }
+
+
+/* ============================================================================
+  Profile Details Card
+  ============================================================================ */
+.profile-details {
+   margin-top: 2rem;
+}
+
+.profile-details h2 {
+   font-size: 1.5rem;
+   margin-bottom: 1rem;
+   color: var(--primary-dark);
+   border-bottom: 1px solid var(--border-color);
+   padding-bottom: 0.5rem;
+}
+
+.profile-details p {
+   font-size: 1rem;
+   color: var(--text-color);
+   margin-bottom: 0.5rem;
+}
+
+.profile-details form {
+   margin-top: 1rem;
+}
+
+.profile-details label {
+   font-size: 0.95rem;
+   color: var(--muted-color);
+   font-weight: 500;
+   margin-bottom: 0.5rem;
+   display: block;
+}
+
+.profile-details input[type="text"] {
+   padding: 0.75rem 1rem;
+   border: 1px solid var(--border-color);
+   border-radius: var(--input-radius);
+   font-size: 1rem;
+   flex-grow: 1;
+   background-color: #f8f9fa;
+   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-details input[type="text"]:focus {
+   border-color: var(--primary-color);
+   box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+   outline: none;
+   background-color: var(--white);
+}
+
+.profile-details button {
+   padding: 0.75rem 1.5rem;
+   font-size: 1rem;
+   font-weight: 500;
+   border-radius: var(--border-radius);
+   cursor: pointer;
+   transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-details button:hover {
+   transform: translateY(-2px);
+   box-shadow: var(--shadow-medium);
+}
+
+.profile-details .form-message {
+   margin-top: 1rem;
+   font-size: 0.9rem;
+   color: var(--muted-color);
+}
+
+/* ============================================================================
+  Change Password Card
+  ============================================================================ */
+.change-password {
+   margin-top: 2rem;
+}
+
+.change-password h2 {
+   font-size: 1.5rem;
+   margin-bottom: 1rem;
+   color: var(--primary-dark);
+   border-bottom: 1px solid var(--border-color);
+   padding-bottom: 0.5rem;
+}
+
+.change-password label {
+   font-size: 0.95rem;
+   color: var(--muted-color);
+   font-weight: 500;
+   margin-bottom: 0.5rem;
+   display: block;
+}
+
+.change-password input[type="password"] {
+   padding: 0.75rem 1rem;
+   border: 1px solid var(--border-color);
+   border-radius: var(--input-radius);
+   font-size: 1rem;
+   background-color: #f8f9fa;
+   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.change-password input[type="password"]:focus {
+   border-color: var(--primary-color);
+   box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+   outline: none;
+   background-color: var(--white);
+}
+
+.change-password button {
+   padding: 0.75rem 1.5rem;
+   font-size: 1rem;
+   font-weight: 500;
+   border-radius: var(--border-radius);
+   cursor: pointer;
+   transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.change-password button:hover {
+   transform: translateY(-2px);
+   box-shadow: var(--shadow-medium);
+}
+
+.change-password .form-message {
+   margin-top: 1rem;
+   font-size: 0.9rem;
+   color: var(--muted-color);
+}

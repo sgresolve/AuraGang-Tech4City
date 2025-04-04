@@ -11,6 +11,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <link rel="icon" type="image/png" href="images/logo.png">
+  <!-- Add Google reCAPTCHA v2 Script -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- End Google reCAPTCHA v2 Script -->
 </head>
 <body>
   <div id="app">
@@ -287,8 +290,23 @@
             </div>
             <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Image preview area -->
 
-            <!-- Submit Button -->
-            <button type="submit">Submit Report</button>
+            <!-- reCAPTCHA v2 Checkbox -->
+            <div class="form-group recaptcha-group">
+                <div id="recaptcha-container"
+                     class="g-recaptcha"
+                     data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
+                     data-callback="onRecaptchaSuccess"
+                     data-expired-callback="onRecaptchaExpired"
+                     data-error-callback="onRecaptchaError">
+                </div>
+                <!-- Add an error message placeholder for CAPTCHA -->
+                <p id="recaptcha-error" class="error-message" style="display: none; text-align: center; margin-top: 5px;">Please complete the CAPTCHA verification.</p>
+            </div>
+            <!-- End reCAPTCHA v2 Checkbox -->
+
+
+            <!-- Submit Button - Initially Disabled -->
+            <button type="submit" id="submit-report-button" disabled>Submit Report</button>
         </form>
     </div>
 
@@ -560,7 +578,7 @@
     <!-- Profile Page -->
     <div id="profile-page" class="page" style="display: none;">
         <h1>My Profile & Achievements</h1>
-  
+
         <!-- Existing Summary Card -->
         <div class="profile-summary card">
           <h2 id="profile-username">Username</h2>
@@ -571,8 +589,8 @@
           </div>
           <p><small id="rp-to-next-level">XXX RP to next level</small></p>
         </div>
-  
-  
+
+
         <!-- Existing Badges Card -->
         <div class="profile-badges card">
           <h2>My Badges</h2>
@@ -595,25 +613,25 @@
                     </form>
                     <p id="update-profile-message" class="form-message"></p> <!-- For feedback -->
                 </div>
-          
+
                 <!-- NEW: Change Password Card -->
                 <div class="change-password card">
                     <h2>Change Password</h2>
                     <form id="change-password-form">
                         <label for="current-password">Current Password:</label>
                         <input type="password" id="current-password" required autocomplete="current-password">
-          
+
                         <label for="new-password">New Password:</label>
                         <input type="password" id="new-password" required autocomplete="new-password" minlength="6">
-          
+
                         <label for="confirm-new-password">Confirm New Password:</label>
                         <input type="password" id="confirm-new-password" required autocomplete="new-password">
-          
+
                         <button type="submit" id="change-password-button" class="button secondary-button">Change Password</button>
                     </form>
                     <p id="change-password-message" class="form-message"></p> <!-- For feedback -->
                 </div>
-  
+
       </div>
     <!-- Popup Overlay -->
     <div id="popup-overlay" class="popup-overlay">
@@ -626,6 +644,8 @@
     </div>
 
   </div>
+
+
 
   <!-- Scripts -->
   <script type="module" src="script.js"></script>

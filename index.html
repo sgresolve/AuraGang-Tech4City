@@ -559,29 +559,62 @@
 
     <!-- Profile Page -->
     <div id="profile-page" class="page" style="display: none;">
-      <h1>My Profile & Achievements</h1>
-      <div class="profile-summary card"> <!-- Added card class -->
-        <h2 id="profile-username">Username</h2>
-        <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
-        <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
-        <div class="progress-bar-container">
-          <div id="level-progress-bar" class="progress-bar-fill"></div>
+        <h1>My Profile & Achievements</h1>
+  
+        <!-- Existing Summary Card -->
+        <div class="profile-summary card">
+          <h2 id="profile-username">Username</h2>
+          <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
+          <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
+          <div class="progress-bar-container">
+            <div id="level-progress-bar" class="progress-bar-fill"></div>
+          </div>
+          <p><small id="rp-to-next-level">XXX RP to next level</small></p>
         </div>
-        <p><small id="rp-to-next-level">XXX RP to next level</small></p>
-      </div>
-
-      <div class="profile-badges card"> <!-- Added card class -->
-        <h2>My Badges</h2>
-        <div id="badges-container" class="badges-grid">
-          <!-- Badges loaded dynamically -->
-          <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
+  
+  
+        <!-- Existing Badges Card -->
+        <div class="profile-badges card">
+          <h2>My Badges</h2>
+          <div id="badges-container" class="badges-grid">
+            <!-- Badges loaded dynamically -->
+            <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
+          </div>
         </div>
+
+                <!-- NEW: Profile Details Card -->
+                <div class="profile-details card">
+                    <h2>Account Details</h2>
+                    <p><strong>Email:</strong> <span id="profile-email-display">Loading...</span></p>
+                    <form id="update-profile-form">
+                        <label for="profile-new-name"><strong>Display Name:</strong></label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                          <input type="text" id="profile-new-name" placeholder="Your display name" required style="flex-grow: 1;">
+                          <button type="submit" id="update-profile-button" class="button primary-button">Update Name</button>
+                        </div>
+                    </form>
+                    <p id="update-profile-message" class="form-message"></p> <!-- For feedback -->
+                </div>
+          
+                <!-- NEW: Change Password Card -->
+                <div class="change-password card">
+                    <h2>Change Password</h2>
+                    <form id="change-password-form">
+                        <label for="current-password">Current Password:</label>
+                        <input type="password" id="current-password" required autocomplete="current-password">
+          
+                        <label for="new-password">New Password:</label>
+                        <input type="password" id="new-password" required autocomplete="new-password" minlength="6">
+          
+                        <label for="confirm-new-password">Confirm New Password:</label>
+                        <input type="password" id="confirm-new-password" required autocomplete="new-password">
+          
+                        <button type="submit" id="change-password-button" class="button secondary-button">Change Password</button>
+                    </form>
+                    <p id="change-password-message" class="form-message"></p> <!-- For feedback -->
+                </div>
+  
       </div>
-
-      <!-- Optional: Add leaderboard opt-in/out setting here -->
-      <!-- Optional: Add recent activity log here -->
-    </div>
-
     <!-- Popup Overlay -->
     <div id="popup-overlay" class="popup-overlay">
         <div id="popup" class="popup">

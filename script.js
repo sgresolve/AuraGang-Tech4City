@@ -5,10 +5,10 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile, // Already present
-  EmailAuthProvider, // NEW: Needed for re-authentication
-  reauthenticateWithCredential, // NEW: Needed for sensitive operations
-  updatePassword // NEW: Needed for password change
+  updateProfile, 
+  EmailAuthProvider, 
+  reauthenticateWithCredential,
+  updatePassword 
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
 import {
     getFirestore,
@@ -19,24 +19,21 @@ import {
     query,
     where,
     doc,
-    updateDoc, // Already present
+    updateDoc,
     deleteDoc,
     orderBy,
     limit,
     startAfter,
     increment,
     runTransaction,
-    setDoc // Already present
+    setDoc 
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
-// Import Storage only if using Firebase Storage for image uploads (ImgBB used instead here)
-// import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-storage.js";
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAgBUaMIawsOqMbLpju2mrd6kMaranT2rI", // Replace with your actual API key
+  apiKey: "AIzaSyAgBUaMIawsOqMbLpju2mrd6kMaranT2rI", 
   authDomain: "sgresolve-login-register.firebaseapp.com",
   projectId: "sgresolve-login-register",
-  storageBucket: "sgresolve-login-register.appspot.com", // Add if using Firebase Storage
   messagingSenderId: "564104431729",
   appId: "1:564104431729:web:57557b54673a8c18d973d0",
   measurementId: "G-R3QDN8V84C"
@@ -45,7 +42,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-// const storage = getStorage(app); // Initialize if using Firebase Storage
 
 // --- AI API Endpoints ---
 const IMAGE_ANALYZER_API_URL = "https://ai-photo-analyser-production.up.railway.app/analyze-image";
@@ -53,6 +49,42 @@ const TEXT_ANALYSIS_API_URL = 'https://auto-detect-model-production.up.railway.a
 
 // --- ImgBB Key ---
 const IMGBB_API_KEY = '8c3ac5bab399ca801e354b900052510d'; // Your ImgBB Key
+
+
+// --- reCAPTCHA Callbacks---
+window.onRecaptchaSuccess = function() {
+  console.log('reCAPTCHA verification successful (frontend)');
+  const submitButton = document.getElementById('submit-report-button'); // Use specific ID now
+  const recaptchaError = document.getElementById('recaptcha-error');
+  if (submitButton) submitButton.disabled = false;
+  if (recaptchaError) recaptchaError.style.display = 'none'; // Hide error message
+};
+
+window.onRecaptchaExpired = function() {
+  console.log('reCAPTCHA verification expired');
+  const submitButton = document.getElementById('submit-report-button');
+  const recaptchaError = document.getElementById('recaptcha-error');
+  if (submitButton) submitButton.disabled = true;
+  if (recaptchaError) {
+       recaptchaError.textContent = "CAPTCHA expired. Please verify again.";
+       recaptchaError.style.display = 'block'; // Show error message
+   }
+   // Reset the CAPTCHA widget if needed (might happen automatically)
+   // if (typeof grecaptcha !== 'undefined' && grecaptcha) grecaptcha.reset();
+};
+
+window.onRecaptchaError = function() {
+  console.error('reCAPTCHA error occurred');
+  const submitButton = document.getElementById('submit-report-button');
+  const recaptchaError = document.getElementById('recaptcha-error');
+  if (submitButton) submitButton.disabled = true;
+  if (recaptchaError) {
+      recaptchaError.textContent = "CAPTCHA failed to load or verify. Please try refreshing.";
+      recaptchaError.style.display = 'block'; // Show error message
+  }
+  showPopup("CAPTCHA failed to load. Please refresh the page.", "error", 0, false);
+};
+// --- End reCAPTCHA Callbacks ---
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -184,7 +216,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 10); // Small delay
 
         // Invalidate maps or render content specific to the shown page
-        if (pageId === 'reporting' && reportingMap) reportingMap.invalidateSize();
+        if (pageId === 'reporting') {
+            if (reportingMap) reportingMap.invalidateSize();
+             // Reset CAPTCHA when showing reporting page
+             if (typeof grecaptcha !== 'undefined' && grecaptcha) {
+                 try {
+                     // Use the container ID to potentially reset a specific instance if needed
+                     // grecaptcha.reset(); // General reset works if only one widget on page
+                     const widgetContainer = document.getElementById('recaptcha-container');
+                     const widgetId = widgetContainer?.getAttribute('data-widget-id'); // Need to store ID if multiple widgets
+                     if (widgetId) {
+                         grecaptcha.reset(widgetId);
+                     } else {
+                         grecaptcha.reset(); // Fallback
+                     }
+                     // Also reset submit button state
+                     const submitBtn = document.getElementById('submit-report-button');
+                     if (submitBtn) submitBtn.disabled = true;
+                     const recaptchaError = document.getElementById('recaptcha-error');
+                     if(recaptchaError) recaptchaError.style.display = 'none';
+
+                 } catch (e) {
+                     console.error("Error resetting reCAPTCHA on page show:", e);
+                 }
+             }
+        }
         else if (pageId === 'admin' && adminMap) { adminMap.invalidateSize(); renderAdminReports(); renderAdminAnalytics(); }
         else if (pageId === 'nearbyReports' && nearbyMap) nearbyMap.invalidateSize();
         else if (pageId === 'about') initializeAboutPageObserver();
@@ -624,6 +680,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2>My Badges</h2>
                     <div id="badges-container" class="badges-grid"><p id="no-badges-message" style="display: none;">...</p></div>
                 </div>`;
+             // Re-add event listeners if structure was rebuilt
+             attachProfileEventListeners();
         }
 
         // Populate Summary (as before)
@@ -1116,7 +1174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Error rendering admin analytics:", error);
-            showPopup("Error loading analytics data.", "error", false); // Non-auto close error
+            showPopup("Error loading analytics data.", "error", 0, false); // Non-auto close error
              // Optionally hide all chart areas and show generic error messages
              if(statusChartCanvas) statusChartCanvas.style.display = 'none';
              if(noStatusDataEl) { noStatusDataEl.textContent = 'Error loading status data.'; noStatusDataEl.style.display = 'block'; }
@@ -1768,6 +1826,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 // If user was already logged in (e.g., profile update), just update UI
                 updateNavbar();
+                // If the profile page is currently visible, refresh its content
+                if (pages.profile && pages.profile.classList.contains('show')) {
+                    renderProfilePage();
+                }
             }
 
         } else {
@@ -1787,6 +1849,13 @@ document.addEventListener('DOMContentLoaded', () => {
                  reportingMap.removeLayer(tempMarker);
                  tempMarker = null;
              }
+             // Reset CAPTCHA on logout if it exists
+             if (typeof grecaptcha !== 'undefined' && grecaptcha) {
+                 try { grecaptcha.reset(); } catch(e) { console.warn("Error resetting CAPTCHA on logout:", e); }
+             }
+             const submitBtn = document.getElementById('submit-report-button');
+             if (submitBtn) submitBtn.disabled = true; // Ensure submit is disabled
+
 
             if (wasLoggedIn) { // Only redirect to landing if they *were* logged in
                 hideAllPages();
@@ -1839,30 +1908,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitButton = e.target.querySelector('button[type="submit"]');
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
-    
+
         if (!email || !password) {
             showPopup("Please enter both email and password.", "warning");
             return;
         }
-    
+
         submitButton.disabled = true;
         submitButton.textContent = 'Logging in...';
-    
+
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log('Login successful for:', userCredential.user.email);
                 showPopup('Logged in successfully!', 'success');
                 // Proactively update UI
                 currentUser = userCredential.user; // Update global variable immediately
-                updateNavbar(); // Show navbar right away
-                // Navigate to appropriate page based on user role
-                if (userCredential.user.email === 'admin@sgresolve.com') {
-                    showPage('admin');
-                } else {
-                    showPage('reporting');
-                }
-                // Fetch user data in the background (won't block UI update)
-                fetchAndSetCurrentUserData(userCredential.user.uid);
+                // Auth listener will handle fetching data and showing page
+                // updateNavbar(); // Show navbar right away (handled by auth listener)
+                // Navigate to appropriate page based on user role (handled by auth listener)
             })
             .catch((error) => {
                 console.error("Login Error:", error.code, error.message);
@@ -1884,27 +1947,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Registration Form (Modified for Gamification Init & Display Name storage)
     document.getElementById('register-form')?.addEventListener('submit', (e) => {
         e.preventDefault();
-        const email = document.getElementById('register-email').value.trim();
-        const password = document.getElementById('register-password').value.trim();
+        const nameInput = document.getElementById('register-name'); // Get name input
+        const emailInput = document.getElementById('register-email');
+        const passwordInput = document.getElementById('register-password');
         const submitButton = e.target.querySelector('button[type="submit"]');
-    
-        if (!email || !password) {
-            showPopup('Please enter both email and password.', 'warning');
+
+        const name = nameInput.value.trim(); // Get the name
+        const email = emailInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        if (!name || !email || !password) { // Validate name as well
+            showPopup('Please fill in all fields: Full Name, Email, and Password.', 'warning');
             return;
         }
-    
+
         submitButton.disabled = true;
         submitButton.textContent = 'Registering...';
-    
+
         createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log('Registration successful for:', userCredential.user.email);
-                showPopup('Registration successful!', 'success');
-    
-                // Proactively update UI
-                currentUser = userCredential.user; // Set global currentUser
-                updateNavbar(); // Show the navbar immediately
-                showPage('reporting'); // Navigate to the appropriate page (adjust as needed)
+            .then(async (userCredential) => { // Make async to wait for profile updates
+                const user = userCredential.user;
+                console.log('Registration successful for:', user.email);
+
+                // --- Update Auth Profile Display Name ---
+                try {
+                    await updateProfile(user, { displayName: name });
+                    console.log('Firebase Auth profile display name updated.');
+                } catch (profileError) {
+                    console.error('Error updating Firebase Auth profile name:', profileError);
+                    // Continue registration even if profile update fails initially
+                }
+
+                // --- Initialize Firestore User Doc (includes name and gamification) ---
+                try {
+                    await initializeOrUpdateFirestoreUser(user.uid, name);
+                    console.log('Firestore user document initialized.');
+
+                    // ---> Award points for registration <---
+                    const pointsAwarded = await awardPointsAndCheckBadges(user.uid, POINT_VALUES.REGISTER, 'register');
+                    showPopup(`Registration successful! Welcome, ${name}!`, 'success', pointsAwarded);
+
+                } catch (firestoreError) {
+                    console.error('Error initializing Firestore user data:', firestoreError);
+                    showPopup('Registration successful, but failed to save profile details. Please try updating later.', 'warning');
+                }
+
+                // Auth listener will handle UI updates and navigation
+                // currentUser = user; // Let auth listener set this
+                // updateNavbar();
+                // showPage('reporting');
+
             })
             .catch((error) => {
                 console.error('Registration error:', error.code, error.message);
@@ -2091,25 +2183,60 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
              if (document.getElementById('popup-overlay')?.classList.contains('show')) { document.getElementById('popup-overlay').classList.remove('show'); } // Ensure popup closes
             console.error('Text Auto Detect Error:', error);
-            document.getElementById('report-error').textContent = 'Text auto detect failed.'; // Show inline error too
+            // document.getElementById('report-error').textContent = 'Text auto detect failed.'; // Show inline error too
             showPopup(`Text Auto-Detect Failed: ${error.message}`, 'error', false);
         } finally {
             autoDetectButton.disabled = false; autoDetectButton.textContent = 'Auto Detect (Text)';
         }
     });
 
-    // Reporting Page - Form Submission (FIXED Image URL Handling)
+    // --- Reporting Page - Form Submission (MODIFIED FOR CAPTCHA) ---
     document.getElementById('report-form')?.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!currentUser || !currentUserData) { // Check for currentUserData too
+        let docRef = null; // Define docRef outside try block
+        // --- Get submit button reference ---
+        const submitButton = document.getElementById('submit-report-button'); // Use ID
+
+        if (!currentUser || !currentUserData) {
             showPopup("Please log in to submit a report.", "error");
             showPage('login');
             return;
         }
 
-        const locationNameInput = document.getElementById('locationName'); const latitudeInput = document.getElementById('latitude'); const longitudeInput = document.getElementById('longitude'); const descriptionInput = document.getElementById('problemDesc'); const categorySelect = document.getElementById('category'); const urgencySelect = document.getElementById('urgency'); const threatSelect = document.getElementById('threat'); const fileInput = document.getElementById('imageUpload'); const reportErrorDiv = document.getElementById('report-error'); const submitButton = e.target.querySelector('button[type="submit"]');
+        // --- CAPTCHA Check (Frontend only) ---
+        // Note: In a secure setup, you'd send the response token to the backend for verification using the Secret Key.
+        // Here, we just check if the button is enabled (meaning CAPTCHA was checked).
+        if (submitButton.disabled) {
+            const recaptchaError = document.getElementById('recaptcha-error');
+             if (recaptchaError) {
+                recaptchaError.textContent = "Please complete the CAPTCHA verification.";
+                recaptchaError.style.display = 'block';
+             }
+             console.warn("Attempted submission without completing CAPTCHA.");
+             // Optionally shake the CAPTCHA element or show a more prominent error
+             const captchaContainer = document.getElementById('recaptcha-container');
+             if(captchaContainer){
+                captchaContainer.parentElement?.classList.add('shake'); // Add shake to group
+                setTimeout(() => {
+                    captchaContainer.parentElement?.classList.remove('shake');
+                }, 500);
+             }
+             return; // Stop submission
+        }
+        // --- End CAPTCHA Check ---
 
-        // Ensure all elements exist before accessing value
+        const locationNameInput = document.getElementById('locationName');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const descriptionInput = document.getElementById('problemDesc');
+        const categorySelect = document.getElementById('category');
+        const urgencySelect = document.getElementById('urgency');
+        const threatSelect = document.getElementById('threat');
+        const fileInput = document.getElementById('imageUpload');
+        const imagePreview = document.getElementById('imagePreview'); // For clearing
+        const analyzeImageBtn = document.getElementById('analyzeImageBtn'); // For disabling
+        const autoDetectButton = document.getElementById('autoDetect'); // For disabling
+
         const locationName = locationNameInput?.value.trim() ?? '';
         const latitudeStr = latitudeInput?.value ?? '';
         const longitudeStr = longitudeInput?.value ?? '';
@@ -2118,9 +2245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const urgency = urgencySelect?.value ?? '';
         const threat = threatSelect?.value ?? '';
 
-        if (reportErrorDiv) reportErrorDiv.textContent = ''; // Clear previous errors
-
-        // Validation
+        // Validation (Keep existing)
         const latitude = parseFloat(latitudeStr);
         const longitude = parseFloat(longitudeStr);
         if (!locationName || isNaN(latitude) || isNaN(longitude) || !description || !category || !urgency || !threat) {
@@ -2130,93 +2255,103 @@ document.addEventListener('DOMContentLoaded', () => {
              showPopup('Coordinates must be within Singapore.', 'warning'); return;
         }
 
-        submitButton.disabled = true; submitButton.textContent = 'Submitting...';
+        // Disable button immediately during processing
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting...';
         showPopup("Submitting report...", "info", false); // Non-auto close popup
 
-        let uploadedImageUrl = null; // Initialize imageUrl for this submission
+        let uploadedImageUrl = null;
         const file = fileInput?.files[0];
 
-        // --- ImgBB Upload (Conditional) ---
-        if (file && imageDataUrl && IMGBB_API_KEY) { // Check if file, dataURL, and API key exist
+        // --- ImgBB Upload (Conditional - Keep existing logic) ---
+        if (file && imageDataUrl && IMGBB_API_KEY) {
             try {
-                console.log("Attempting image upload to ImgBB...");
-                const formData = new FormData();
-                const base64Data = imageDataUrl.split(',')[1]; // Get only base64 part
-                if (!base64Data) throw new Error("Invalid base64 image data.");
+                 console.log("Attempting image upload to ImgBB...");
+                 const formData = new FormData();
+                 const base64Data = imageDataUrl.split(',')[1];
+                 if (!base64Data) throw new Error("Invalid base64 image data.");
 
-                formData.append('image', base64Data);
-                formData.append('key', IMGBB_API_KEY); // Use const key
+                 formData.append('image', base64Data);
+                 formData.append('key', IMGBB_API_KEY);
 
-                const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
-                const imgbbData = await imgbbResponse.json();
+                 const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+                 const imgbbData = await imgbbResponse.json();
 
-                console.log("ImgBB Response:", imgbbData); // Log the full response
+                 console.log("ImgBB Response:", imgbbData);
 
-                if (imgbbData.success && imgbbData.data && imgbbData.data.url) {
-                    uploadedImageUrl = imgbbData.data.url; // <-- *** FIX: Assign the URL ***
-                    console.log('Image Upload Success:', uploadedImageUrl);
-                } else {
-                    // Throw specific error from ImgBB if available
-                    throw new Error(imgbbData.error?.message || `ImgBB upload failed. Status: ${imgbbData.status_code || 'Unknown'}`);
-                }
+                 if (imgbbData.success && imgbbData.data && imgbbData.data.url) {
+                     uploadedImageUrl = imgbbData.data.url;
+                     console.log('Image Upload Success:', uploadedImageUrl);
+                 } else {
+                     throw new Error(imgbbData.error?.message || `ImgBB upload failed. Status: ${imgbbData.status_code || 'Unknown'}`);
+                 }
             } catch (error) {
-                console.error('Image Upload Error:', error);
-                 document.getElementById('popup-overlay')?.classList.remove('show'); // Close submitting popup
-                showPopup(`Image upload failed: ${error.message}. Report will be submitted without image.`, 'warning', false); // Inform user, but continue
-                // Reset image state? Maybe not, allow user to fix and resubmit if they cancel
+                 console.error('Image Upload Error:', error);
+                 document.getElementById('popup-overlay')?.classList.remove('show');
+                 showPopup(`Image upload failed: ${error.message}. Report will be submitted without image.`, 'warning', false);
             }
         } else if (file) {
-             console.warn("Image file selected, but imageDataUrl or ImgBB key missing. Submitting without image.");
-             if (!IMGBB_API_KEY) showPopup("ImgBB API Key not configured. Cannot upload image.", "warning");
+            console.warn("Image file selected, but imageDataUrl or ImgBB key missing. Submitting without image.");
+            if (!IMGBB_API_KEY) showPopup("ImgBB API Key not configured. Cannot upload image.", "warning");
         }
         // --- End ImgBB Upload ---
 
-
-        // *** FIX: Use displayName from currentUserData (fetched from Firestore) ***
         const reporterName = currentUserData.displayName || 'Anonymous';
 
         const reportData = {
             userId: currentUser.uid,
-            userName: reporterName, // Use name from Firestore profile
+            userName: reporterName,
             locationName, latitude, longitude, description, category, urgency, threat,
-            imageUrl: uploadedImageUrl, // Use the potentially updated uploadedImageUrl
+            imageUrl: uploadedImageUrl,
             status: 'Pending',
-            timestamp: new Date() // Use server timestamp ideally, but client date is fallback
+            timestamp: new Date() // Use client timestamp
         };
 
         try {
-            const docRef = await addDoc(collection(db, "reports"), reportData);
+            docRef = await addDoc(collection(db, "reports"), reportData); // Assign to outer scope docRef
             console.log('Report added to Firestore with ID:', docRef.id);
 
-            // ---> Award Points & Check Badges for Reporting <---
+            // ---> Award Points & Check Badges (Keep existing logic) <---
             let pointsToAward = POINT_VALUES.SUBMIT_REPORT;
-            let actionData = { hasImage: !!uploadedImageUrl }; // Check if URL was successfully obtained
-            if (description.length > 50) pointsToAward += POINT_VALUES.REPORT_WITH_DESCRIPTION; // Check description length
-            if (actionData.hasImage) pointsToAward += POINT_VALUES.REPORT_WITH_IMAGE; // Add points if image URL exists
-
+            let actionData = { hasImage: !!uploadedImageUrl };
+            if (description.length > 50) pointsToAward += POINT_VALUES.REPORT_WITH_DESCRIPTION;
+            if (actionData.hasImage) pointsToAward += POINT_VALUES.REPORT_WITH_IMAGE;
             const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, pointsToAward, 'submitReport', actionData);
             // ---> End Gamification Award <---
 
             document.getElementById('popup-overlay')?.classList.remove('show'); // Close submitting popup
             showPopup('Report submitted successfully!', 'success', pointsAwarded);
 
-            // --- Reset Form ---
-            e.target.reset(); // Reset the form itself
-            imageDataUrl = null; // Clear image data variable
-            if (imagePreview) imagePreview.innerHTML = ''; // Clear preview div
-            if (analyzeImageBtn) analyzeImageBtn.disabled = true; // Disable analyze button
-            if (autoDetectButton) autoDetectButton.disabled = true; // Also disable text detect button
-            if (tempMarker && reportingMap) { // Remove marker from map
-                 reportingMap.removeLayer(tempMarker);
-                 tempMarker = null;
+            // --- Reset Form (Keep existing logic) ---
+            e.target.reset();
+            imageDataUrl = null;
+            if (imagePreview) imagePreview.innerHTML = '';
+            if (analyzeImageBtn) analyzeImageBtn.disabled = true;
+            if (autoDetectButton) autoDetectButton.disabled = true;
+            if (tempMarker && reportingMap) {
+                reportingMap.removeLayer(tempMarker);
+                tempMarker = null;
             }
-            // Optionally clear coordinate fields if they weren't auto-detected
-            // if (latitudeInput) latitudeInput.value = '';
-            // if (longitudeInput) longitudeInput.value = '';
+            // Clear coordinate fields too
+            if (latitudeInput) latitudeInput.value = '';
+            if (longitudeInput) longitudeInput.value = '';
 
-            // Refresh relevant views if they are currently shown
+
+            // ---> Reset CAPTCHA and Disable Submit Button <---
+            if (typeof grecaptcha !== 'undefined' && grecaptcha) {
+                 try {
+                     grecaptcha.reset(); // Reset the CAPTCHA widget
+                 } catch (captchaError) {
+                      console.error("Error resetting reCAPTCHA:", captchaError);
+                 }
+             }
+             // Ensure button is disabled after successful submission and reset
+             if (submitButton) submitButton.disabled = true;
+             // --- End CAPTCHA Reset ---
+
+
+            // Refresh relevant views if shown (Keep existing)
             if (pages.myReports?.classList.contains('show')) renderUserReports();
-            // Admin doesn't need immediate refresh from user submission usually, but can add if desired
             // if (currentUser.email === 'admin@sgresolve.com' && pages.admin?.classList.contains('show')) { await renderAdminReports(); await renderAdminAnalytics(); }
 
         } catch (error) {
@@ -2224,7 +2359,18 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error adding report to Firestore:', error);
             showPopup(`Error submitting report: ${error.message}`, 'error', false); // Show detailed error
         } finally {
-             submitButton.disabled = false; submitButton.textContent = 'Submit Report';
+             // Re-enable button only if submission *failed* (docRef wasn't created)
+             if (submitButton && !docRef) {
+                 submitButton.disabled = false;
+                 // Note: If CAPTCHA failed, button might already be disabled by its logic.
+                 // If Firestore failed, re-enabling might be okay, but user might need to re-verify CAPTCHA.
+                 // Consider resetting CAPTCHA here too on Firestore error.
+                 if (typeof grecaptcha !== 'undefined' && grecaptcha) grecaptcha.reset();
+             } else if (submitButton && docRef) {
+                 // If submission succeeded (docRef exists), ensure button remains disabled
+                 submitButton.disabled = true;
+             }
+             if (submitButton) submitButton.textContent = 'Submit Report';
         }
     });
 
@@ -2233,16 +2379,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('apply-filters')?.addEventListener('click', renderAdminReports);
     document.getElementById('reset-filters')?.addEventListener('click', () => {
         // Reset filter dropdowns
-        document.getElementById('image-filter').value = 'all';
-        document.getElementById('category-filter').value = 'all';
-        document.getElementById('urgency-filter').value = 'all';
-        document.getElementById('threat-filter').value = 'all';
+        const imageFilter = document.getElementById('image-filter');
+        const categoryFilter = document.getElementById('category-filter');
+        const urgencyFilter = document.getElementById('urgency-filter');
+        const threatFilter = document.getElementById('threat-filter');
+        if(imageFilter) imageFilter.value = 'all';
+        if(categoryFilter) categoryFilter.value = 'all';
+        if(urgencyFilter) urgencyFilter.value = 'all';
+        if(threatFilter) threatFilter.value = 'all';
         // Re-render reports with default filters
         renderAdminReports();
      });
     document.getElementById('refresh-reports')?.addEventListener('click', async () => { /* ... Keep existing implementation ... */
          const button = document.getElementById('refresh-reports');
-         if (button.disabled) return; // Prevent double clicks
+         if (!button || button.disabled) return; // Prevent double clicks
          button.disabled = true; button.textContent = 'Refreshing...';
          showPopup("Refreshing data...", "info", false);
          try {
@@ -2255,11 +2405,14 @@ document.addEventListener('DOMContentLoaded', () => {
              console.error("Refresh Error:", error);
              showPopup("Failed to refresh data.", "error");
          } finally {
-             button.disabled = false; button.textContent = 'Refresh Reports';
+             if (button) {
+                 button.disabled = false; button.textContent = 'Refresh Reports';
+             }
          }
     });
     document.getElementById('export-data')?.addEventListener('click', async () => { /* ... Keep existing implementation ... */
         const button = document.getElementById('export-data');
+        if (!button) return;
         button.disabled = true; button.textContent = 'Exporting...';
         showPopup("Generating CSV export...", "info", false);
         try {
@@ -2323,7 +2476,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error exporting reports:', error);
             showPopup(`Export failed: ${error.message}`, 'error', false);
         } finally {
-            button.disabled = false; button.textContent = 'Export Data';
+            if (button) {
+                button.disabled = false; button.textContent = 'Export Data';
+            }
         }
     });
 
@@ -2807,139 +2962,146 @@ document.addEventListener('DOMContentLoaded', () => {
     //     }
     // }
 
-    document.getElementById('update-profile-form')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser || !currentUserData) return; // Should be logged in
 
-        const nameInput = document.getElementById('profile-new-name');
-        const updateButton = document.getElementById('update-profile-button');
-        const messageArea = document.getElementById('update-profile-message');
-        const newName = nameInput?.value.trim();
+    // --- Profile Page Event Listeners ---
+    function attachProfileEventListeners() {
+        // Update Profile Name Form
+        document.getElementById('update-profile-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || !currentUserData) return; // Should be logged in
 
-        if (!newName) {
-            if(messageArea) messageArea.textContent = 'Display name cannot be empty.';
-            if(messageArea) messageArea.className = 'form-message error';
-            return;
-        }
+            const nameInput = document.getElementById('profile-new-name');
+            const updateButton = document.getElementById('update-profile-button');
+            const messageArea = document.getElementById('update-profile-message');
+            const newName = nameInput?.value.trim();
 
-        // Optional: Check if name actually changed
-        const currentName = currentUserData.displayName || currentUser.displayName || '';
-        if (newName === currentName) {
-             if(messageArea) messageArea.textContent = 'Name is already set to this value.';
-             if(messageArea) messageArea.className = 'form-message info';
-            return;
-        }
-
-        updateButton.disabled = true;
-        updateButton.textContent = 'Updating...';
-        if(messageArea) messageArea.textContent = '';
-        if(messageArea) messageArea.className = 'form-message';
-
-        try {
-            // 1. Update Firebase Auth profile
-            await updateProfile(auth.currentUser, { displayName: newName });
-            console.log("Firebase Auth profile updated.");
-
-            // 2. Update Firestore user document
-            const userRef = doc(db, "users", currentUser.uid);
-            await updateDoc(userRef, { displayName: newName });
-            console.log("Firestore user document updated.");
-
-            // 3. Refresh local data and UI
-            await fetchAndSetCurrentUserData(currentUser.uid); // This will re-render parts of the UI via updateGamificationUI/renderProfilePage
-
-            if(messageArea) messageArea.textContent = 'Display name updated successfully!';
-            if(messageArea) messageArea.className = 'form-message success';
-            showPopup('Display name updated!', 'success');
-
-        } catch (error) {
-            console.error("Error updating display name:", error);
-            if(messageArea) messageArea.textContent = `Error updating name: ${error.message}`;
-            if(messageArea) messageArea.className = 'form-message error';
-            showPopup(`Error updating name: ${error.message}`, 'error');
-        } finally {
-            updateButton.disabled = false;
-            updateButton.textContent = 'Update Name';
-        }
-    });
-
-    // Change Password Form
-    document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (!currentUser) return; // Must be logged in
-
-        const currentPasswordInput = document.getElementById('current-password');
-        const newPasswordInput = document.getElementById('new-password');
-        const confirmPasswordInput = document.getElementById('confirm-new-password');
-        const changeButton = document.getElementById('change-password-button');
-        const messageArea = document.getElementById('change-password-message');
-
-        const currentPassword = currentPasswordInput?.value;
-        const newPassword = newPasswordInput?.value;
-        const confirmPassword = confirmPasswordInput?.value;
-
-        if (!currentPassword || !newPassword || !confirmPassword) {
-            if(messageArea) messageArea.textContent = 'Please fill in all password fields.';
-            if(messageArea) messageArea.className = 'form-message error';
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            if(messageArea) messageArea.textContent = 'New passwords do not match.';
-            if(messageArea) messageArea.className = 'form-message error';
-            return;
-        }
-
-        if (newPassword.length < 6) {
-             if(messageArea) messageArea.textContent = 'New password must be at least 6 characters long.';
-             if(messageArea) messageArea.className = 'form-message error';
-             return;
-        }
-
-        changeButton.disabled = true;
-        changeButton.textContent = 'Changing...';
-        if(messageArea) messageArea.textContent = 'Re-authenticating...';
-        if(messageArea) messageArea.className = 'form-message info';
-
-        try {
-            // 1. Re-authenticate the user (REQUIRED for password change)
-            const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
-            await reauthenticateWithCredential(currentUser, credential);
-            console.log("User re-authenticated successfully.");
-            if(messageArea) messageArea.textContent = 'Updating password...'; // Update message
-
-            // 2. Update the password
-            await updatePassword(currentUser, newPassword);
-            console.log("Password updated successfully.");
-
-            if(messageArea) messageArea.textContent = 'Password changed successfully!';
-            if(messageArea) messageArea.className = 'form-message success';
-            showPopup('Password changed successfully!', 'success');
-
-            // Clear the form fields after success
-            currentPasswordInput.value = '';
-            newPasswordInput.value = '';
-            confirmPasswordInput.value = '';
-
-        } catch (error) {
-            console.error("Error changing password:", error);
-            let friendlyMessage = `Error: ${error.message}`;
-            if (error.code === 'auth/wrong-password') {
-                friendlyMessage = 'Incorrect current password.';
-            } else if (error.code === 'auth/weak-password') {
-                friendlyMessage = 'New password is too weak.';
-            } else if (error.code === 'auth/requires-recent-login') {
-                 friendlyMessage = 'This action requires a recent login. Please log out and log back in.';
-                 // Consider forcing logout here or guiding user
+            if (!newName) {
+                if(messageArea) messageArea.textContent = 'Display name cannot be empty.';
+                if(messageArea) messageArea.className = 'form-message error';
+                return;
             }
-            if(messageArea) messageArea.textContent = friendlyMessage;
-            if(messageArea) messageArea.className = 'form-message error';
-            showPopup(`Password change failed: ${friendlyMessage}`, 'error');
-        } finally {
-            changeButton.disabled = false;
-            changeButton.textContent = 'Change Password';
-        }
-    });
+
+            // Optional: Check if name actually changed
+            const currentName = currentUserData.displayName || currentUser.displayName || '';
+            if (newName === currentName) {
+                 if(messageArea) messageArea.textContent = 'Name is already set to this value.';
+                 if(messageArea) messageArea.className = 'form-message info';
+                return;
+            }
+
+            updateButton.disabled = true;
+            updateButton.textContent = 'Updating...';
+            if(messageArea) messageArea.textContent = '';
+            if(messageArea) messageArea.className = 'form-message';
+
+            try {
+                // 1. Update Firebase Auth profile
+                await updateProfile(auth.currentUser, { displayName: newName });
+                console.log("Firebase Auth profile updated.");
+
+                // 2. Update Firestore user document
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, { displayName: newName });
+                console.log("Firestore user document updated.");
+
+                // 3. Refresh local data and UI
+                await fetchAndSetCurrentUserData(currentUser.uid); // This will re-render parts of the UI via updateGamificationUI/renderProfilePage
+
+                if(messageArea) messageArea.textContent = 'Display name updated successfully!';
+                if(messageArea) messageArea.className = 'form-message success';
+                showPopup('Display name updated!', 'success');
+
+            } catch (error) {
+                console.error("Error updating display name:", error);
+                if(messageArea) messageArea.textContent = `Error updating name: ${error.message}`;
+                if(messageArea) messageArea.className = 'form-message error';
+                showPopup(`Error updating name: ${error.message}`, 'error');
+            } finally {
+                updateButton.disabled = false;
+                updateButton.textContent = 'Update Name';
+            }
+        });
+
+        // Change Password Form
+        document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser) return; // Must be logged in
+
+            const currentPasswordInput = document.getElementById('current-password');
+            const newPasswordInput = document.getElementById('new-password');
+            const confirmPasswordInput = document.getElementById('confirm-new-password');
+            const changeButton = document.getElementById('change-password-button');
+            const messageArea = document.getElementById('change-password-message');
+
+            const currentPassword = currentPasswordInput?.value;
+            const newPassword = newPasswordInput?.value;
+            const confirmPassword = confirmPasswordInput?.value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                if(messageArea) messageArea.textContent = 'Please fill in all password fields.';
+                if(messageArea) messageArea.className = 'form-message error';
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                if(messageArea) messageArea.textContent = 'New passwords do not match.';
+                if(messageArea) messageArea.className = 'form-message error';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                 if(messageArea) messageArea.textContent = 'New password must be at least 6 characters long.';
+                 if(messageArea) messageArea.className = 'form-message error';
+                 return;
+            }
+
+            changeButton.disabled = true;
+            changeButton.textContent = 'Changing...';
+            if(messageArea) messageArea.textContent = 'Re-authenticating...';
+            if(messageArea) messageArea.className = 'form-message info';
+
+            try {
+                // 1. Re-authenticate the user (REQUIRED for password change)
+                const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+                await reauthenticateWithCredential(currentUser, credential);
+                console.log("User re-authenticated successfully.");
+                if(messageArea) messageArea.textContent = 'Updating password...'; // Update message
+
+                // 2. Update the password
+                await updatePassword(currentUser, newPassword);
+                console.log("Password updated successfully.");
+
+                if(messageArea) messageArea.textContent = 'Password changed successfully!';
+                if(messageArea) messageArea.className = 'form-message success';
+                showPopup('Password changed successfully!', 'success');
+
+                // Clear the form fields after success
+                currentPasswordInput.value = '';
+                newPasswordInput.value = '';
+                confirmPasswordInput.value = '';
+
+            } catch (error) {
+                console.error("Error changing password:", error);
+                let friendlyMessage = `Error: ${error.message}`;
+                if (error.code === 'auth/wrong-password') {
+                    friendlyMessage = 'Incorrect current password.';
+                } else if (error.code === 'auth/weak-password') {
+                    friendlyMessage = 'New password is too weak.';
+                } else if (error.code === 'auth/requires-recent-login') {
+                     friendlyMessage = 'This action requires a recent login. Please log out and log back in.';
+                     // Consider forcing logout here or guiding user
+                }
+                if(messageArea) messageArea.textContent = friendlyMessage;
+                if(messageArea) messageArea.className = 'form-message error';
+                showPopup(`Password change failed: ${friendlyMessage}`, 'error');
+            } finally {
+                changeButton.disabled = false;
+                changeButton.textContent = 'Change Password';
+            }
+        });
+    }
+    // Attach listeners initially if profile page elements exist
+    attachProfileEventListeners();
 
 
     // --- Chatbot ---
@@ -2957,10 +3119,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initial Setup ---
     // Auth listener (onAuthStateChanged) handles the initial page determination (landing/reporting/admin)
     // and fetching initial user data.
-    console.log("SGResolve App Initialized.");
+    console.log("SGResolve App Initialized with CAPTCHA (Frontend).");
     // If no user is logged in after init, explicitly show landing page
      if (!auth.currentUser && !document.querySelector('.page.show')) {
          showPage('landing');
      }
+
 
 }); // --- End DOMContentLoaded ---

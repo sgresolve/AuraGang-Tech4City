@@ -251,8 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateNavbar() {
         const loggedIn = !!currentUser;
-        navbar.style.display = loggedIn ? 'flex' : 'none'; // Use flex for navbar
-
+        navbar.style.display = loggedIn ? 'block' : 'none'; // Use block for navbar
+    
         // Show/hide gamification elements based on login state
         const gamificationElements = document.querySelectorAll('.gamification-nav');
         gamificationElements.forEach(el => {
@@ -260,7 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const profileLink = document.getElementById('nav-profile');
         if (profileLink) profileLink.parentElement.style.display = loggedIn ? 'list-item' : 'none';
-
+    
         // Call UI update AFTER ensuring currentUserData might be loaded
         updateGamificationUI(); // Update RP/Level display
     }
@@ -1831,6 +1831,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderProfilePage();
                 }
             }
+            updateNavbar(); // Update navbar for logged-in state
 
         } else {
             console.log("User logged out or not logged in.");

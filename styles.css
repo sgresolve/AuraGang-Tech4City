@@ -363,79 +363,123 @@
    #analyzeImageBtn::before { content: '🖼️ '; }
 
 /* ============================================================================
-   04. Navigation Bar
+   04. Navigation Bar - Modern Refinement v1
    ============================================================================ */
-   #navbar {
-    background: var(--white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 0.5rem 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+
+/* Define reusable variables (adjust values as needed) */
+:root {
+  --navbar-bg: #ffffff; /* Clean white background */
+  --navbar-border-color: #eaeaea; /* Subtle border */
+  --navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06); /* Softer shadow */
+  --text-color-nav: #333; /* Slightly darker text for contrast */
+  --text-color-nav-hover: var(--primary-color, #007bff); /* Use primary color on hover */
+  --bg-nav-hover: #f5f5f5; /* Very subtle background hover */
+  --border-radius-nav: 6px; /* Slightly softer radius */
+  --gamification-bg: #f0f0f0; /* Light neutral bg for gamification */
+  --gamification-text: #555; /* Muted text for gamification */
+  --transition-speed: 0.2s; /* Faster, snappier transition */
+}
+
+#navbar {
+  background-color: var(--navbar-bg);
+  box-shadow: var(--navbar-shadow);
+  /* Add a subtle border for definition if desired */
+  /* border-bottom: 1px solid var(--navbar-border-color); */
+  padding: 0.75rem 1.5rem; /* Slightly more vertical padding */
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%; /* Ensure it spans full width */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+#navbar ul {
+  display: flex;
+  justify-content: flex-start; /* Align items to the start (left) - often cleaner */
+  /* Use justify-content: center; if you prefer centered links */
+  gap: 1.5rem; /* Increased gap for more breathing room */
+  align-items: center;
+  list-style: none; /* Remove default list styles */
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+#navbar a {
+  color: var(--text-color-nav);
+  font-weight: 500;
+  text-decoration: none; /* Remove underline */
+  padding: 0.6rem 1rem; /* Adjusted padding for better hit area/look */
+  border-radius: var(--border-radius-nav);
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  white-space: nowrap;
+  display: inline-block; /* Ensures padding is respected correctly */
+}
+
+#navbar a:hover,
+#navbar a:focus-visible { /* Added focus style for accessibility */
+  background-color: var(--bg-nav-hover);
+  color: var(--text-color-nav-hover);
+  outline: none; /* Remove default focus outline if custom style is sufficient */
+}
+
+/* Optional: Style for the active page link */
+#navbar a.active {
+  color: var(--text-color-nav-hover);
+  font-weight: 600; /* Make active link slightly bolder */
+}
+
+
+/* Gamification Styles in Navbar */
+.gamification-nav {
+  display: none; /* Hidden by default */
+  /* Consider placing it at the end using margin-left: auto on the element itself or its container li */
+}
+
+.gamification-nav span {
+  font-weight: 500;
+  color: var(--gamification-text);
+  padding: 0.5rem 0.9rem; /* Align padding closer to links */
+  background-color: var(--gamification-bg);
+  border-radius: var(--border-radius-nav); /* Match link border-radius */
+  font-size: 0.85em;
+  white-space: nowrap;
+  display: inline-block; /* Consistent display */
+}
+
+/* --- Responsive Adjustments --- */
+
+@media (max-width: 900px) {
+  #navbar {
+    padding: 0.6rem 1rem; /* Reduce padding */
   }
+  #navbar ul {
+    gap: 1rem; /* Reduce gap */
+  }
+  #navbar a {
+    padding: 0.5rem 0.8rem; /* Reduce link padding */
+  }
+  .gamification-nav span {
+     padding: 0.4rem 0.7rem;
+     font-size: 0.8em;
+  }
+}
 
-    #navbar ul {
-      display: flex;
-      justify-content: center;
-      gap: 1rem; /* Reduced gap */
-      align-items: center; /* Align items vertically */
-      flex-wrap: wrap; /* Allow wrapping on small screens */
-    }
-
-    #navbar a {
-      color: var(--text-color);
-      font-weight: 500;
-      padding: 0.5rem 1rem;
-      border-radius: var(--border-radius);
-      transition: background 0.3s ease, color 0.3s ease;
-      white-space: nowrap; /* Prevent link text wrapping */
-    }
-
-    #navbar a:hover {
-      background: var(--primary-color);
-      color: var(--white);
-    }
-
-    /* Gamification Styles in Navbar */
-    .gamification-nav {
-       display: none; /* Hidden by default, shown by JS when logged in */
-    }
-
-    .gamification-nav span {
-      font-weight: 500;
-      color: var(--muted-color);
-      padding: 0.4rem 0.8rem; /* Smaller padding */
-      background-color: #e9ecef; /* Lighter background */
-      border-radius: 15px; /* Pill shape */
-      font-size: 0.85em; /* Smaller font */
-      white-space: nowrap;
-    }
-
-    /* Mobile optimization */
-    @media (max-width: 900px) { /* Adjust breakpoint as needed */
-        #navbar ul {
-          gap: 0.5rem;
-        }
-        #navbar a {
-           padding: 0.5rem 0.75rem;
-        }
-        .gamification-nav span {
-           padding: 0.3rem 0.6rem;
-           font-size: 0.8em;
-        }
-    }
-    @media (max-width: 768px) {
-      #navbar ul {
-         justify-content: flex-start; /* Align left */
-      }
-    }
-
+@media (max-width: 768px) {
+  /* Keep justify-content: flex-start; */
+  /* You might want to implement a hamburger menu here instead */
+  #navbar ul {
+    gap: 0.5rem; /* Further reduce gap */
+    /* Allow wrapping to take precedence */
+  }
+   #navbar a {
+    padding: 0.5rem 0.6rem;
+  }
+}
 /* ============================================================================
-   05. Landing Page (Hero, Features, CTA) - Styles kept as requested
+   05. Landing Page (Hero, Features, CTA)
    ============================================================================ */
-/* ============================================================================ 
-   05. Landing Page (Hero, Features, CTA) - Lively Update 
-   ============================================================================ */
+
    #landing-page {
     padding: 0;
     margin: 0 auto; /* Center landing page content */

@@ -1724,7 +1724,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Use your actual Chatbot API URL
-            const CHATBOT_API_URL = "https://chatbot-server-production-da96.up.railway.app/chat";
+            const CHATBOT_API_URL = "https://chatbot-server-production-9a90.up.railway.app/chat";
             const response = await fetch(CHATBOT_API_URL, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

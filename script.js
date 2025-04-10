@@ -1582,12 +1582,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Chatbot Functions ---
     function toggleChat() {
-        const chatContainer = document.getElementById('chat-container');
-        const chatIcon = document.getElementById('chat-icon');
-        chatContainer?.classList.toggle('active');
-        chatIcon?.classList.toggle('active'); // Might not be needed
-        if (chatContainer?.classList.contains('active')) {
-            document.getElementById('user-input')?.focus();
+        const chatWidget = document.querySelector('.chat-widget'); // Get the parent widget
+        if (!chatWidget) return; // Exit if widget not found
+
+        chatWidget.classList.toggle('active'); // Toggle class on the parent
+
+        // Optional: Focus input when opening
+        if (chatWidget.classList.contains('active')) {
+            const userInput = chatWidget.querySelector('#user-input');
+            if (userInput) {
+                 setTimeout(() => userInput.focus(), 100); // Small delay for transition
+            }
         }
     }
     async function sendChatMessage() {
@@ -2559,6 +2564,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('user-input')?.addEventListener('keypress', (e) => {
          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
+    document.getElementById('chat-close-button')?.addEventListener('click', toggleChat); 
 
 
     // --- Initial Setup ---

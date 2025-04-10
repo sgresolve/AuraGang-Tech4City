@@ -1,15 +1,5 @@
 /* =============================================================================
-   SGResolve - Comprehensive CSS Redesign
-   =============================================================================
-   This CSS file revitalizes SGResolve's styling. The landing page remains intact
-   as per your preference, while all other pages (login, register, admin dashboard,
-   reporting, my reports, community forum, about, chatbot, and NEW profile page) are
-   enhanced with vibrant colors, engaging buttons with icons and animations,
-   and a cohesive, appealing aesthetic. White space is minimized with subtle
-   gradients and shadows, ensuring a professional yet lively interface.
-
-   Includes Gamification Styles.
-
+   SGResolve 
    =============================================================================
    Table of Contents:
    01. CSS Variables & Base Settings
@@ -1917,54 +1907,89 @@
 }
 
 /* ============================================================================
-   12. Chatbot Container - Upgraded for Mobile, Glossy, and Color-coded
+   12. Chatbot Container - Revised for Better Mobile Positioning
    ============================================================================ */
    .chat-widget {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 20px; /* Adjust as needed */
+    right: 20px;  /* Adjust as needed */
     z-index: 1000;
   }
   
-  .chat-container {
-    width: 90vw;
-    max-width: 420px;
-    height: 75vh;
-    background: linear-gradient(135deg, #ffffff, #f0f0f0); /* Glossy effect */
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    border: 1px solid #dcdcdc;
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    transform: scale(0.5) translateY(100%);
-    transform-origin: bottom right;
-    opacity: 0;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    visibility: hidden;
+ /* Chat Container (Hidden by default) */
+.chat-container {
+  position: fixed; /* Changed from absolute */
+  bottom: 20px;     /* Align with widget */
+  right: 20px;      /* Align with widget */
+  width: 90vw;      /* Mobile first width */
+  max-width: 380px; /* Max width for desktop/tablet */
+  height: 500px;     /* Let content determine height */
+  max-height: 70vh; /* Limit height, especially on mobile */
+  background: linear-gradient(135deg, #ffffff, #f0f0f0); /* Glossy effect */
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dcdcdc;
+  display: flex; /* Use flex for internal layout */
+  flex-direction: column;
+  overflow: hidden;
+  /* Initial hidden state - ADJUSTED TRANSFORM */
+  opacity: 0;
+  /* Option 1: Only slide up, no scale */
+  /* transform: translateY(50px); */
+  /* Option 2: Start slightly smaller, but not tiny */
+  transform: scale(0.95) translateY(30px); /* Start closer to full size */
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  visibility: hidden; /* Use visibility for better accessibility */
+}
+  
+  /* Chat Icon (Visible by default) */
+  .chat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--primary-color); /* Use primary color */
+    display: flex; /* Use flex to center icon */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .chat-icon:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+  }
+  .chat-icon img {
+    width: 32px;
+    height: 32px;
   }
   
-  .chat-container.active {
-    transform: scale(1) translateY(0);
+  /* Active State (Toggled via JS on .chat-widget) */
+  .chat-widget.active .chat-container {
     opacity: 1;
+    transform: scale(1) translateY(0);
     visibility: visible;
   }
   
+  .chat-widget.active .chat-icon {
+    display: none; /* Hide icon when chat is open */
+  }
+  
+  /* Keep remaining internal chat container styles (.chat-container h2, .chat-box, .message, etc.) */
   .chat-container h2 {
     background: var(--primary-color);
     color: #fff;
     padding: 12px;
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.1rem; /* Adjusted size */
     border-bottom: 1px solid var(--primary-dark);
     box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+    flex-shrink: 0; /* Prevent shrinking */
   }
   
   .chat-box {
-    flex: 1;
+    flex: 1; /* Allow box to grow */
     padding: 12px;
     overflow-y: auto;
     background: #f7f9fb;
@@ -1981,22 +2006,19 @@
   }
   
   .message.user {
-    background-color: #007bff;
+    background-color: var(--primary-color); /* Use primary color */
     color: #fff;
     margin-left: auto;
     border-bottom-right-radius: 6px;
   }
   
   .message.bot {
-    background-color: #28a745;
+    background-color: var(--secondary-color); /* Use secondary color */
     color: #fff;
     margin-right: auto;
     border-bottom-left-radius: 6px;
   }
   
-  .message.bot strong {
-    color: #eaffd0;
-  }
   
   .message.bot.error {
     background-color: #f8d7da;
@@ -2008,7 +2030,7 @@
     border-top: 1px solid #ccc;
     padding: 10px;
     background: #fff;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevent shrinking */
   }
   
   .input-box {
@@ -2023,13 +2045,13 @@
   }
   
   .input-box:focus {
-    border-color: #007bff;
+    border-color: var(--primary-color);
   }
   
   .send-button {
     margin-left: 10px;
     padding: 0 16px;
-    background: #007bff;
+    background: var(--primary-color);
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -2039,7 +2061,7 @@
   }
   
   .send-button:hover {
-    background: #0056b3;
+    background: var(--primary-dark);
   }
   
   .send-button:disabled {
@@ -2047,63 +2069,96 @@
     cursor: not-allowed;
   }
   
-  .chat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: #007bff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-    transition: background 0.3s ease, transform 0.3s ease;
-  }
-  
-  .chat-icon:hover {
-    background: #0056b3;
-    transform: scale(1.1);
-  }
-  
-  .chat-icon img {
-    width: 32px;
-    height: 32px;
-  }
-  
+  /* Scrollbar */
   .chat-box::-webkit-scrollbar {
     width: 6px;
   }
-  
   .chat-box::-webkit-scrollbar-track {
     background: #f7f9fb;
   }
-  
   .chat-box::-webkit-scrollbar-thumb {
     background-color: #ccc;
     border-radius: 3px;
   }
-  
   .chat-box::-webkit-scrollbar-thumb:hover {
     background-color: #aaa;
   }
   
-  /* Mobile Optimization */
-  @media (max-width: 600px) {
+  /* Mobile Specific Adjustments (Optional Refinements) */
+  @media (max-width: 480px) {
+    .chat-widget {
+       bottom: 15px;
+       right: 15px;
+    }
     .chat-container {
-      width: 95vw;
-      height: 80vh;
-      right: 10px;
-      bottom: 90px;
+       bottom: 15px;
+       right: 15px;
+       width: calc(100vw - 30px); /* Full width minus padding */
+       max-height: 75vh;
+       border-radius: 12px; /* Slightly smaller radius */
     }
-  
-    .input-box, .send-button {
-      font-size: 0.95rem;
+     .chat-icon {
+       width: 55px;
+       height: 55px;
+     }
+    .chat-icon img {
+        width: 30px;
+        height: 30px;
     }
-  
     .chat-container h2 {
-      font-size: 1rem;
-      padding: 10px;
+        font-size: 1rem;
+        padding: 10px;
     }
+     .message {
+        font-size: 0.9rem;
+     }
+     .input-box, .send-button {
+        font-size: 0.95rem;
+     }
+  }
+
+  .chat-container h2 {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 12px 16px; /* Balanced padding */
+    text-align: center;
+    font-size: 1.1rem; /* Adjusted size */
+    border-bottom: 1px solid var(--primary-dark);
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+    flex-shrink: 0; /* Prevent shrinking */
+    position: relative; /* Needed for absolute positioning of button */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between title and button */
+  }
+
+  .chat-container h2 span {
+    flex-grow: 1; /* Allow title to take available space */
+    text-align: center;
+  }
+
+  .chat-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8); /* White but slightly transparent */
+    font-size: 1.5rem; /* Larger close button */
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+  }
+
+  .chat-close-btn:hover,
+  .chat-close-btn:focus {
+    color: #fff; /* Fully opaque white on hover/focus */
+    transform: scale(1.2); /* Slightly larger on hover */
+    outline: none;
+  }
+
+  .chat-close-btn:active {
+    transform: scale(0.95); /* Slightly smaller on click */
   }
   
 

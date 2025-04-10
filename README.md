@@ -32,6 +32,9 @@ SGResolve is built to address urban challenges by enabling fast and efficient is
 - **Admin Dashboard**: Tools for monitoring reports, filtering by categories (e.g., infrastructure, environmental, safety), and viewing analytics via Chart.js.
 - **Community Forum**: A dedicated space for users to share ideas and discuss local issues.
 - **Custom Chatbot**: An AI-powered chatbot to assist users and provide quick information.
+- **Voice-to-Text Reporting**: Hands-free reporting with Web Speech API integration.
+- **Popup CAPTCHA**: Simple math questions (e.g., "7 + 9" or "9 × 2") to prevent bot spam.
+- **Progressive Web App (PWA)**: Install SGResolve to your home screen for app-like access.
 
 ---
 
@@ -41,19 +44,64 @@ SGResolve is built to address urban challenges by enabling fast and efficient is
 - **Firebase**: Utilized for authentication, real-time database (Firestore), and hosting.
 - **Leaflet**: For interactive map functionality.
 - **Chart.js**: To render analytics charts in the admin dashboard.
+- **Web Speech API**: Enables voice-to-text reporting.
 - **External APIs**: Integration with an AI auto-detect model to analyze report descriptions.
+- **Service Workers**: Support PWA features like offline access and home screen installation.
 
 ---
 
 ## **Installation and Setup**
 ### Clone the repository:
-```bash
+
 git clone https://github.com/your-username/sgresolve.git
 cd sgresolve
-```
+
 ### Configure Firebase:
 1. Create a Firebase project and enable Email/Password authentication.
 2. Replace the Firebase configuration in `script.js` with your project's credentials.
+
+const firebaseConfig = {
+apiKey: "your-api-key",
+authDomain: "your-auth-domain",
+projectId: "your-project-id",
+// ...other config
+};
+
+
+### Set Up PWA:
+1. Add a `manifest.json` file in the root:
+
+{
+"name": "SGResolve",
+"short_name": "SGResolve",
+"start_url": "/index.html",
+"display": "standalone",
+"background_color": "#FFFFFF",
+"theme_color": "#FF0000",
+"icons": [
+{
+"src": "icons/icon-192x192.png",
+"sizes": "192x192",
+"type": "image/png"
+},
+{
+"src": "icons/icon-512x512.png",
+"sizes": "512x512",
+"type": "image/png"
+}
+]
+}
+
+2. Link it in `index.html`:
+<link rel="manifest" href="/manifest.json"> ``` 3. Register a service worker in `script.js`: ``` if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/service-worker.js') .then(() => console.log('Service Worker registered')) .catch(err => console.error('Service Worker error:', err)); } ``` 4. Create `service-worker.js` for caching: ``` self.addEventListener('install', (event) => { event.waitUntil( caches.open('sgresolve-v1').then((cache) => { return cache.addAll([ '/', '/index.html', '/styles.css', '/script.js' ]); }) ); });
+self.addEventListener('fetch', (event) => {
+event.respondWith(
+caches.match(event.request).then((response) => {
+return response || fetch(event.request);
+})
+);
+});
+
 
 ### Install Dependencies:
 SGResolve primarily uses CDN links for third-party libraries (Firebase, Chart.js, Leaflet). No additional package installation is required for the basic setup.
@@ -68,8 +116,8 @@ SGResolve primarily uses CDN links for third-party libraries (Firebase, Chart.js
 ### **Reporting an Issue:**
 1. On the landing page, click **"Report an Issue"** to sign in.
 2. Once logged in, navigate to the reporting page.
-3. Use the map to select your location, fill in the issue details, and optionally upload an image.
-4. Utilize the AI auto-detect feature to help categorize your report.
+3. Use the map to select your location, fill in the issue details (type, voice, or upload an image), and utilize the AI auto-detect feature to categorize.
+4. Answer the popup CAPTCHA (e.g., "7 + 9 = ?") to submit.
 
 ### **Community Engagement:**
 - Access the community forum to view and create posts.
@@ -80,25 +128,27 @@ SGResolve primarily uses CDN links for third-party libraries (Firebase, Chart.js
 - Use filtering options to sort reports by category, urgency, or image availability.
 - View real-time analytics and manage report statuses.
 
+### **Install to Home Screen:**
+- On a mobile browser (e.g., Chrome), tap the menu and select "Add to Home Screen."
+- Launch SGResolve from your home screen like a native app, with basic offline support.
+
 ---
 
 ## **Project Structure**
-```
-sgresolve/
+
+// sgresolve/
 ├── Other files        # Code for AI Models and Servers
 ├── index.html         # Main HTML file containing the structure and multiple pages
 ├── styles.css         # Comprehensive CSS file for all UI components
-└── script.js          # JavaScript file handling authentication, maps, API calls, and UI logic
-```
+├── script.js          # JavaScript file handling authentication, maps, API calls, and UI logic
+├── manifest.json      # PWA manifest for home screen installation
+└── service-worker.js  # Service worker for offline caching
+
 
 ---
 
 ## **Contributing**
-Contributions are welcome! If you have ideas or improvements, please follow these steps:
-1. Fork the repository.
-2. Create a new branch with a descriptive name.
-3. Commit your changes with clear messages.
-4. Submit a pull request explaining your improvements.
+Contributions are closed as of now. Please use the **Community Forum** to provide feedback, suggest improvements, or report issues.
 
 ---
 
@@ -110,4 +160,3 @@ This project is licensed under the **MIT License**. See the LICENSE file for det
 ## **Contact**
 For any inquiries or further information, please contact:
 **Project Maintainers**: Pushkal Vashist, Kota Neil Aryan, Neelaansh Verma, Austin Biasbas Doctor
-

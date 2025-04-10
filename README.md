@@ -6,7 +6,6 @@ SGResolve is an innovative, AI-driven platform designed to transform Singapore i
 - [Overview](#overview)
 - [Features](#features)
 - [Technologies Used](#technologies-used)
-- [Installation and Setup](#installation-and-setup)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Contributing](#contributing)
@@ -50,67 +49,7 @@ SGResolve is built to address urban challenges by enabling fast and efficient is
 
 ---
 
-## **Installation and Setup**
-### Clone the repository:
 
-git clone https://github.com/your-username/sgresolve.git
-cd sgresolve
-
-### Configure Firebase:
-1. Create a Firebase project and enable Email/Password authentication.
-2. Replace the Firebase configuration in `script.js` with your project's credentials.
-
-const firebaseConfig = {
-apiKey: "your-api-key",
-authDomain: "your-auth-domain",
-projectId: "your-project-id",
-// ...other config
-};
-
-
-### Set Up PWA:
-1. Add a `manifest.json` file in the root:
-
-{
-"name": "SGResolve",
-"short_name": "SGResolve",
-"start_url": "/index.html",
-"display": "standalone",
-"background_color": "#FFFFFF",
-"theme_color": "#FF0000",
-"icons": [
-{
-"src": "icons/icon-192x192.png",
-"sizes": "192x192",
-"type": "image/png"
-},
-{
-"src": "icons/icon-512x512.png",
-"sizes": "512x512",
-"type": "image/png"
-}
-]
-}
-
-2. Link it in `index.html`:
-<link rel="manifest" href="/manifest.json"> ``` 3. Register a service worker in `script.js`: ``` if ('serviceWorker' in navigator) { navigator.serviceWorker.register('/service-worker.js') .then(() => console.log('Service Worker registered')) .catch(err => console.error('Service Worker error:', err)); } ``` 4. Create `service-worker.js` for caching: ``` self.addEventListener('install', (event) => { event.waitUntil( caches.open('sgresolve-v1').then((cache) => { return cache.addAll([ '/', '/index.html', '/styles.css', '/script.js' ]); }) ); });
-self.addEventListener('fetch', (event) => {
-event.respondWith(
-caches.match(event.request).then((response) => {
-return response || fetch(event.request);
-})
-);
-});
-
-
-### Install Dependencies:
-SGResolve primarily uses CDN links for third-party libraries (Firebase, Chart.js, Leaflet). No additional package installation is required for the basic setup.
-
-### Run the Application:
-- Open `index.html` in your web browser.
-- For a local development server, you can use VS Code Live Server or any similar tool.
-
----
 
 ## **Usage**
 ### **Reporting an Issue:**

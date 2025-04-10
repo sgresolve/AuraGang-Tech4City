@@ -11,6 +11,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0969da">
+    <!-- Basic iOS PWA Meta Tags (Optional but recommended) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="/NAISC-NAPA/images/icons/icon-192x192.png"> <!-- Example size -->
   <!-- Add Google reCAPTCHA v2 Script -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <!-- End Google reCAPTCHA v2 Script -->
@@ -18,7 +24,7 @@
 <body>
   <div id="app">
 
-    <nav id="navbar" style="display: show;">
+    <nav id="navbar">
       <ul>
         <li><a href="#" id="nav-home">Home</a></li>
         <li><a href="#" id="nav-my-reports">My Reports</a></li>
@@ -649,7 +655,21 @@
 
   <!-- Scripts -->
   <script type="module" src="script.js"></script>
-  <!-- Leaflet JS (Redundant if already included above, ensure only one) -->
-  <!-- <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script> -->
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // IMPORTANT: Path must be relative to the root domain
+        navigator.serviceWorker.register('/NAISC-NAPA/service-worker.js')
+          .then(registration => {
+            console.log('Service Worker registered successfully with scope:', registration.scope);
+          })
+          .catch(error => {
+            console.error('Service Worker registration failed:', error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
+

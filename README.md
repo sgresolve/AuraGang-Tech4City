@@ -136,7 +136,7 @@ SGResolve primarily uses CDN links for third-party libraries (Firebase, Chart.js
 
 ## **Project Structure**
 
-// sgresolve/
+sgresolve/
 ├── Other files        # Code for AI Models and Servers
 ├── index.html         # Main HTML file containing the structure and multiple pages
 ├── styles.css         # Comprehensive CSS file for all UI components

@@ -73,7 +73,8 @@ SGResolve is built to address urban challenges by enabling fast and efficient is
 
 ---
 ## **Project Structure**
- ``` sgresolve/ ├── index.html # Main HTML file containing the structure and multiple pages ├── styles.css # Comprehensive CSS file for all UI components ├── script.js # JS file handling authentication, maps, API calls, and UI logic ├── manifest.json # PWA manifest for home screen installation ├── service-worker.js # Service worker for offline caching ├── ai/ # Directory for AI model code and related server files │ ├── model.py # Example AI model file │ ├── server.js # Example backend server code │ └── ... # Other AI-related files └── assets/ # Static assets like images, icons, etc. ├── logo.png └── ... ```
+ ![image](https://github.com/user-attachments/assets/4d886c35-ffe3-48d2-b14f-f4e882b96745)
+
 
 
 

@@ -72,20 +72,8 @@ SGResolve is built to address urban challenges by enabling fast and efficient is
 - Launch SGResolve from your home screen like a native app, with basic offline support.
 
 ---
-
-sgresolve/
-├── index.html              # Main HTML file containing the structure and multiple pages
-├── styles.css              # Comprehensive CSS file for all UI components
-├── script.js               # JavaScript file handling authentication, maps, API calls, and UI logic
-├── manifest.json           # PWA manifest for home screen installation
-├── service-worker.js       # Service worker for offline caching
-├── ai/                     # Directory for AI model code and related server files
-│   ├── model.py            # Example AI model file
-│   ├── server.js           # Example backend server code
-│   └── ...                 # Other AI-related files
-└── assets/                 # Optional: Static assets like images, icons, etc.
-    ├── logo.png
-    └── ...
+## **Project Structure**
+<pre> ``` sgresolve/ ├── index.html # Main HTML file containing the structure and multiple pages ├── styles.css # Comprehensive CSS file for all UI components ├── script.js # JS file handling authentication, maps, API calls, and UI logic ├── manifest.json # PWA manifest for home screen installation ├── service-worker.js # Service worker for offline caching ├── ai/ # Directory for AI model code and related server files │ ├── model.py # Example AI model file │ ├── server.js # Example backend server code │ └── ... # Other AI-related files └── assets/ # Static assets like images, icons, etc. ├── logo.png └── ... ``` </pre>
 
 
 

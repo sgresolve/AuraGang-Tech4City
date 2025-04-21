@@ -1,4 +1,4 @@
-MIT License
+SGResolve License Agreement
 
 Copyright (c) 2025 SGResolve
 
@@ -8,20 +8,33 @@ Contributors:
 - Neelaansh Verma
 - Austin Biasbas Doctor
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+All rights reserved.
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+Permission is NOT granted to any person or entity to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of this Software, or to
+permit others to do so.
+
+This Software and its associated documentation files (the “Software”) are the
+exclusive intellectual property of the SGResolve team. It is intended solely for
+internal use, evaluation, or demonstration purposes unless explicit written
+permission is granted by the authors.
+
+The following actions are strictly prohibited without prior written consent from
+the SGResolve team:
+- Use of the Software for commercial or non-commercial purposes
+- Redistribution of the Software or any modified version thereof
+- Public display or hosting of the Software or any derivative works
+- Reverse engineering, decompiling, or attempting to extract the source code
+
+Violation of these terms may result in legal action under applicable copyright
+and intellectual property laws.
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For usage inquiries or license requests, please contact the SGResolve team directly.
+

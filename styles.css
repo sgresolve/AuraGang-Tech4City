@@ -2713,3 +2713,79 @@
   color: var(--error-color);
   text-align: center;
 }
+
+/* ============================================================================
+   17. RP Notification Sidebar
+   ============================================================================ */
+   .rp-notification-sidebar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    min-width: 200px;
+    max-width: 300px;
+    background-color: #2a3035; /* Dark background */
+    color: var(--white);
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-medium);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1100; /* Higher than popup overlay */
+    opacity: 0;
+    transform: translateX(120%); /* Start off-screen */
+    visibility: hidden;
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out, visibility 0s linear 0.4s;
+  }
+  
+  .rp-notification-sidebar.show {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out, visibility 0s linear 0s;
+  }
+  
+  /* Optional Fade Out Animation */
+  .rp-notification-sidebar.fade-out {
+      opacity: 0;
+      transition: opacity 0.5s ease-out; /* Match JS timeout */
+  }
+  
+  
+  .rp-notification-sidebar .rp-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+  
+  .rp-notification-sidebar .rp-message {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  
+  .rp-notification-sidebar .rp-points {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--secondary-color); /* Green for points */
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 480px) {
+      .rp-notification-sidebar {
+          right: 10px;
+          bottom: 10px;
+          left: 10px; /* Span more width on small screens */
+          max-width: none;
+          width: auto;
+      }
+  }
+  
+  /* Ensure popup point indicator (used only for registration now) has CSS */
+  .popup-points-indicator {
+      display: inline-block; /* Changed from block */
+      font-weight: bold;
+      color: var(--secondary-color); /* Green */
+      margin-left: 5px; /* Add space */
+      font-size: 1em; /* Match surrounding text */
+      /* animation: pointsPulse 1s ease-out; */ /* Optional animation */
+  }

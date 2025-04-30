@@ -61,7 +61,7 @@ window.onRecaptchaSuccess = function() {
 };
 
 window.onRecaptchaExpired = function() {
-  console.log('reCAPTCHA verification expired');
+  console.warn('reCAPTCHA verification expired'); // Changed to warn
   const submitButton = document.getElementById('submit-report-button');
   const recaptchaError = document.getElementById('recaptcha-error');
   if (submitButton) submitButton.disabled = true;
@@ -82,7 +82,7 @@ window.onRecaptchaError = function() {
       recaptchaError.textContent = "CAPTCHA failed to load or verify. Please try refreshing.";
       recaptchaError.style.display = 'block'; // Show error message
   }
-  showPopup("CAPTCHA failed to load. Please refresh the page.", "error", 0, false);
+  console.error("CAPTCHA failed to load. Please refresh the page."); // Log error instead of popup
 };
 // --- End reCAPTCHA Callbacks ---
 
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             reportingMap.on('click', function(e) {
                 const { lat, lng } = e.latlng;
                 if (!singaporeLatLngBounds.contains(e.latlng)) {
-                    showPopup('Please select a location within Singapore.', 'warning'); return;
+                    console.warn('Please select a location within Singapore.'); return; // Log warning
                 }
                 // Remove previous temp marker if exists
                 if (tempMarker) {
@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let statusChartInstance = null;
     let urgencyChartInstance = null;
     let categoryChartInstance = null;
+    let rpNotificationTimeout; // Store timeout for RP sidebar to prevent overlaps
 
     // Predefined Locations & Colors
      const PREDEFINED_LOCATIONS = {
@@ -287,77 +288,68 @@ document.addEventListener('DOMContentLoaded', () => {
         updateGamificationUI(); // Update RP/Level display
     }
 
-    // Enhanced Popup Function with Points
+    // --- MODIFIED: Central Popup function now only logs to console ---
     function showPopup(message, type = 'info', pointsEarned = 0, autoClose = true) {
-        const popupOverlay = document.getElementById('popup-overlay');
-        const popupMessage = document.getElementById('popup-message');
-        const popupIcon = document.getElementById('popup-icon');
-        const popup = document.getElementById('popup');
-        const closeButton = document.getElementById('popup-close');
-
-        if (!popupOverlay || !popupMessage || !popupIcon || !popup || !closeButton) return;
-
-        // Clear previous content
-        popupMessage.innerHTML = ''; // Clear previous message and points
-        popupMessage.textContent = message; // Set main message text
-
-        // Add Points Indicator if points were earned
-        if (pointsEarned > 0) {
-            const pointsDisplay = document.createElement('span');
-            pointsDisplay.textContent = `+${pointsEarned} RP`;
-            pointsDisplay.className = 'popup-points-indicator';
-            popupMessage.appendChild(pointsDisplay); // Append points indicator
-        }
-
-        popup.className = `popup ${type}`; // Apply type class
-
-        // Set icon based on type
+        // Log based on type to differentiate messages in console
         switch (type) {
-            case 'success': popupIcon.innerHTML = '✅'; break;
-            case 'error': popupIcon.innerHTML = '❌'; break;
-            case 'info': popupIcon.innerHTML = 'ℹ️'; break;
-            case 'warning': popupIcon.innerHTML = '⚠️'; break;
-            default: popupIcon.innerHTML = '';
+            case 'error':
+                console.error(`[Popup Stub - Error]: ${message}`);
+                break;
+            case 'warning':
+                console.warn(`[Popup Stub - Warning]: ${message}`);
+                break;
+            case 'success':
+                console.log(`[Popup Stub - Success]: ${message}`);
+                break;
+            default: // info
+                console.info(`[Popup Stub - Info]: ${message}`);
         }
 
-        // Clear previous timeout if exists
-        if (popupOverlay.dataset.timeoutId) {
-            clearTimeout(parseInt(popupOverlay.dataset.timeoutId, 10));
-            delete popupOverlay.dataset.timeoutId;
-        }
-
-        popupOverlay.classList.add('show'); // Use class to trigger fade-in
-        popup.setAttribute('role', 'alert');
-        popup.setAttribute('aria-live', 'assertive');
-        popup.setAttribute('tabindex', '-1');
-
-        if (autoClose) {
-            const timeoutId = setTimeout(() => {
-                popupOverlay.classList.remove('show');
-            }, 3000);
-            popupOverlay.dataset.timeoutId = timeoutId.toString();
-            closeButton.style.display = 'none';
-        } else {
-            closeButton.style.display = 'block';
-        }
+        // NOTE: The original DOM manipulation for the popup overlay, icon, message,
+        // close button, and auto-close timeout is intentionally removed.
+        // Also, the associated HTML and event listeners for closing the popup
+        // ('popup-close' click, Escape key) are no longer functional with this change.
     }
-    // Close popup manually
-    document.getElementById('popup-close')?.addEventListener('click', () => {
-        document.getElementById('popup-overlay')?.classList.remove('show');
-    });
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('popup-overlay')?.classList.contains('show')) {
-            document.getElementById('popup-overlay')?.classList.remove('show');
-        }
-    });
+    // Removed popup close listeners as the popup itself is disabled.
+    // document.getElementById('popup-close')?.addEventListener('click', () => { /* ... */ });
+    // document.addEventListener('keydown', (e) => { /* ... */ });
 
-    // Badge Earned Popup
-    function showBadgeEarnedPopup(badgeId) {
-        const badge = BADGES[badgeId];
-        if (!badge) return;
-        const message = `Badge Earned: ${badge.icon} ${badge.name}! (${badge.description})`;
-        showPopup(message, 'info', 0, false); // Set autoClose to false for badges
+    // --- REMOVED Badge Earned Modal Popup Function ---
+    // Badge notifications will now be logged directly to console in awardPointsAndCheckBadges
+    // function showBadgeEarnedPopup(badgeId) { /* ... */ }
+
+    // --- Sidebar RP Notification Function (Remains unchanged) ---
+    function showRpNotification(message, points) {
+        const sidebar = document.getElementById('rp-notification-sidebar');
+        const messageEl = sidebar?.querySelector('.rp-message');
+        const pointsEl = sidebar?.querySelector('.rp-points');
+
+        if (!sidebar || !messageEl || !pointsEl || points <= 0) {
+            // console.log("RP Notification not shown (sidebar element missing or points <= 0)");
+            return; // Don't show if element missing or no points
+        }
+
+        // Clear existing timeouts if a new notification comes quickly
+        clearTimeout(rpNotificationTimeout);
+        sidebar.classList.remove('fade-out'); // Remove fade-out if it was in progress
+
+        messageEl.textContent = message;
+        pointsEl.textContent = `+${points} RP`;
+
+        sidebar.classList.add('show');
+
+        // Set timeout to hide the notification
+        rpNotificationTimeout = setTimeout(() => {
+            sidebar.classList.add('fade-out'); // Start fading out
+
+            // Use another timeout to fully hide after fade-out animation completes
+            setTimeout(() => {
+                sidebar.classList.remove('show', 'fade-out');
+            }, 500); // Match the fade-out duration in CSS (0.5s)
+
+        }, 4000); // Show for 4 seconds before starting fade
     }
+
 
     // --- Gamification Functions ---
 
@@ -446,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error fetching user data:", error);
             currentUserData = { uid: userId, displayName: auth.currentUser?.displayName || 'User', resolvePoints: 0, level: 1, earnedBadges: [], reportCount: 0, reportWithImageCount: 0, resolvedReportCount: 0, forumPostCount: 0, forumCommentCount: 0, upvoteGivenCount: 0 };
             updateGamificationUI();
-            showPopup("Error fetching user profile data.", "error");
+            console.error("Error fetching user profile data."); // Log error
         }
     }
 
@@ -509,190 +501,126 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.max(0, Math.min(100, (pointsInCurrentLevel / pointsForThisLevel) * 100));
     }
 
-    // Core function to award points and check/award badges (REFACTORED)
+    // --- MODIFIED: Core function to award points, check badges, logs badge/level events ---
     async function awardPointsAndCheckBadges(userId, pointsToAdd, actionType, data = {}) {
         if (!userId || !currentUser) return 0; // Ensure user is logged in
 
-        // Prevent awarding points to admin
-        if (currentUser.email === 'admin@sgresolve.com') {
-            console.log("Admin actions do not earn points.");
-            return 0;
-        }
-
-        if (pointsToAdd < 0 && actionType !== 'checkOnly') {
-            console.warn("Attempted to award negative points. Ignoring.");
-            return 0; // Prevent negative points unless specifically designed
-        }
-        // Allow 0 points just for checking badges (e.g., on login) if needed using 'checkOnly'
+        if (currentUser.email === 'admin@sgresolve.com') { console.log("Admin actions do not earn points."); return 0; }
+        if (pointsToAdd < 0 && actionType !== 'checkOnly') { console.warn("Attempted to award negative points. Ignoring."); return 0; }
 
         const userRef = doc(db, "users", userId);
         let awardedPointsActual = 0;
-        let newBadgesEarnedIds = []; // Track badges earned *in this transaction*
+        let newBadgesEarnedIds = [];
+        let levelIncreased = false;
+        let initialLevel = 1;
+        let finalLevelAfterUpdate = 1; // To store the level *after* update for logging
 
         try {
             await runTransaction(db, async (transaction) => {
                 const userSnap = await transaction.get(userRef);
-
-                if (!userSnap.exists()) {
-                    // This *shouldn't* happen if initialization logic on login/register is solid.
-                    console.error(`User ${userId} document not found in transaction! This indicates a potential issue.`);
-                    // Attempting recovery here is complex within a transaction. Throw error.
-                    throw new Error(`User document ${userId} missing during transaction.`);
-                }
+                if (!userSnap.exists()) throw new Error(`User document ${userId} missing during transaction.`);
 
                 const userData = userSnap.data();
-
-                // --- Get current state from Firestore data, applying defaults ---
                 const currentPoints = userData.resolvePoints ?? 0;
-                const currentLevelFromDB = userData.level ?? 1; // Get current level from DB
+                initialLevel = userData.level ?? 1; // Store level before changes
                 const earnedBadges = userData.earnedBadges ?? [];
-                // --- Counters ---
                 let reportCount = userData.reportCount ?? 0;
                 let reportWithImageCount = userData.reportWithImageCount ?? 0;
                 let resolvedReportCount = userData.resolvedReportCount ?? 0;
                 let forumPostCount = userData.forumPostCount ?? 0;
                 let forumCommentCount = userData.forumCommentCount ?? 0;
-                let upvoteGivenCount = userData.upvoteGivenCount ?? 0; // New counter
+                let upvoteGivenCount = userData.upvoteGivenCount ?? 0;
 
-                // --- Point calculation ---
-                let pointsToAwardTotal = pointsToAdd; // Start with base points for the action
-
-                // --- Badge Checking Setup ---
+                let pointsToAwardTotal = pointsToAdd;
                 const hasBadge = (badgeId) => earnedBadges.includes(badgeId) || newBadgesEarnedIds.includes(badgeId);
-                const checkAndStageBadge = (badgeId, condition) => {
-                    if (condition && !hasBadge(badgeId)) { // Check condition AND if badge not already earned/staged
-                        newBadgesEarnedIds.push(badgeId);
-                    }
-                };
+                const checkAndStageBadge = (badgeId, condition) => { if (condition && !hasBadge(badgeId)) newBadgesEarnedIds.push(badgeId); };
 
-                // --- Process Action and Update Counters/Check Badges ---
+                // --- Action Processing & Counter Updates ---
                 switch (actionType) {
                     case 'register':
-                        // Points already added via pointsToAdd (POINT_VALUES.REGISTER)
                         checkAndStageBadge('register_welcome', true);
                         break;
-
                     case 'submitReport':
-                        reportCount++; // Increment count *before* checks
-
-                        // Conditional Points (Only add FIRST_REPORT bonus if it's truly the first)
+                        reportCount++;
                         if (reportCount === 1) {
                             pointsToAwardTotal += POINT_VALUES.FIRST_REPORT;
                         }
-
-                        // Badge Checks based on the *new* reportCount
                         checkAndStageBadge('first_report', reportCount === 1);
-                        checkAndStageBadge('reporter_5', reportCount === 5); // Trigger when count *reaches* 5
-                        checkAndStageBadge('reporter_10', reportCount === 10); // Trigger when count *reaches* 10
-                        checkAndStageBadge('reporter_25', reportCount === 25); // Trigger when count *reaches* 25
-
-                        // Image related checks (if applicable)
+                        checkAndStageBadge('reporter_5', reportCount === 5);
+                        checkAndStageBadge('reporter_10', reportCount === 10);
+                        checkAndStageBadge('reporter_25', reportCount === 25);
                         if (data.hasImage) {
-                            reportWithImageCount++; // Increment image count
-                            checkAndStageBadge('shutterbug', reportWithImageCount === 1); // First image report
-                            checkAndStageBadge('shutterbug_5', reportWithImageCount === 5); // 5th image report
+                            reportWithImageCount++;
+                            checkAndStageBadge('shutterbug', reportWithImageCount === 1);
+                            checkAndStageBadge('shutterbug_5', reportWithImageCount === 5);
                         }
                         break;
-
                     case 'useAiImage':
-                        // Points added via pointsToAdd
-                        checkAndStageBadge('ai_image_user', true); // Award only once
+                        checkAndStageBadge('ai_image_user', !hasBadge('ai_image_user'));
                         break;
-
                     case 'useAiText':
-                        // Points added via pointsToAdd
-                        checkAndStageBadge('ai_text_user', true); // Award only once
+                        checkAndStageBadge('ai_text_user', !hasBadge('ai_text_user'));
                         break;
-
-                    case 'reportResolved': // Triggered when an admin resolves a user's report
-                        resolvedReportCount++; // Increment count
-                        // Points added via pointsToAdd (POINT_VALUES.REPORT_RESOLVED)
-                        checkAndStageBadge('resolved_1', resolvedReportCount === 1); // First resolved report
-                        checkAndStageBadge('resolved_5', resolvedReportCount === 5); // Fifth resolved report
+                    case 'reportResolved':
+                        resolvedReportCount++;
+                        checkAndStageBadge('resolved_1', resolvedReportCount === 1);
+                        checkAndStageBadge('resolved_5', resolvedReportCount === 5);
                         break;
-
                     case 'createForumPost':
-                        forumPostCount++; // Increment count
-                        // Points added via pointsToAdd
-                        checkAndStageBadge('forum_founder', forumPostCount === 1); // First post
-                        checkAndStageBadge('forum_contributor_5', forumPostCount === 5); // Fifth post
+                        forumPostCount++;
+                        checkAndStageBadge('forum_founder', forumPostCount === 1);
+                        checkAndStageBadge('forum_contributor_5', forumPostCount === 5);
                         break;
-
                     case 'createForumComment':
-                        forumCommentCount++; // Increment count
-                        // Points added via pointsToAdd
-                        checkAndStageBadge('commentator', forumCommentCount === 1); // First comment
-                        checkAndStageBadge('active_commentator_10', forumCommentCount === 10); // Tenth comment
+                        forumCommentCount++;
+                        checkAndStageBadge('commentator', forumCommentCount === 1);
+                        checkAndStageBadge('active_commentator_10', forumCommentCount === 10);
                         break;
-
                     case 'giveUpvote':
-                        upvoteGivenCount++; // Increment count
-                        // Points added via pointsToAdd
-                        checkAndStageBadge('upvoter_10', upvoteGivenCount === 10); // Tenth upvote given
+                        upvoteGivenCount++;
+                        checkAndStageBadge('upvoter_10', upvoteGivenCount === 10);
                         break;
-
-                    case 'checkOnly':
-                        // No points awarded, just check badges based on current counts (useful on login)
-                        break;
+                    case 'checkOnly': break; // No points, just badge check
                 }
                 // --- End Action Processing ---
 
-                // --- Final Calculations ---
                 const finalPoints = currentPoints + pointsToAwardTotal;
-                const finalLevel = calculateLevel(finalPoints); // Use helper to calculate level
-                const finalBadges = [...earnedBadges, ...newBadgesEarnedIds]; // Combine existing and newly earned badges
+                finalLevelAfterUpdate = calculateLevel(finalPoints); // Calculate final level
+                const finalBadges = [...earnedBadges, ...newBadgesEarnedIds];
+                levelIncreased = finalLevelAfterUpdate > initialLevel; // Check if level changed
 
-                // --- Prepare Update Data ---
                 const updateData = {
-                    resolvePoints: finalPoints,
-                    level: finalLevel,
-                    earnedBadges: finalBadges,
-                    // Update all relevant counters based on increments during the action
-                    reportCount: reportCount,
-                    reportWithImageCount: reportWithImageCount,
-                    resolvedReportCount: resolvedReportCount,
-                    forumPostCount: forumPostCount,
-                    forumCommentCount: forumCommentCount,
-                    upvoteGivenCount: upvoteGivenCount,
+                    resolvePoints: finalPoints, level: finalLevelAfterUpdate, earnedBadges: finalBadges,
+                    reportCount, reportWithImageCount, resolvedReportCount,
+                    forumPostCount, forumCommentCount, upvoteGivenCount,
                 };
-
-                // Check for level up
-                const levelIncreased = finalLevel > currentLevelFromDB;
-
-                // --- Perform Firestore Update ---
                 transaction.update(userRef, updateData);
-                awardedPointsActual = pointsToAwardTotal; // Store actual points awarded in this transaction
-
+                awardedPointsActual = pointsToAwardTotal;
             }); // End Transaction
 
-            console.log(`Transaction successful: Awarded ${awardedPointsActual} points to ${userId}. New badges: ${newBadgesEarnedIds.join(', ')}`);
+            console.log(`Transaction successful: Awarded ${awardedPointsActual} points to ${userId}. New badges checked: ${newBadgesEarnedIds.join(', ')}`);
 
             // Update local state AFTER successful transaction
             if (currentUser && currentUser.uid === userId) {
-                await fetchAndSetCurrentUserData(userId); // Fetch fresh data to update local currentUserData
+                await fetchAndSetCurrentUserData(userId); // Fetch fresh data
 
-                // Show popups for newly earned badges AFTER updating local data
-                // Delay popups slightly
-                setTimeout(() => {
-                    newBadgesEarnedIds.forEach(badgeId => {
-                        showBadgeEarnedPopup(badgeId); // Uses the non-auto-closing popup
-                    });
-                    // Check level up using the *just fetched* data
-                    const latestData = currentUserData;
-                    if (latestData && latestData.level > calculateLevel(latestData.resolvePoints - awardedPointsActual)) {
-                        showPopup(`Congratulations! You reached Level ${latestData.level}! (${LEVEL_NAMES[latestData.level - 1] || ''})`, 'success', 0, false);
+                // *** Log Badge and Level Up events to CONSOLE ***
+                newBadgesEarnedIds.forEach(badgeId => {
+                    const badge = BADGES[badgeId];
+                    if (badge) {
+                         console.info(`%cBadge Earned: ${badge.icon} ${badge.name}! (${badge.description})`, 'color: blue; font-weight: bold;');
                     }
-                }, 300); // 300ms delay
+                });
+                if (levelIncreased) {
+                    console.info(`%cCongratulations! You reached Level ${finalLevelAfterUpdate}! (${LEVEL_NAMES[finalLevelAfterUpdate - 1] || ''})`, 'color: green; font-weight: bold;');
+                }
             }
-            return awardedPointsActual; // Return points for immediate feedback if needed
+            return awardedPointsActual; // Return points awarded in *this specific call*
 
         } catch (error) {
             console.error("Error in awardPointsAndCheckBadges transaction:", error);
             if (error.message.includes("User document missing")) {
-                showPopup("Critical error updating profile. Please try logging out and back in.", "error", false);
-            } else {
-                // Avoid spamming popups
-                // showPopup("Error updating points/badges.", "error");
+                console.error("Critical error updating profile. Please try logging out and back in."); // Log error
             }
             return 0; // Indicate failure or no points awarded
         }
@@ -854,7 +782,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return reports;
         } catch (error) {
             console.error('Error fetching reports:', error);
-            showPopup(`Error fetching reports: ${error.message}`, 'error');
+            // showPopup(`Error fetching reports: ${error.message}`, 'error', 0, false); // REPLACED
+            console.error(`Error fetching reports: ${error.message}`); // Log error
             return [];
         }
     }
@@ -1067,7 +996,7 @@ document.addEventListener('DOMContentLoaded', () => {
         destroyChart(statusChartInstance); statusChartInstance = null;
         destroyChart(urgencyChartInstance); urgencyChartInstance = null;
         destroyChart(categoryChartInstance); categoryChartInstance = null;
-        window.reportsChart = null;
+        window.reportsChart = null; // Make sure this is cleared too
 
         if(statusChartCanvas) statusChartCanvas.style.display = 'block';
         if(noStatusDataEl) noStatusDataEl.style.display = 'none';
@@ -1140,14 +1069,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     data: { labels: allCategories, datasets: [{ data: allCategories.map(cat => categoryCountsMonth[cat]), backgroundColor: allCategories.map(cat => CATEGORY_COLORS_MONTHLY[cat] || '#cccccc'), borderColor: allCategories.map(cat => (CATEGORY_COLORS_MONTHLY[cat] || '#cccccc').replace('0.7', '1')), borderWidth: 1 }] },
                     options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: '# Reports' } }, x: {} }, plugins: { legend: { display: false }, title: { display: false } } }
                 });
-                 window.reportsChart = categoryChartInstance;
+                 window.reportsChart = categoryChartInstance; // Assign to global if needed elsewhere
             } else {
                  window.reportsChart = null;
             }
 
         } catch (error) {
             console.error("Error rendering admin analytics:", error);
-            showPopup("Error loading analytics data.", "error", 0, false);
+            // showPopup("Error loading analytics data.", "error", 0, false); // REPLACED
+            console.error("Error loading analytics data."); // Log error
              if(statusChartCanvas) statusChartCanvas.style.display = 'none';
              if(noStatusDataEl) { noStatusDataEl.textContent = 'Error loading status data.'; noStatusDataEl.style.display = 'block'; }
              if(urgencyChartCanvas) urgencyChartCanvas.style.display = 'none';
@@ -1358,7 +1288,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  loadMoreButton.textContent = 'Error loading';
                  loadMoreButton.style.display = 'block';
             }
-            showPopup("Error loading forum posts.", "error");
+            // showPopup("Error loading forum posts.", "error", 0, false); // REPLACED
+            console.error("Error loading forum posts."); // Log error
         } finally {
             isLoadingForumPosts = false;
             if (loadMoreButton && loadMoreButton.style.display === 'block') {
@@ -1408,7 +1339,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetPostElement.classList.add('highlight');
                 setTimeout(() => { targetPostElement.classList.remove('highlight'); }, 1500);
             } else {
-                showPopup("Post might not be loaded yet. Scroll down or click 'Load More Posts'.", "info");
+                // showPopup("Post might not be loaded yet. Scroll down or click 'Load More Posts'.", "info", 0, false); // REPLACED
+                console.info("Post might not be loaded yet. Scroll down or click 'Load More Posts'."); // Log info
             }
           });
           trendingContainer.appendChild(postDiv);
@@ -1488,7 +1420,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadButton = document.getElementById('load-nearby-reports');
 
         if (!locationSelector || !radiusSelector || !container || !statusDiv || !loadButton) return;
-        if (!nearbyMap) { initializeNearbyMap(); if (!nearbyMap) { showPopup("Map could not be initialized.", "error"); return; } }
+        if (!nearbyMap) { initializeNearbyMap(); if (!nearbyMap) { console.error("Map could not be initialized."); return; } } // Log error
 
         const selectedLocationType = locationSelector.value;
         const selectedRadius = parseInt(radiusSelector.value, 10);
@@ -1573,7 +1505,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Error loading nearby reports:", error);
             statusDiv.textContent = `Error: ${error.message}`;
             container.innerHTML = '<p class="error-message">Could not load nearby reports.</p>';
-            showPopup(`Could not load nearby reports: ${error.message}`, "error");
+            // showPopup(`Could not load nearby reports: ${error.message}`, "error", 0, false); // REPLACED
+            console.error(`Could not load nearby reports: ${error.message}`); // Log error
             if (nearbyMap && centerCoords) nearbyMap.setView([centerCoords.lat, centerCoords.lon], 11);
         } finally {
             loadButton.disabled = false; loadButton.textContent = 'Load Reports';
@@ -1630,6 +1563,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             const botMsgDiv = document.createElement('div');
             botMsgDiv.classList.add('message', 'bot');
+            // Use formatRichText for bot responses if they can contain markdown
             botMsgDiv.innerHTML = `<strong>SGResolve Bot:</strong> ${formatRichText(data.response || "Sorry, I couldn't process that.")}`;
             chatBox.appendChild(botMsgDiv);
 
@@ -1717,7 +1651,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('nav-community')?.addEventListener('click', (e) => { e.preventDefault(); showPage('community'); });
     document.getElementById('nav-about')?.addEventListener('click', (e) => { e.preventDefault(); showPage('about'); });
     document.getElementById('nav-profile')?.addEventListener('click', (e) => { e.preventDefault(); if (currentUser) { showPage('profile'); } else { showPage('login'); } });
-    document.getElementById('nav-logout')?.addEventListener('click', (e) => { e.preventDefault(); signOut(auth).then(() => { showPopup("Logged out successfully.", "success"); }).catch(error => { console.error("Logout error:", error); showPopup(`Logout failed: ${error.message}`, "error"); }); });
+    document.getElementById('nav-logout')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            // showPopup("Logged out successfully.", "success", 0, true); // REPLACED
+            console.log("Logged out successfully.");
+        }).catch(error => {
+            console.error("Logout error:", error);
+            // showPopup(`Logout failed: ${error.message}`, "error", 0, false); // REPLACED
+            console.error(`Logout failed: ${error.message}`);
+        });
+    });
 
     // Landing Page Buttons
     document.getElementById('hero-report-issue')?.addEventListener('click', (e) => { e.preventDefault(); showPage(currentUser ? 'reporting' : 'login'); });
@@ -1743,13 +1687,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        if (!email || !password) { showPopup("Please enter both email and password.", "warning"); return; }
+        if (!email || !password) { console.warn("Please enter both email and password."); return; } // Log warning
         submitButton.disabled = true; submitButton.textContent = 'Logging in...';
 
         signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 console.log('Login successful for:', userCredential.user.email);
-                showPopup('Logged in successfully!', 'success');
+                // showPopup('Logged in successfully!', 'success'); // REPLACED
+                console.log('Logged in successfully!');
                 currentUser = userCredential.user; // Immediate update
                 // Auth listener handles the rest
             })
@@ -1760,7 +1705,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     message = 'Invalid email or password.';
                 } else if (error.code === 'auth/invalid-email') { message = 'Invalid email format.'; }
                  else { message = `Login error: ${error.message}`; }
-                showPopup(message, 'error');
+                // showPopup(message, 'error', 0, false); // REPLACED
+                console.error(message); // Log error
             })
             .finally(() => { submitButton.disabled = false; submitButton.textContent = 'Login'; });
     });
@@ -1776,7 +1722,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value.trim();
 
-        if (!name || !email || !password) { showPopup('Please fill in all fields: Full Name, Email, and Password.', 'warning'); return; }
+        if (!name || !email || !password) { console.warn('Please fill in all fields: Full Name, Email, and Password.'); return; } // Log warning
         submitButton.disabled = true; submitButton.textContent = 'Registering...';
 
         createUserWithEmailAndPassword(auth, email, password)
@@ -1792,10 +1738,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.log('Firestore user document initialized cleanly.');
                     // Award registration points AFTER document exists
                     const pointsAwarded = await awardPointsAndCheckBadges(user.uid, POINT_VALUES.REGISTER, 'register');
-                    showPopup(`Registration successful! Welcome, ${name}!`, 'success', pointsAwarded);
+                    // *** USE RP SIDEBAR FOR REGISTRATION SUCCESS WITH POINTS ***
+                    if (pointsAwarded > 0) {
+                        showRpNotification(`Welcome, ${name}!`, pointsAwarded);
+                    } else {
+                        console.log(`Registration successful! Welcome, ${name}!`); // Log success if no points (unlikely here)
+                    }
+
                 } catch (firestoreError) {
                     console.error('Error initializing Firestore user data:', firestoreError);
-                    showPopup('Registration successful, but failed to create profile. Please contact support.', 'error', 0, false);
+                    // showPopup('Registration successful, but failed to create profile. Please contact support.', 'error', 0, false); // REPLACED
+                    console.error('Registration successful, but failed to create profile. Please contact support.'); // Log error
                 }
                 // Auth listener handles UI updates/navigation
             })
@@ -1805,20 +1758,34 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error.code === 'auth/email-already-in-use') message = 'Email already in use.';
                 else if (error.code === 'auth/invalid-email') message = 'Invalid email format.';
                 else if (error.code === 'auth/weak-password') message = 'Password is too weak.';
-                showPopup(message, 'error');
+                // showPopup(message, 'error', 0, false); // REPLACED
+                console.error(message); // Log error
             })
             .finally(() => { submitButton.disabled = false; submitButton.textContent = 'Register'; });
     });
 
     // Admin Logout
-    document.getElementById('logout-admin')?.addEventListener('click', (e) => { e.preventDefault(); signOut(auth).then(() => { showPopup("Admin logged out successfully.", "success"); }).catch(error => { console.error("Admin logout error:", error); showPopup(`Logout failed: ${error.message}`, "error"); }); });
+    document.getElementById('logout-admin')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        signOut(auth).then(() => {
+            // showPopup("Admin logged out successfully.", "success", 0, true); // REPLACED
+            console.log("Admin logged out successfully.");
+        }).catch(error => {
+            console.error("Admin logout error:", error);
+            // showPopup(`Logout failed: ${error.message}`, "error", 0, false); // REPLACED
+            console.error(`Logout failed: ${error.message}`);
+        });
+    });
 
     // Reporting Page - Detect Location Button
     document.getElementById('detectLocation')?.addEventListener('click', function() {
         const button = this; button.disabled = true; button.textContent = 'Detecting...';
         getDeviceLocation().then(coords => {
             const latLng = L.latLng(coords.lat, coords.lon);
-            if (!singaporeLatLngBounds.contains(latLng)) { showPopup('Your detected location appears to be outside Singapore.', 'warning'); }
+            if (!singaporeLatLngBounds.contains(latLng)) {
+                // showPopup('Your detected location appears to be outside Singapore.', 'warning', 0, false); // REPLACED
+                console.warn('Your detected location appears to be outside Singapore.');
+            }
             if (!reportingMap) initializeReportingMap();
             if (reportingMap) {
                 if (tempMarker) reportingMap.removeLayer(tempMarker);
@@ -1827,7 +1794,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             document.getElementById('latitude').value = coords.lat.toFixed(6);
             document.getElementById('longitude').value = coords.lon.toFixed(6);
-        }).catch(error => { showPopup(`Could not detect location: ${error.message}`, 'error'); })
+        }).catch(error => {
+            // showPopup(`Could not detect location: ${error.message}`, 'error', 0, false); // REPLACED
+            console.error(`Could not detect location: ${error.message}`);
+          })
           .finally(() => { button.disabled = false; button.textContent = 'Detect Location'; });
     });
 
@@ -1855,25 +1825,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (imagePreview) imagePreview.innerHTML = '<p class="error-message">Error loading preview.</p>';
                 if (analyzeImageBtn) analyzeImageBtn.disabled = true;
                 imageDataUrl = null;
-                showPopup("Failed to read image file.", "error");
+                // showPopup("Failed to read image file.", "error", 0, false); // REPLACED
+                console.error("Failed to read image file.");
             };
             reader.readAsDataURL(file);
         } else {
             imageDataUrl = null;
             if (imagePreview) imagePreview.innerHTML = '';
             if (analyzeImageBtn) analyzeImageBtn.disabled = true;
-            if (file) showPopup("Please select a valid image file.", "warning");
+            if (file) {
+                // showPopup("Please select a valid image file.", "warning", 0, false); // REPLACED
+                console.warn("Please select a valid image file.");
+            }
         }
     });
 
 
     // AI Analyze Button (Image)
     analyzeImageBtn?.addEventListener('click', async () => {
-        if (!imageDataUrl || !currentUser) { showPopup("Please select an image first.", "warning"); return; }
-        if (!IMAGE_ANALYZER_API_URL || !IMAGE_ANALYZER_API_URL.startsWith('https')) { showPopup("AI Image Analyzer Service URL not configured.", "error"); return; }
+        if (!imageDataUrl || !currentUser) {
+             // showPopup("Please select an image first.", "warning", 0, false); // REPLACED
+             console.warn("Please select an image first."); return;
+        }
+        if (!IMAGE_ANALYZER_API_URL || !IMAGE_ANALYZER_API_URL.startsWith('https')) {
+             // showPopup("AI Image Analyzer Service URL not configured.", "error", 0, false); // REPLACED
+             console.error("AI Image Analyzer Service URL not configured."); return;
+        }
 
         analyzeImageBtn.disabled = true; analyzeImageBtn.textContent = 'Analyzing...';
-        showPopup("Sending image for AI analysis...", "info", 0, false);
+        // showPopup("Sending image for AI analysis...", "info", 0, false); // REPLACED - Rely on button text
+        console.info("Sending image for AI analysis...");
 
         try {
             const base64Data = imageDataUrl.split(',')[1];
@@ -1882,7 +1863,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(IMAGE_ANALYZER_API_URL, {
                 method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify({ image_data: base64Data })
             });
-            document.getElementById('popup-overlay')?.classList.remove('show'); // Close sending popup
 
             if (!response.ok) {
                 let errorMsg = `AI analysis failed: ${response.status}`;
@@ -1902,13 +1882,21 @@ document.addEventListener('DOMContentLoaded', () => {
             setSelectValue(urgencySelect, result.urgency);
             setSelectValue(threatSelect, result.threat);
 
+            // Award points and check badges
             const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.USE_AI_IMAGE, 'useAiImage');
-            showPopup(`AI Analysis Complete: Fields updated.`, "success", pointsAwarded);
+
+            // Log success to console
+            console.log(`AI Analysis Complete: Fields updated.`);
+
+            // Show RP gain via sidebar if points > 0
+            if (pointsAwarded > 0) {
+                showRpNotification("AI Image Analysis used", pointsAwarded);
+            }
 
         } catch (error) {
-            if (document.getElementById('popup-overlay')?.classList.contains('show')) document.getElementById('popup-overlay').classList.remove('show');
             console.error('AI Image Analysis Error:', error);
-            showPopup(`AI Analysis Failed: ${error.message}`, 'error', 0, false);
+            // showPopup(`AI Analysis Failed: ${error.message}`, 'error', 0, false); // REPLACED
+            console.error(`AI Analysis Failed: ${error.message}`);
         } finally {
             analyzeImageBtn.disabled = false; analyzeImageBtn.textContent = 'Analyze Image with AI';
         }
@@ -1920,15 +1908,21 @@ document.addEventListener('DOMContentLoaded', () => {
     problemDescInput?.addEventListener('input', () => { if (autoDetectButton) autoDetectButton.disabled = !problemDescInput.value.trim(); });
     autoDetectButton?.addEventListener('click', async () => {
         const description = problemDescInput?.value.trim();
-        if (!description || !currentUser) { showPopup('Please enter a description first.', 'warning'); return; }
-        if (!TEXT_ANALYSIS_API_URL || !TEXT_ANALYSIS_API_URL.startsWith('https')) { showPopup("Text Analysis Service URL not configured.", "error"); return; }
+        if (!description || !currentUser) {
+            // showPopup('Please enter a description first.', 'warning', 0, false); // REPLACED
+            console.warn('Please enter a description first.'); return;
+        }
+        if (!TEXT_ANALYSIS_API_URL || !TEXT_ANALYSIS_API_URL.startsWith('https')) {
+             // showPopup("Text Analysis Service URL not configured.", "error", 0, false); // REPLACED
+             console.error("Text Analysis Service URL not configured."); return;
+        }
 
         autoDetectButton.disabled = true; autoDetectButton.textContent = 'Detecting...';
-        showPopup("Analyzing description text...", "info", 0, false);
+        // showPopup("Analyzing description text...", "info", 0, false); // REPLACED - Rely on button text
+        console.info("Analyzing description text...");
 
         try {
             const response = await fetch(TEXT_ANALYSIS_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: description }) });
-             document.getElementById('popup-overlay')?.classList.remove('show');
 
             if (!response.ok) { let errorMsg = `Text analysis failed: ${response.status}`; try { errorMsg = (await response.json()).error || errorMsg; } catch (e) {} throw new Error(errorMsg); }
             const data = await response.json();
@@ -1943,13 +1937,21 @@ document.addEventListener('DOMContentLoaded', () => {
             setSelectValue(urgencySelect, predictedUrgency);
             setSelectValue(threatSelect, predictedThreat);
 
+             // Award points and check badges
             const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.USE_AI_TEXT, 'useAiText');
-            showPopup(`Text analysis complete! Categories suggested.`, "success", pointsAwarded);
+
+            // Log success to console
+            console.log(`Text analysis complete! Categories suggested.`);
+
+            // Show RP gain via sidebar if points > 0
+            if (pointsAwarded > 0) {
+                showRpNotification("AI Text Analysis used", pointsAwarded);
+            }
 
         } catch (error) {
-             if (document.getElementById('popup-overlay')?.classList.contains('show')) document.getElementById('popup-overlay').classList.remove('show');
             console.error('Text Auto Detect Error:', error);
-            showPopup(`Text Auto-Detect Failed: ${error.message}`, 'error', 0, false);
+            // showPopup(`Text Auto-Detect Failed: ${error.message}`, 'error', 0, false); // REPLACED
+            console.error(`Text Auto-Detect Failed: ${error.message}`);
         } finally {
             autoDetectButton.disabled = false; autoDetectButton.textContent = 'Auto Detect (Text)';
         }
@@ -1961,7 +1963,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let docRef = null;
         const submitButton = document.getElementById('submit-report-button');
 
-        if (!currentUser || !currentUserData) { showPopup("Please log in to submit a report.", "error"); showPage('login'); return; }
+        if (!currentUser || !currentUserData) {
+             // showPopup("Please log in to submit a report.", "error", 0, false); // REPLACED
+             console.error("Please log in to submit a report.");
+             showPage('login'); return;
+        }
 
         // CAPTCHA Check (Frontend only)
         if (submitButton.disabled) {
@@ -1995,11 +2001,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const latitude = parseFloat(latitudeStr);
         const longitude = parseFloat(longitudeStr);
 
-        if (!locationName || isNaN(latitude) || isNaN(longitude) || !description || !category || !urgency || !threat) { showPopup('Please fill all required fields.', 'warning'); return; }
-        if (!singaporeLatLngBounds.contains([latitude, longitude])) { showPopup('Coordinates must be within Singapore.', 'warning'); return; }
+        if (!locationName || isNaN(latitude) || isNaN(longitude) || !description || !category || !urgency || !threat) {
+            // showPopup('Please fill all required fields.', 'warning', 0, false); // REPLACED
+            console.warn('Please fill all required fields.'); return;
+        }
+        if (!singaporeLatLngBounds.contains([latitude, longitude])) {
+            // showPopup('Coordinates must be within Singapore.', 'warning', 0, false); // REPLACED
+            console.warn('Coordinates must be within Singapore.'); return;
+        }
 
         submitButton.disabled = true; submitButton.textContent = 'Submitting...';
-        showPopup("Submitting report...", "info", 0, false);
+        // showPopup("Submitting report...", "info", 0, false); // REPLACED - Rely on button text
+        console.info("Submitting report...");
 
         let uploadedImageUrl = null;
         const file = fileInput?.files[0];
@@ -2022,12 +2035,15 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
             } catch (error) {
                  console.error('Image Upload Error:', error);
-                 document.getElementById('popup-overlay')?.classList.remove('show');
-                 showPopup(`Image upload failed: ${error.message}. Report will be submitted without image.`, 'warning', false);
+                 // showPopup(`Image upload failed: ${error.message}. Report will be submitted without image.`, 'warning', 0, false); // REPLACED
+                 console.warn(`Image upload failed: ${error.message}. Report will be submitted without image.`);
             }
         } else if (file) {
             console.warn("Image file selected, but imageDataUrl or ImgBB key missing.");
-            if (!IMGBB_API_KEY) showPopup("ImgBB API Key not configured. Cannot upload image.", "warning");
+            if (!IMGBB_API_KEY) {
+                // showPopup("ImgBB API Key not configured. Cannot upload image.", "warning", 0, false); // REPLACED
+                console.warn("ImgBB API Key not configured. Cannot upload image.");
+            }
         }
 
         const reporterName = currentUserData.displayName || 'Anonymous';
@@ -2040,16 +2056,22 @@ document.addEventListener('DOMContentLoaded', () => {
             docRef = await addDoc(collection(db, "reports"), reportData);
             console.log('Report added to Firestore with ID:', docRef.id);
 
-            // Award Points & Check Badges
-            let pointsToAward = POINT_VALUES.SUBMIT_REPORT;
-            let actionData = { hasImage: !!uploadedImageUrl };
-            if (description.length > 50) pointsToAward += POINT_VALUES.REPORT_WITH_DESCRIPTION;
-            if (actionData.hasImage) pointsToAward += POINT_VALUES.REPORT_WITH_IMAGE;
-            // Call the refactored function
-            const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, pointsToAward, 'submitReport', actionData);
+            // Calculate points specific to THIS report submission
+            let pointsForThisReport = POINT_VALUES.SUBMIT_REPORT;
+            let actionData = { hasImage: !!uploadedImageUrl }; // Data needed for badge checks inside the function
+            if (actionData.hasImage) pointsForThisReport += POINT_VALUES.REPORT_WITH_IMAGE;
+            if (description.length > 50) pointsForThisReport += POINT_VALUES.REPORT_WITH_DESCRIPTION;
 
-            document.getElementById('popup-overlay')?.classList.remove('show');
-            showPopup('Report submitted successfully!', 'success', pointsAwarded);
+            // Award Points & Check Badges (function internally handles FIRST_REPORT bonus etc.)
+            const totalPointsAwardedForAction = await awardPointsAndCheckBadges(currentUser.uid, pointsForThisReport, 'submitReport', actionData);
+
+            // Log general success to console
+            console.log('Report submitted successfully!');
+
+            // Show RP gain via sidebar IF points were awarded
+            if (totalPointsAwardedForAction > 0) {
+                showRpNotification("Report submitted", totalPointsAwardedForAction);
+            }
 
             // Reset Form
             e.target.reset();
@@ -2067,13 +2089,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Refresh views if needed
             if (pages.myReports?.classList.contains('show')) renderUserReports();
-            // Optional: Refresh admin view if admin is submitting (unlikely)
-            // if (currentUser.email === 'admin@sgresolve.com' && pages.admin?.classList.contains('show')) { await renderAdminReports(); await renderAdminAnalytics(); }
 
         } catch (error) {
-            if (document.getElementById('popup-overlay')?.classList.contains('show')) document.getElementById('popup-overlay').classList.remove('show');
             console.error('Error adding report to Firestore:', error);
-            showPopup(`Error submitting report: ${error.message}`, 'error', 0, false);
+            // showPopup(`Error submitting report: ${error.message}`, 'error', 0, false); // REPLACED
+            console.error(`Error submitting report: ${error.message}`);
         } finally {
              // Re-enable button ONLY if submission failed
              if (submitButton && !docRef) {
@@ -2098,14 +2118,16 @@ document.addEventListener('DOMContentLoaded', () => {
          const button = document.getElementById('refresh-reports');
          if (!button || button.disabled) return;
          button.disabled = true; button.textContent = 'Refreshing...';
-         showPopup("Refreshing data...", "info", 0, false);
+         // showPopup("Refreshing data...", "info", 0, false); // REPLACED - Rely on button text
+         console.info("Refreshing data...");
          try {
              await Promise.all([renderAdminReports(), renderAdminAnalytics()]);
-             document.getElementById('popup-overlay')?.classList.remove('show');
-             showPopup("Data refreshed!", "success");
+             // showPopup("Data refreshed!", "success", 0, true); // REPLACED
+             console.log("Data refreshed!");
          } catch (error) {
-             document.getElementById('popup-overlay')?.classList.remove('show');
-             console.error("Refresh Error:", error); showPopup("Failed to refresh data.", "error");
+             console.error("Refresh Error:", error);
+             // showPopup("Failed to refresh data.", "error", 0, false); // REPLACED
+             console.error("Failed to refresh data.");
          } finally {
              if (button) { button.disabled = false; button.textContent = 'Refresh Reports'; }
          }
@@ -2113,10 +2135,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('export-data')?.addEventListener('click', async () => {
         const button = document.getElementById('export-data'); if (!button) return;
         button.disabled = true; button.textContent = 'Exporting...';
-        showPopup("Generating CSV export...", "info", 0, false);
+        // showPopup("Generating CSV export...", "info", 0, false); // REPLACED - Rely on button text
+        console.info("Generating CSV export...");
         try {
             const allReports = await fetchReports();
-            if (allReports.length === 0) { document.getElementById('popup-overlay')?.classList.remove('show'); showPopup("No reports to export.", "info"); return; }
+            if (allReports.length === 0) {
+                 // showPopup("No reports to export.", "info", 0, true); // REPLACED
+                 console.info("No reports to export."); return;
+            }
             const csvRows = []; const headers = ['ID', 'User ID', 'User Name', 'Location Name', 'Latitude', 'Longitude', 'Description', 'Category', 'Urgency', 'Threat', 'Image URL', 'Status', 'Timestamp'];
             csvRows.push(headers.join(','));
             const escapeCsvField = (field) => { const stringField = String(field ?? ''); if (stringField.includes(',') || stringField.includes('"') || stringField.includes('\n')) return `"${stringField.replace(/"/g, '""')}"`; return stringField; };
@@ -2127,12 +2153,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const csvString = csvRows.join('\n'); const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' }); const link = document.createElement('a');
             if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob); link.setAttribute('href', url); const formattedDate = new Date().toISOString().split('T')[0]; link.setAttribute('download', `sgresolve_reports_${formattedDate}.csv`); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url); document.getElementById('popup-overlay')?.classList.remove('show'); showPopup("Export generated.", "success");
+                const url = URL.createObjectURL(blob); link.setAttribute('href', url); const formattedDate = new Date().toISOString().split('T')[0]; link.setAttribute('download', `sgresolve_reports_${formattedDate}.csv`); link.style.visibility = 'hidden'; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url);
+                // showPopup("Export generated.", "success", 0, true); // REPLACED
+                console.log("Export generated successfully.");
             } else {
-                 document.getElementById('popup-overlay')?.classList.remove('show'); showPopup("CSV generated, but auto-download not supported.", "warning", 0, false);
+                // showPopup("CSV generated, but auto-download not supported.", "warning", 0, false); // REPLACED
+                console.warn("CSV generated, but auto-download not supported by this browser.");
             }
         } catch (error) {
-             document.getElementById('popup-overlay')?.classList.remove('show'); console.error('Error exporting reports:', error); showPopup(`Export failed: ${error.message}`, 'error', 0, false);
+             console.error('Error exporting reports:', error);
+             // showPopup(`Export failed: ${error.message}`, 'error', 0, false); // REPLACED
+             console.error(`Export failed: ${error.message}`);
         } finally {
             if (button) { button.disabled = false; button.textContent = 'Export Data'; }
         }
@@ -2167,27 +2198,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Only proceed if status is actually changing
                  if (currentStatusInDB === newStatus) {
-                      showPopup("Status is already set to " + newStatus + ".", "info");
+                      // showPopup("Status is already set to " + newStatus + ".", "info", 0, true); // REPLACED
+                      console.info("Status is already set to " + newStatus + ".");
                       updateButton.disabled = false; updateButton.textContent = 'Update';
                       return; // Exit early
                  }
 
                 // Update the status in Firestore
                 await updateDoc(reportRef, { status: newStatus });
-                showPopup("Status updated successfully.", "success");
+                // showPopup("Status updated successfully.", "success", 0, true); // REPLACED
+                console.log("Status updated successfully for report " + reportId);
                 if (originalStatusSpan) originalStatusSpan.textContent = newStatus; // Update UI
 
                 // Award points if marked Resolved AND reporter ID found AND status changed TO Resolved
+                let pointsAwardedForResolution = 0;
                 if (newStatus === 'Resolved' && currentStatusInDB !== 'Resolved' && reporterUserId) {
                      console.log(`Report ${reportId} marked Resolved. Awarding resolution points to user ${reporterUserId}.`);
-                     // Pass the correct point value and action type
-                     await awardPointsAndCheckBadges(reporterUserId, POINT_VALUES.REPORT_RESOLVED, 'reportResolved');
+                     pointsAwardedForResolution = await awardPointsAndCheckBadges(reporterUserId, POINT_VALUES.REPORT_RESOLVED, 'reportResolved');
+                     // Show RP gain via sidebar if points were awarded
+                     if (pointsAwardedForResolution > 0) {
+                         // Note: This notification goes to the ADMIN triggering the action,
+                         // not necessarily the user who submitted the report.
+                         // Ideally, a notification system would inform the original reporter.
+                         // For now, the admin sees the sidebar notification related to the points awarded.
+                         showRpNotification("Report resolved points awarded", pointsAwardedForResolution);
+                     }
                 }
 
                 await renderAdminAnalytics(); // Refresh analytics
 
             } catch (error) {
-                console.error('Error updating status:', error); showPopup(`Failed to update status: ${error.message}`, 'error');
+                console.error('Error updating status:', error);
+                // showPopup(`Failed to update status: ${error.message}`, 'error', 0, false); // REPLACED
+                console.error(`Failed to update status for report ${reportId}: ${error.message}`);
                 if (originalStatusSpan && originalStatusText) originalStatusSpan.textContent = originalStatusText; // Revert UI
             } finally {
                  updateButton.disabled = false; updateButton.textContent = 'Update';
@@ -2201,7 +2244,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  deleteButton.disabled = true; deleteButton.textContent = 'Deleting...';
                 try {
                     await deleteDoc(doc(db, "reports", reportId));
-                    showPopup('Report deleted successfully.', 'success');
+                    // showPopup('Report deleted successfully.', 'success', 0, true); // REPLACED
+                    console.log('Report deleted successfully: ' + reportId);
                     reportLi.remove();
                     // Re-render map and analytics accurately
                     const remainingReports = await fetchReports();
@@ -2209,7 +2253,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderAdminMap(filteredRemaining);
                     await renderAdminAnalytics();
                  } catch (error) {
-                     console.error('Error deleting report:', error); showPopup(`Failed to delete report: ${error.message}`, 'error');
+                     console.error('Error deleting report:', error);
+                     // showPopup(`Failed to delete report: ${error.message}`, 'error', 0, false); // REPLACED
+                     console.error(`Failed to delete report ${reportId}: ${error.message}`);
                      deleteButton.disabled = false; deleteButton.textContent = 'Delete Report';
                  }
              }
@@ -2223,10 +2269,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // New Post Form Submission
         document.getElementById('forum-post-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!currentUser || !currentUserData) { showPopup("Please log in to create a post.", "error"); showPage('login'); return; }
+            if (!currentUser || !currentUserData) {
+                 // showPopup("Please log in to create a post.", "error", 0, false); // REPLACED
+                 console.error("Please log in to create a post.");
+                 showPage('login'); return;
+            }
             const titleInput = document.getElementById('post-title'); const contentInput = document.getElementById('post-content'); const categorySelect = document.getElementById('post-category'); const submitButton = document.getElementById('submit-button');
             const title = titleInput?.value.trim(); const content = contentInput?.value.trim(); const category = categorySelect?.value;
-            if (!title || !content || !category) { showPopup("Please fill in title, content, and category.", "warning"); return; }
+            if (!title || !content || !category) {
+                 // showPopup("Please fill in title, content, and category.", "warning", 0, false); // REPLACED
+                 console.warn("Please fill in title, content, and category."); return;
+            }
 
             submitButton.disabled = true; submitButton.textContent = 'Posting...';
             try {
@@ -2237,10 +2290,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.CREATE_FORUM_POST, 'createForumPost');
                 document.getElementById('forum-post-form').reset();
-                showPopup("Post submitted successfully!", "success", pointsAwarded);
+
+                // Log success to console
+                console.log("Post submitted successfully!");
+
+                // Show RP gain via sidebar if points > 0
+                if (pointsAwarded > 0) {
+                    showRpNotification("Forum post created", pointsAwarded);
+                }
+
                 await renderForumPosts(); // Refresh list
             } catch (error) {
-                console.error('Error adding forum post:', error); showPopup(`Error submitting post: ${error.message}`, 'error');
+                console.error('Error adding forum post:', error);
+                // showPopup(`Error submitting post: ${error.message}`, 'error', 0, false); // REPLACED
+                console.error(`Error submitting post: ${error.message}`);
             } finally {
                 submitButton.disabled = false; submitButton.textContent = 'Post';
             }
@@ -2269,7 +2332,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Handle Voting
             if (target.classList.contains('vote-btn')) {
-                if (!currentUser) { showPopup("Please log in to vote.", "error"); return; }
+                if (!currentUser) {
+                    // showPopup("Please log in to vote.", "error", 0, false); // REPLACED
+                    console.error("Please log in to vote."); return;
+                 }
                 if (target.disabled) return;
                 target.disabled = true;
 
@@ -2283,27 +2349,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (isCommentVote) { commentId = target.getAttribute('data-comment-id'); if (!commentId) { target.disabled = false; return; } docRef = doc(db, "forumPosts", postId, "comments", commentId); }
                 else { target.disabled = false; return; }
 
-                try {
-                    await updateDoc(docRef, { [voteField]: increment(1) });
 
-                    // Award points for GIVING an upvote
-                    if (isUpvote) {
-                        await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.GIVE_UPVOTE, 'giveUpvote');
+                // Handle upvote (award points, update DB/UI)
+                if (isUpvote) {
+                    try {
+                        await updateDoc(docRef, { [voteField]: increment(1) });
+                        // Award points for GIVING an upvote
+                        const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.GIVE_UPVOTE, 'giveUpvote');
+
+                        // Update UI optimistically
+                         const countMatch = target.textContent.match(/\d+$/);
+                         const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
+                         const icon = target.textContent.split(' ')[0];
+                         target.textContent = `${icon} ${currentCount + 1}`;
+
+                        // Show RP gain via sidebar if points > 0
+                        if (pointsAwarded > 0) {
+                            showRpNotification("Upvote submitted", pointsAwarded);
+                        }
+
+                        setTimeout(() => { target.disabled = false; }, 500); // Re-enable
+
+                    } catch (error) {
+                         console.error("Voting error:", error);
+                         // showPopup("Error recording vote.", "error", 0, false); // REPLACED
+                         console.error("Error recording vote.");
+                         target.disabled = false; // Re-enable on error
                     }
-
-                    // Update UI optimistically
-                     const countMatch = target.textContent.match(/\d+$/);
-                     const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
-                     const icon = target.textContent.split(' ')[0];
-                     target.textContent = `${icon} ${currentCount + 1}`;
-
-                    setTimeout(() => { target.disabled = false; }, 500); // Re-enable after delay
-
-                } catch (error) {
-                     console.error("Voting error:", error); showPopup("Error recording vote.", "error");
-                     target.disabled = false; // Re-enable on error
+                } else { // Handle downvote (no points, just update DB/UI)
+                     try {
+                         await updateDoc(docRef, { [voteField]: increment(1) });
+                         // Update UI optimistically
+                         const countMatch = target.textContent.match(/\d+$/);
+                         const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
+                         const icon = target.textContent.split(' ')[0];
+                         target.textContent = `${icon} ${currentCount + 1}`;
+                         setTimeout(() => { target.disabled = false; }, 500);
+                     } catch (error) {
+                         console.error("Voting error:", error);
+                         // showPopup("Error recording vote.", "error", 0, false); // REPLACED
+                         console.error("Error recording vote.");
+                         target.disabled = false;
+                     }
                 }
             }
+
 
             // Handle Post Pinning/Unpinning (Admin)
             if (target.classList.contains('pin-btn') && currentUser?.email === 'admin@sgresolve.com') {
@@ -2312,10 +2402,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 target.disabled = true; target.textContent = isPinned ? 'Unpinning...' : 'Pinning...';
                 try {
                     await updateDoc(doc(db, "forumPosts", postId), { pinned: !isPinned });
-                    showPopup(`Post successfully ${isPinned ? 'unpinned' : 'pinned'}.`, 'success');
+                    // showPopup(`Post successfully ${isPinned ? 'unpinned' : 'pinned'}.`, 'success', 0, true); // REPLACED
+                    console.log(`Post successfully ${isPinned ? 'unpinned' : 'pinned'}: ${postId}`);
                     await renderForumPosts(); // Re-render list for order
                 } catch(error) {
-                    console.error("Pinning error:", error); showPopup("Error changing pin status.", "error");
+                    console.error("Pinning error:", error);
+                    // showPopup("Error changing pin status.", "error", 0, false); // REPLACED
+                    console.error(`Error changing pin status for post ${postId}: ${error.message}`);
                     target.disabled = false; target.textContent = isPinned ? 'Unpin' : 'Pin'; target.setAttribute('data-pinned', isPinned ? 'true' : 'false');
                 }
             }
@@ -2335,15 +2428,23 @@ document.addEventListener('DOMContentLoaded', () => {
                              await Promise.all(deletePromises);
                             // Delete post
                              await deleteDoc(doc(db, "forumPosts", postId));
-                             showPopup('Post and comments deleted.', 'success');
+                             // showPopup('Post and comments deleted.', 'success', 0, true); // REPLACED
+                             console.log(`Post and comments deleted: ${postId}`);
                              postElement.remove();
                          } catch (error) {
-                             console.error("Error deleting post:", error); showPopup(`Failed to delete post: ${error.message}`, 'error');
+                             console.error("Error deleting post:", error);
+                             // showPopup(`Failed to delete post: ${error.message}`, 'error', 0, false); // REPLACED
+                             console.error(`Failed to delete post ${postId}: ${error.message}`);
                              target.disabled = false; target.textContent = '🗑️ Delete';
                          }
                      }
-                 } else if (!currentUser) { showPopup("Please log in to delete posts.", "error"); }
-                   else { showPopup("You do not have permission.", "error"); }
+                 } else if (!currentUser) {
+                    // showPopup("Please log in to delete posts.", "error", 0, false); // REPLACED
+                    console.error("Please log in to delete posts.");
+                 } else {
+                    // showPopup("You do not have permission.", "error", 0, false); // REPLACED
+                    console.error("You do not have permission to delete this post.");
+                 }
              }
 
              // Handle Comment Deletion (Author or Admin)
@@ -2355,7 +2456,12 @@ document.addEventListener('DOMContentLoaded', () => {
                      const commentRef = doc(db, "forumPosts", postId, "comments", commentId);
                      const commentSnap = await getDoc(commentRef);
                      if (commentSnap.exists()) commentAuthorId = commentSnap.data().authorId;
-                } catch (fetchError) { console.error("Could not fetch comment details:", fetchError); showPopup("Error checking comment ownership.", "error"); return; }
+                     else { throw new Error("Comment not found in DB."); } // Check if comment exists before proceeding
+                } catch (fetchError) {
+                     console.error("Could not fetch comment details:", fetchError);
+                     // showPopup("Error checking comment ownership.", "error", 0, false); // REPLACED
+                     console.error("Error checking comment ownership or comment not found."); return;
+                }
 
                  if (currentUser && commentId && (currentUser.email === 'admin@sgresolve.com' || currentUser.uid === commentAuthorId)) {
                       if (confirm("Delete this comment?")) {
@@ -2363,24 +2469,32 @@ document.addEventListener('DOMContentLoaded', () => {
                           target.disabled = true; target.textContent = 'Deleting...';
                           try {
                               await deleteDoc(doc(db, "forumPosts", postId, "comments", commentId));
-                              showPopup("Comment deleted.", "success");
+                              // showPopup("Comment deleted.", "success", 0, true); // REPLACED
+                              console.log(`Comment deleted: ${commentId} from post ${postId}`);
                               if(commentLi) commentLi.remove();
-                              // Decrement comment count on post
+                              // Decrement comment count on post (handle potential race conditions if needed, but increment(-1) is generally safe)
                               await updateDoc(doc(db, "forumPosts", postId), { commentCount: increment(-1) });
                               // Update count display
                               const commentBtn = postElement.querySelector('.toggle-comments-btn');
                               if (commentBtn) {
                                   const countMatch = commentBtn.textContent.match(/\((\d+)\)/);
-                                  const currentCount = countMatch ? parseInt(countMatch[1], 10) : 1;
+                                  const currentCount = countMatch ? parseInt(countMatch[1], 10) : 1; // Start from 1 if count was messed up
                                   commentBtn.textContent = `💬 Comments (${Math.max(0, currentCount - 1)})`;
                               }
                           } catch (error) {
-                              console.error("Error deleting comment:", error); showPopup(`Failed to delete comment: ${error.message}`, 'error');
+                              console.error("Error deleting comment:", error);
+                              // showPopup(`Failed to delete comment: ${error.message}`, 'error', 0, false); // REPLACED
+                              console.error(`Failed to delete comment ${commentId}: ${error.message}`);
                               target.disabled = false; target.textContent = 'Delete';
                           }
                       }
-                 } else if (!currentUser) { showPopup("Please log in to delete comments.", "error"); }
-                   else { showPopup("You do not have permission.", "error"); }
+                 } else if (!currentUser) {
+                    // showPopup("Please log in to delete comments.", "error", 0, false); // REPLACED
+                    console.error("Please log in to delete comments.");
+                 } else {
+                    // showPopup("You do not have permission.", "error", 0, false); // REPLACED
+                    console.error("You do not have permission to delete this comment.");
+                 }
             }
         });
 
@@ -2388,7 +2502,11 @@ document.addEventListener('DOMContentLoaded', () => {
         forumPostsContainer?.addEventListener('submit', async (e) => {
             if (e.target.classList.contains('comment-form')) {
                 e.preventDefault();
-                if (!currentUser || !currentUserData) { showPopup("Please log in to comment.", "error"); showPage('login'); return; }
+                if (!currentUser || !currentUserData) {
+                    // showPopup("Please log in to comment.", "error", 0, false); // REPLACED
+                    console.error("Please log in to comment.");
+                    showPage('login'); return;
+                 }
                 const postElement = e.target.closest('.forum-post'); const postId = postElement?.getAttribute('data-post-id'); const textarea = e.target.querySelector('textarea'); const submitButton = e.target.querySelector('button[type="submit"]'); const content = textarea?.value.trim();
                 if (!postId || !textarea || !content || !submitButton) return;
 
@@ -2401,7 +2519,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     textarea.value = '';
                     // Award points for commenting
-                    await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.CREATE_FORUM_COMMENT, 'createForumComment');
+                    const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.CREATE_FORUM_COMMENT, 'createForumComment');
                     // Increment comment count on post doc
                     await updateDoc(doc(db, "forumPosts", postId), { commentCount: increment(1) });
                     // Update UI count
@@ -2411,10 +2529,20 @@ document.addEventListener('DOMContentLoaded', () => {
                          const currentCount = countMatch ? parseInt(countMatch[1], 10) : 0;
                          commentBtn.textContent = `💬 Comments (${currentCount + 1})`;
                      }
+
+                    // Show RP gain via sidebar if points > 0
+                    if (pointsAwarded > 0) {
+                        showRpNotification("Comment added", pointsAwarded);
+                    } else {
+                         console.log(`Comment added to post ${postId}`); // Log if no points
+                    }
+
                     await renderComments(postId); // Refresh comments list
 
                 } catch (error) {
-                    console.error('Error adding comment:', error); showPopup(`Failed to post comment: ${error.message}`, 'error');
+                    console.error('Error adding comment:', error);
+                    // showPopup(`Failed to post comment: ${error.message}`, 'error', 0, false); // REPLACED
+                    console.error(`Failed to post comment to ${postId}: ${error.message}`);
                 } finally {
                      submitButton.disabled = false; submitButton.textContent = 'Comment';
                 }
@@ -2441,12 +2569,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 forumPostsContainer.innerHTML = '<p class="loading-message">Searching...</p>';
                 try {
                     // Basic client-side search (improve with server-side for large scale)
+                    // Consider Firestore text search extensions (like Algolia) for production
                     const postsQuery = query(collection(db, "forumPosts"), orderBy("timestamp", "desc"));
                     const querySnapshot = await getDocs(postsQuery);
                     const matchingPosts = [];
                     querySnapshot.forEach((doc) => {
                         const post = { id: doc.id, ...doc.data() };
-                        if ( (post.title && post.title.toLowerCase().includes(searchTerm)) || (post.content && post.content.toLowerCase().includes(searchTerm)) || (post.author && post.author.toLowerCase().includes(searchTerm)) ) {
+                        if ( (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                             (post.content && post.content.toLowerCase().includes(searchTerm)) ||
+                             (post.author && post.author.toLowerCase().includes(searchTerm)) ||
+                             (post.category && post.category.toLowerCase().includes(searchTerm)) // Search category too
+                           ) {
                             matchingPosts.push(post);
                         }
                     });
@@ -2463,7 +2596,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         postsWithCounts.forEach(post => { forumPostsContainer.appendChild(createPostElement(post)); });
                     }
                 } catch (error) {
-                    console.error('Error searching posts:', error); forumPostsContainer.innerHTML = '<p class="error-message">Error performing search.</p>'; showPopup("Search failed.", "error");
+                    console.error('Error searching posts:', error);
+                    forumPostsContainer.innerHTML = '<p class="error-message">Error performing search.</p>';
+                    // showPopup("Search failed.", "error", 0, false); // REPLACED
+                    console.error("Forum search failed.");
                 }
             }, 500); // Debounce search
         });
@@ -2503,11 +2639,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const userRef = doc(db, "users", currentUser.uid); await updateDoc(userRef, { displayName: newName }); console.log("Firestore document updated.");
                 await fetchAndSetCurrentUserData(currentUser.uid); // Refresh local data & UI
                 if(messageArea) messageArea.textContent = 'Display name updated successfully!'; messageArea.className = 'form-message success';
-                showPopup('Display name updated!', 'success');
+                // showPopup('Display name updated!', 'success', 0, true); // REPLACED
+                console.log('Display name updated!'); // Log success
             } catch (error) {
                 console.error("Error updating display name:", error);
                 if(messageArea) messageArea.textContent = `Error updating name: ${error.message}`; messageArea.className = 'form-message error';
-                showPopup(`Error updating name: ${error.message}`, 'error');
+                // showPopup(`Error updating name: ${error.message}`, 'error', 0, false); // REPLACED
+                console.error(`Error updating name: ${error.message}`); // Log error
             } finally {
                 updateButton.disabled = false; updateButton.textContent = 'Update Name';
             }
@@ -2539,7 +2677,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Update password
                 await updatePassword(currentUser, newPassword); console.log("Password updated.");
                 if(messageArea) messageArea.textContent = 'Password changed successfully!'; messageArea.className = 'form-message success';
-                showPopup('Password changed successfully!', 'success');
+                // showPopup('Password changed successfully!', 'success', 0, true); // REPLACED
+                console.log('Password changed successfully!'); // Log success
                 currentPasswordInput.value = ''; newPasswordInput.value = ''; confirmPasswordInput.value = ''; // Clear fields
             } catch (error) {
                 console.error("Error changing password:", error);
@@ -2548,7 +2687,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 else if (error.code === 'auth/weak-password') friendlyMessage = 'New password is too weak.';
                 else if (error.code === 'auth/requires-recent-login') friendlyMessage = 'Requires recent login. Please log out and log back in.';
                 if(messageArea) messageArea.textContent = friendlyMessage; messageArea.className = 'form-message error';
-                showPopup(`Password change failed: ${friendlyMessage}`, 'error');
+                // showPopup(`Password change failed: ${friendlyMessage}`, 'error', 0, false); // REPLACED
+                console.error(`Password change failed: ${friendlyMessage}`); // Log error
             } finally {
                 changeButton.disabled = false; changeButton.textContent = 'Change Password';
             }
@@ -2564,14 +2704,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('user-input')?.addEventListener('keypress', (e) => {
          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
-    document.getElementById('chat-close-button')?.addEventListener('click', toggleChat); 
+    document.getElementById('chat-close-button')?.addEventListener('click', toggleChat);
 
 
     // --- Initial Setup ---
-    console.log("SGResolve App Initialized with CAPTCHA and Enhanced Gamification.");
+    console.log("SGResolve App Initialized (No Center Popups). Using RP Sidebar & Console Logs.");
      if (!auth.currentUser && !document.querySelector('.page.show')) {
          showPage('landing'); // Ensure landing page is shown if not logged in
      }
-
-}); // --- End DOMContentLoaded ---
-
+    });

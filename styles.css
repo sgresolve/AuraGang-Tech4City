@@ -1051,10 +1051,10 @@
 .category { background-color: var(--accent-color); }
 .urgency-low { background-color: #28a745; }
 .urgency-medium { background-color: #fd7e14; }
-.urgency-high { background-color: #dc3545; }
+.urgency-high { background-color: #FF474C; }
 .threat-minor { background-color: #17a2b8; }
 .threat-moderate { background-color: #ffc107; color: #333; } /* Darker text on yellow */
-.threat-severe { background-color: #6c757d; }
+.threat-severe { background-color: #FF0000; }
 
 /* Report Actions */
 .report-actions {

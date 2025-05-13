@@ -1,5 +1,7 @@
 # **SGResolve - AI in Smart City**
 
+Spot It. Report It. Resolve It
+
 SGResolve is an innovative, AI-driven platform designed to transform Singapore into a smarter and more responsive city. The application empowers citizens to report local issues, track report progress in real time, and engage in community discussions—all while leveraging advanced technologies such as AI-powered categorization, cloud-based workflows, and interactive maps.
 
 ## **Table of Contents**

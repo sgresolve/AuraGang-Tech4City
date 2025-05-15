@@ -46,6 +46,7 @@ const db = getFirestore(app);
 // --- AI API Endpoints ---
 const IMAGE_ANALYZER_API_URL = "https://ai-photo-analyser-production.up.railway.app/analyze-image";
 const TEXT_ANALYSIS_API_URL = 'https://auto-detect-model-production.up.railway.app/predict';
+const SUGGEST_AGENCY_API_URL = "https://auto-agency-suggestion-ai-production.up.railway.app/suggest-agency"; // << UPDATED URL
 
 // --- ImgBB Key ---
 const IMGBB_API_KEY = '8c3ac5bab399ca801e354b900052510d'; // Your ImgBB Key
@@ -932,9 +933,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="report-actions">
                          <p><strong>Status:</strong> <span class="report-status">${report.status || 'N/A'}</span></p>
                          ${createStatusDropdown(report.status || 'Pending')}
+                         <p style="margin-top: 10px;"><strong>Suggested Agency:</strong>
+                            <span class="suggested-agency-display" id="suggested-agency-${report.id}">Loading...</span>
+                         </p>
                          <button class="button danger-button delete-report-btn" data-report-id="${report.id}" style="margin-top: 10px;">Delete Report</button>
                     </div>`;
                 adminReportsContainer.appendChild(li);
+
+                // --- NEW: Fetch and display suggested agency ---
+                fetchAndDisplaySuggestedAgency(report.id, report.description, report.category, report.locationName);
+                // --- END NEW ---
             });
             renderAdminMap(filteredReports); // Update map
         } catch (error) {
@@ -943,6 +951,61 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAdminMap([]); // Clear map on error
         }
     }
+
+    // --- NEW FUNCTION to fetch and display suggested agency ---
+    async function fetchAndDisplaySuggestedAgency(reportId, description, category, locationName) {
+        const agencyDisplayElement = document.getElementById(`suggested-agency-${reportId}`);
+        if (!agencyDisplayElement) return;
+
+        // Basic check to prevent calling API if critical info is missing for suggestion
+        if (!description && !category) {
+            agencyDisplayElement.textContent = 'N/A (Insufficient info)';
+            agencyDisplayElement.style.color = '#777';
+            return;
+        }
+
+        try {
+            const response = await fetch(SUGGEST_AGENCY_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    description: description || "", // Send empty string if null/undefined
+                    category: category || "",
+                    locationName: locationName || ""
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: "Unknown API error" }));
+                console.error(`Error fetching suggestion for report ${reportId}:`, response.status, errorData);
+                agencyDisplayElement.textContent = `Error (${response.status})`;
+                agencyDisplayElement.style.color = 'red';
+                return;
+            }
+
+            const data = await response.json();
+            if (data.suggested_agency) {
+                agencyDisplayElement.textContent = data.suggested_agency;
+                agencyDisplayElement.style.color = 'var(--primary-color)'; // Or any color you prefer
+            } else if (data.error) {
+                console.error(`API returned error for report ${reportId}:`, data.error);
+                agencyDisplayElement.textContent = 'Suggestion Error';
+                agencyDisplayElement.style.color = 'orange';
+            }
+            else {
+                agencyDisplayElement.textContent = 'N/A';
+                agencyDisplayElement.style.color = '#777';
+            }
+        } catch (error) {
+            console.error(`Network or other error fetching suggestion for report ${reportId}:`, error);
+            agencyDisplayElement.textContent = 'Unavailable';
+            agencyDisplayElement.style.color = 'red';
+        }
+    }
+    // --- END NEW FUNCTION ---
+
     async function renderUserReports() {
         if (!currentUser) return;
         const userReportsContainer = document.getElementById('user-reports-container');

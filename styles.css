@@ -17,7 +17,7 @@
    13. Animations & Transitions
    14. Responsive Adjustments
    15. Map Styling & Popups
-   16. Profile Page & Gamification Elements  <-- NEW SECTION
+   16. Profile Page & Gamification Elements
    ============================================================================= */
 
 /* ============================================================================
@@ -541,7 +541,19 @@
   
   .hero-buttons .button {
     margin: 5px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .hero-buttons .primary-button {
+    background: #2196f3;
+    color: #fff;
+  }
+  .hero-buttons .secondary-button {
+    background: #43b96e;
+    color: #fff;
+  }
+  .hero-buttons .button:hover {
+    transform: scale(1.07);
+    /* No shadow, no color change */
   }
   .hero-buttons .button:hover {
     transform: scale(1.05);
@@ -689,21 +701,31 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-  
-  /* CTA Section */
+
+
+  /* ============================================================================
+    CTA Section & Footer Styles
+    ============================================================================ */
   #cta-section {
     padding: 60px 20px;
     text-align: center;
-    background: #f8f9fa;
+    background: linear-gradient(135deg, #e6f3ff, #d1e9ff, #f0f8ff);
+    background-size: 200% 200%;
+    animation: gradientShift 10s ease infinite;
+    border-radius: var(--border-radius);
+    margin-bottom: 0;
   }
-  @media (min-width: 768px) {
-    #cta-section { padding: 80px 20px; }
-  }
+
   #cta-section h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
     margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
     opacity: 0;
     animation: fadeInUp 1s forwards;
   }
+
   #cta-section p {
     font-size: 1.1rem;
     color: var(--muted-color);
@@ -715,18 +737,86 @@
     animation: fadeIn 1s forwards;
     animation-delay: 0.4s;
   }
-  .cta-buttons .button {
-    margin: 5px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
+
+  .cta-buttons .button {
+    min-width: 160px;
+    margin: 5px;
+    font-size: 1.1rem;
+    padding: 0.9rem 2rem;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: var(--shadow-light);
+  }
+
   .cta-buttons .button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-medium);
   }
-  @media (min-width: 768px) {
-    .cta-buttons .button {
-      margin-right: 10px;
+
+  #cta-register {
+    background: linear-gradient(90deg, var(--primary-color), #4facfe);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  #cta-register:hover {
+    background: linear-gradient(90deg, var(--primary-dark), #00f2fe);
+  }
+
+  #cta-login {
+    background: var(--secondary-color);
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  #cta-login:hover {
+    background: var(--secondary-dark);
+  }
+
+  @media (max-width: 600px) {
+    #cta-section {
+     padding: 40px 10px;
     }
+    .cta-buttons {
+     flex-direction: column;
+     gap: 0.7rem;
+    }
+    .cta-buttons .button {
+     width: 100%;
+     min-width: 0;
+     font-size: 1rem;
+     padding: 0.8rem 1.2rem;
+    }
+  }
+
+  /* ============================================================================
+    Site Footer Styles
+    ============================================================================ */
+  .site-footer {
+    background: #f8f9fa;
+    color: var(--muted-color);
+    text-align: center;
+    padding: 1.5rem 0;
+    font-size: 1rem;
+    border-top: 1px solid var(--border-color);
+    margin-top: 0;
+  }
+
+  .site-footer a {
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: underline;
+    transition: color 0.2s;
+  }
+
+  .site-footer a:hover {
+    color: var(--primary-dark);
   }
   
 /* ============================================================================

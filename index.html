@@ -270,6 +270,10 @@
         <input type="number" id="longitude" step="any" placeholder="Longitude" required>
         <button type="button" id="detectLocation">Detect Location</button>
         <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
+        <button type="button" id="voiceInputBtn" class="voice-btn" aria-label="Start voice input">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <span id="voiceStatus" class="voice-status" style="display: none;">Recording...</span>
     </form>
     <!-- Text-based Auto Detect Button -->
     <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>

@@ -261,18 +261,34 @@
       </div>
     </div>
 
-    <!-- Reporting Page -->
-    <div id="reporting-page" class="page" style="display: none;">
-        <h1>Report an Issue</h1>
-        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-        <form id="report-form">
+    <div class="container" id="reporting-page" style="display: none;">
+    <h1>Report an Issue</h1>
+    <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+    <form id="report-form">
+        <label for="locationName">Location Name:</label>
+        <div class="input-group">
             <input type="text" id="locationName" placeholder="Location Name" required>
+        </div>
+        <label for="latitude">Latitude:</label>
+        <div class="input-group">
             <input type="number" id="latitude" step="any" placeholder="Latitude" required>
+        </div>
+        <label for="longitude">Longitude:</label>
+        <div class="input-group">
             <input type="number" id="longitude" step="any" placeholder="Longitude" required>
-            <button type="button" id="detectLocation">Detect Location</button>
+        </div>
+        <button type="button" id="detectLocation" class="detect-btn">
+            <i class="fas fa-map-marker-alt"></i> Detect Location
+        </button>
+        <label for="problemDesc">Describe the issue:</label>
+        <div class="input-group">
             <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
-            <!-- Text-based Auto Detect Button -->
-            <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>
+            <button type="button" id="voiceInputBtn" class="voice-btn" aria-label="Start voice input">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div>
+        <span id="voiceStatus" class="voice-status" style="display: none;">Recording...</span>
+</div>
 
             <!-- Dropdowns -->
             <select id="category" required>

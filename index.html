@@ -5,19 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SGResolve</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Add Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Add Leaflet CDN for maps -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0969da">
+    <!-- Basic iOS PWA Meta Tags (Optional but recommended) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/NAISC-NAPA/images/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/NAISC-NAPA/images/icons/icon-192x192.png"> <!-- Example size -->
   <!-- Add Google reCAPTCHA v2 Script -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <!-- End Google reCAPTCHA v2 Script -->
+  <style>
+    /* Basic styling for mic buttons - consider moving to styles.css */
+    .mic-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0px 8px; /* Adjust as needed */
+      font-size: 1.1em; /* Adjust as needed */
+      color: #555;
+      vertical-align: middle;
+    }
+    .mic-button:hover {
+      color: var(--primary-color);
+    }
+    .mic-button.recognizing i {
+      color: red;
+    }
+    .chat-input {
+      display: flex;
+      align-items: center;
+    }
+    .chat-input .input-box {
+      flex-grow: 1;
+      margin-right: 5px; /* Space before mic button */
+    }
+    #report-form textarea + .mic-button {
+        margin-top: 5px; /* Space above mic button */
+        margin-bottom: 10px; /* Space below mic button */
+        /* display: block; */ /* If it should be on its own line */
+    }
+  </style>
 </head>
 <body>
   <div id="app">
@@ -85,10 +119,10 @@
           <a href="#" id="cta-login" class="button secondary-button">Login</a>
         </div>
               <p>
-        Follow us on 
+        Follow us on
         <a href="https://t.me/yourchannel" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-telegram-plane" aria-hidden="true"></i> Telegram
-        </a> 
+        </a>
         for live updates.
       </p>
       </section>
@@ -104,6 +138,7 @@
         <div class="chat-box" id="chat-box"></div>
         <div class="chat-input">
           <input type="text" id="user-input" class="input-box" placeholder="Type a message...">
+          <button id="chatbot-mic-btn" class="mic-button" aria-label="Use microphone for chat input" title="Use Microphone"><i class="fas fa-microphone"></i></button>
           <button class="send-button">Send</button>
         </div>
       </div>
@@ -261,18 +296,20 @@
       </div>
     </div>
 
+    <!-- Reporting Page -->
     <div id="reporting-page" class="page" style="display: none;">
-    <h1>Report an Issue</h1>
-    <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-    <form id="report-form">
-        <input type="text" id="locationName" placeholder="Location Name" required>
-        <input type="number" id="latitude" step="any" placeholder="Latitude" required>
-        <input type="number" id="longitude" step="any" placeholder="Longitude" required>
-        <button type="button" id="detectLocation">Detect Location</button>
-        <textarea id="problemDesc" placeholder="Type or Voice out your issue..." required></textarea>
-    </form>
-    <!-- Text-based Auto Detect Button -->
-    <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>
+        <h1>Report an Issue</h1>
+        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+        <form id="report-form">
+            <input type="text" id="locationName" placeholder="Location Name" required>
+            <input type="number" id="latitude" step="any" placeholder="Latitude" required>
+            <input type="number" id="longitude" step="any" placeholder="Longitude" required>
+            <button type="button" id="detectLocation">Detect Location</button>
+            <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
+            <button type="button" id="report-desc-mic-btn" class="mic-button" aria-label="Use microphone for report description" title="Use Microphone"><i class="fas fa-microphone"></i></button>
+            <!-- Text-based Auto Detect Button -->
+            <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>
+
             <!-- Dropdowns -->
             <select id="category" required>
                 <option value="">Select Category</option>
@@ -661,11 +698,9 @@
       <span class="rp-points"></span>
     </div>
 
-  </div> <!-- End #app -->
+  </div>
 
-
-
-  <!-- Scripts -->
+    <!-- Scripts -->
   <script type="module" src="script.js"></script>
   <!-- PWA Service Worker Registration -->
   <script>

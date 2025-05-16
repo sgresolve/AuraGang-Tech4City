@@ -17,7 +17,7 @@
    13. Animations & Transitions
    14. Responsive Adjustments
    15. Map Styling & Popups
-   16. Profile Page & Gamification Elements
+   16. Profile Page & Gamification Elements  <-- NEW SECTION
    ============================================================================= */
 
 /* ============================================================================
@@ -2879,3 +2879,84 @@
       font-size: 1em; /* Match surrounding text */
       /* animation: pointsPulse 1s ease-out; */ /* Optional animation */
   }
+/* ============================================================================
+   18. Voice Input Styles
+   ============================================================================ */
+.voice-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.voice-input-btn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-light);
+  transition: background 0.3s, transform 0.2s;
+  outline: none;
+  position: relative;
+}
+
+.voice-input-btn:active,
+.voice-input-btn.listening {
+  background: var(--secondary-color);
+  transform: scale(1.08);
+  box-shadow: var(--shadow-medium);
+}
+
+.voice-input-btn:focus {
+  box-shadow: 0 0 0 3px rgba(46, 164, 79, 0.2);
+}
+
+.voice-input-status {
+  font-size: 0.98rem;
+  color: var(--muted-color);
+  font-style: italic;
+  transition: color 0.3s;
+}
+
+.voice-input-btn.listening::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--secondary-color);
+  animation: voicePulse 1s infinite;
+  pointer-events: none;
+}
+
+@keyframes voicePulse {
+  0% { opacity: 0.7; transform: scale(1); }
+  70% { opacity: 0.2; transform: scale(1.25); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+
+@media (max-width: 480px) {
+  .voice-input-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  .voice-input-btn.listening::after {
+    width: 54px;
+    height: 54px;
+    top: -7px;
+    left: -7px;
+  }
+  .voice-input-status {
+    font-size: 0.9rem;
+  }
+}

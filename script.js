@@ -153,6 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let categoryChartInstance = null;
     let rpNotificationTimeout; // Store timeout for RP sidebar to prevent overlaps
 
+    // --- Speech Recognition Variables ---
+    let recognition;
+    let isRecognizing = false;
+    let targetInputFieldForSpeech = null; // To avoid conflict with other 'targetInputField' if any
+
+
     // Predefined Locations & Colors
      const PREDEFINED_LOCATIONS = {
         punggol: { lat: 1.4051, lon: 103.9025, name: "Punggol" }, sengkang: { lat: 1.3917, lon: 103.8954, name: "Sengkang" }, hougang: { lat: 1.3716, lon: 103.8931, name: "Hougang" }, serangoon: { lat: 1.3497, lon: 103.8731, name: "Serangoon" }, tampines: { lat: 1.3544, lon: 103.9439, name: "Tampines" }, pasir_ris: { lat: 1.3731, lon: 103.9493, name: "Pasir Ris" }, bedok: { lat: 1.3240, lon: 103.9298, name: "Bedok" }, changi_airport: { lat: 1.3592, lon: 103.9896, name: "Changi Airport" }, woodlands: { lat: 1.4360, lon: 103.7860, name: "Woodlands" }, yishun: { lat: 1.4295, lon: 103.8350, name: "Yishun" }, sembawang: { lat: 1.4491, lon: 103.8200, name: "Sembawang" }, ang_mo_kio: { lat: 1.3699, lon: 103.8496, name: "Ang Mo Kio" }, bishan: { lat: 1.3508, lon: 103.8484, name: "Bishan" }, toa_payoh: { lat: 1.3324, lon: 103.8497, name: "Toa Payoh" }, orchard: { lat: 1.3048, lon: 103.8318, name: "Orchard Road" }, city_hall: { lat: 1.2931, lon: 103.8525, name: "City Hall" }, raffles_place: { lat: 1.2839, lon: 103.8515, name: "Raffles Place" }, jurong_east: { lat: 1.3331, lon: 103.7422, name: "Jurong East" }, clementi: { lat: 1.3150, lon: 103.7651, name: "Clementi" }, bukit_batok: { lat: 1.3490, lon: 103.7496, name: "Bukit Batok" }, choa_chu_kang: { lat: 1.3854, lon: 103.7446, name: "Choa Chu Kang" }, boon_lay: { lat: 1.3386, lon: 103.7060, name: "Boon Lay" }, harbourfront: { lat: 1.2659, lon: 103.8214, name: "HarbourFront" }, marina_bay: { lat: 1.2808, lon: 103.8596, name: "Marina Bay Sands" },
@@ -1664,6 +1670,108 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // --- Speech Recognition Setup ---
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false; // Stop after the first distinct phrase
+        recognition.interimResults = true; // Get results as they are being processed
+        recognition.lang = 'en-SG'; // Prioritize Singapore English
+                                    // Note: Actual preservation of Singlish (vs. "correction" to standard English)
+                                    // depends on the browser's speech recognition engine and its 'en-SG' model.
+                                    // This JS setting is a request; the engine's behavior is out of direct JS control.
+
+        recognition.onstart = () => {
+            isRecognizing = true;
+            if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
+                targetInputFieldForSpeech.micButton.classList.add('recognizing');
+                targetInputFieldForSpeech.micButton.innerHTML = '<i class="fas fa-stop-circle"></i>';
+                targetInputFieldForSpeech.micButton.title = 'Stop Recording';
+            }
+            console.log('Voice recognition started.');
+        };
+
+        recognition.onresult = (event) => {
+            let spokenTranscriptThisSession = "";
+            // Concatenate all results for this event to get the current full transcript of the spoken part
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                spokenTranscriptThisSession += event.results[i][0].transcript;
+            }
+            // Trim the currently spoken part to avoid leading/trailing spaces from the speech engine if any
+            spokenTranscriptThisSession = spokenTranscriptThisSession.trim();
+
+            if (targetInputFieldForSpeech && targetInputFieldForSpeech.inputElement) {
+                // Get the text that was in the input field *before* this recognition session started
+                const existingText = targetInputFieldForSpeech.inputElement.dataset.currentFinalText || "";
+                
+                if (existingText && spokenTranscriptThisSession) {
+                    // Add a space if existingText is not empty and doesn't already end with one
+                    targetInputFieldForSpeech.inputElement.value = existingText + (existingText.endsWith(' ') ? '' : ' ') + spokenTranscriptThisSession;
+                } else if (spokenTranscriptThisSession) {
+                    // If no existing text, just use the spoken transcript
+                    targetInputFieldForSpeech.inputElement.value = spokenTranscriptThisSession;
+                } else {
+                    // If spokenTranscript is empty (e.g. recognition started but no speech yet, or cleared during processing)
+                    // just keep the existing text. This handles cases where `onresult` might fire with an empty transcript initially.
+                    targetInputFieldForSpeech.inputElement.value = existingText;
+                }
+            }
+            // console.log('Current spoken transcript: ', spokenTranscriptThisSession);
+        };
+
+        recognition.onerror = (event) => {
+            isRecognizing = false;
+            console.error('Speech recognition error:', event.error);
+            let errorMessage = 'Speech recognition error: ' + event.error;
+
+            if (event.error === 'not-allowed') {
+                errorMessage = "Microphone access denied. Please allow microphone access in your browser settings.";
+            } else if (event.error === 'no-speech') {
+                errorMessage = "No speech detected. Please try again.";
+            } else if (event.error === 'language-not-supported') {
+                console.warn("Language 'en-SG' might not be fully supported by the browser. Trying 'en-US'.");
+                recognition.lang = 'en-US'; // Fallback language
+                errorMessage = "Switched to en-US due to language support. Please try again.";
+            }
+            console.error(errorMessage); // Using console log as per existing pattern
+
+            if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
+                targetInputFieldForSpeech.micButton.classList.remove('recognizing');
+                targetInputFieldForSpeech.micButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                targetInputFieldForSpeech.micButton.title = 'Use Microphone';
+            }
+            // targetInputFieldForSpeech = null; // Do not nullify here, onend will handle it
+        };
+
+        recognition.onend = () => {
+            isRecognizing = false;
+            if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
+                targetInputFieldForSpeech.micButton.classList.remove('recognizing');
+                targetInputFieldForSpeech.micButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                targetInputFieldForSpeech.micButton.title = 'Use Microphone';
+            }
+            console.log('Voice recognition ended.');
+            if (targetInputFieldForSpeech && targetInputFieldForSpeech.inputElement) {
+                // The input field value should be correctly set by the last onresult.
+                // Clean up the dataset attribute for the next session.
+                delete targetInputFieldForSpeech.inputElement.dataset.currentFinalText;
+                
+                // Ensure the auto-detect button for problem description is enabled if there's text
+                if (targetInputFieldForSpeech.inputElement.id === 'problemDesc') {
+                    const autoDetectBtn = document.getElementById('autoDetect');
+                    if (autoDetectBtn) autoDetectBtn.disabled = !targetInputFieldForSpeech.inputElement.value.trim();
+                }
+            }
+            targetInputFieldForSpeech = null; // Clear the target now that recognition has ended
+        };
+    } else {
+        console.warn('Speech Recognition API not supported in this browser.');
+        // Hide all microphone buttons if the API is not available
+        document.querySelectorAll('.mic-button').forEach(btn => btn.style.display = 'none');
+    }
+    // --- End Speech Recognition Setup ---
+
+
     // --- Auth State Change Listener ---
     onAuthStateChanged(auth, async (user) => { // Made async
         const wasLoggedIn = !!currentUser;
@@ -2768,6 +2876,68 @@ document.addEventListener('DOMContentLoaded', () => {
          if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
     document.getElementById('chat-close-button')?.addEventListener('click', toggleChat);
+
+    // --- Microphone Button Event Listeners ---
+    const chatbotMicBtn = document.getElementById('chatbot-mic-btn');
+    const chatbotUserInput = document.getElementById('user-input');
+
+    if (chatbotMicBtn && chatbotUserInput && recognition) {
+        chatbotMicBtn.addEventListener('click', () => {
+            if (isRecognizing) {
+                recognition.stop();
+                return;
+            }
+            targetInputFieldForSpeech = { inputElement: chatbotUserInput, micButton: chatbotMicBtn };
+            // Store the text that is ALREADY in the input field before starting new recognition
+            chatbotUserInput.dataset.currentFinalText = chatbotUserInput.value; 
+            try {
+                recognition.start();
+            } catch (e) {
+                isRecognizing = false; // Ensure state is correct if start fails
+                console.error("Error starting recognition (chatbot):", e);
+                console.error("Could not start voice recognition. " + e.message);
+                 if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
+                    targetInputFieldForSpeech.micButton.classList.remove('recognizing');
+                    targetInputFieldForSpeech.micButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                    targetInputFieldForSpeech.micButton.title = 'Use Microphone';
+                }
+                targetInputFieldForSpeech = null; // Clear if start failed immediately
+            }
+        });
+    } else if (chatbotMicBtn) {
+        chatbotMicBtn.style.display = 'none'; // Hide if API or element not available
+    }
+
+    const reportDescMicBtn = document.getElementById('report-desc-mic-btn');
+    const problemDescTextarea = document.getElementById('problemDesc');
+
+    if (reportDescMicBtn && problemDescTextarea && recognition) {
+        reportDescMicBtn.addEventListener('click', () => {
+            if (isRecognizing) {
+                recognition.stop();
+                return;
+            }
+            targetInputFieldForSpeech = { inputElement: problemDescTextarea, micButton: reportDescMicBtn };
+            // Store the text that is ALREADY in the input field before starting new recognition
+            problemDescTextarea.dataset.currentFinalText = problemDescTextarea.value; 
+            try {
+                recognition.start();
+            } catch (e) {
+                isRecognizing = false; // Ensure state is correct
+                console.error("Error starting recognition (report):", e);
+                console.error("Could not start voice recognition. " + e.message);
+                if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
+                    targetInputFieldForSpeech.micButton.classList.remove('recognizing');
+                    targetInputFieldForSpeech.micButton.innerHTML = '<i class="fas fa-microphone"></i>';
+                    targetInputFieldForSpeech.micButton.title = 'Use Microphone';
+                }
+                targetInputFieldForSpeech = null; // Clear if start failed immediately
+            }
+        });
+    } else if (reportDescMicBtn) {
+        reportDescMicBtn.style.display = 'none'; // Hide if API or element not available
+    }
+    // --- End Microphone Button Event Listeners ---
 
 
     // --- Initial Setup ---

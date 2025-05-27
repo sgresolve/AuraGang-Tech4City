@@ -228,7 +228,17 @@ document.addEventListener('DOMContentLoaded', () => {
       nearbyReports: document.getElementById('nearby-reports-page'),
       profile: document.getElementById('profile-page'), // Added profile page
     };
+
     const navbar = document.getElementById('navbar');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navbarUl = document.getElementById('navbar-ul'); // Assuming your UL has this ID
+
+    if (menuToggle && navbar && navbarUl) {
+        menuToggle.addEventListener('click', () => {
+            const isOpened = navbar.classList.toggle('nav-open');
+            menuToggle.setAttribute('aria-expanded', isOpened);
+        });
+    }
 
     // --- Helper Functions ---
     function hideAllPages() {
@@ -1833,6 +1843,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error(`Logout failed: ${error.message}`);
         });
     });
+
+    
 
     // Landing Page Buttons
     document.getElementById('hero-report-issue')?.addEventListener('click', (e) => { e.preventDefault(); showPage(currentUser ? 'reporting' : 'login'); });

@@ -355,117 +355,234 @@
 /* ============================================================================
    04. Navigation Bar - Modern Refinement v1
    ============================================================================ */
-
-/* Define reusable variables (adjust values as needed) */
+/* === Root Variables (Adjust as needed) === */
 :root {
-  --navbar-bg: #ffffff; /* Clean white background */
-  --navbar-border-color: #eaeaea; /* Subtle border */
-  --navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06); /* Softer shadow */
-  --text-color-nav: #333; /* Slightly darker text for contrast */
-  --text-color-nav-hover: var(--primary-color, #007bff); /* Use primary color on hover */
-  --bg-nav-hover: #f5f5f5; /* Very subtle background hover */
-  --border-radius-nav: 6px; /* Slightly softer radius */
-  --gamification-bg: #f0f0f0; /* Light neutral bg for gamification */
-  --gamification-text: #555; /* Muted text for gamification */
-  --transition-speed: 0.2s; /* Faster, snappier transition */
+  --navbar-bg: #ffffff;
+  --navbar-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  --text-color-nav: #333333;
+  --text-color-nav-hover: #007bff; /* Primary color for hover/active */
+  --primary-color: #007bff; /* Define if not already globally set */
+  --navbar-divider-color: #e0e0e0;
+  --pill-border-radius: 100px;
+  --link-padding-vertical: 0.65rem;
+  --link-padding-horizontal: 1.1rem;
+  --logo-font-weight: 600;
+  --transition-speed: 0.2s;
+  --gamification-bg-nav: transparent; /* Gamification items transparent in pill */
+  --gamification-text-nav: var(--text-color-nav);
 }
 
+/* === General Navbar Styling (Pill Shape for Desktop) === */
 #navbar {
+  display: flex;
+  align-items: center;
   background-color: var(--navbar-bg);
   box-shadow: var(--navbar-shadow);
-  /* Add a subtle border for definition if desired */
-  /* border-bottom: 1px solid var(--navbar-border-color); */
-  padding: 0.75rem 1.5rem; /* Slightly more vertical padding */
+  padding: 0.4rem 0.6rem; /* Padding inside the pill, around the ul/toggle */
   position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%; /* Ensure it spans full width */
-  box-sizing: border-box; /* Include padding in width calculation */
+  top: 10px; /* Adjust to give some space from the top of the viewport */
+  z-index: 1000;
+  box-sizing: border-box;
+
+  /* Pill shape and centering for desktop */
+  width: fit-content;
+  max-width: calc(100% - 2rem); /* Ensure it doesn't touch screen edges */
+  margin: 1rem auto; /* Center the pill */
+  border-radius: var(--pill-border-radius);
 }
 
 #navbar ul {
   display: flex;
-  justify-content: flex-start; /* Align items to the start (left) - often cleaner */
-  /* Use justify-content: center; if you prefer centered links */
-  gap: 1.5rem; /* Increased gap for more breathing room */
   align-items: center;
-  list-style: none; /* Remove default list styles */
+  list-style: none;
   padding: 0;
   margin: 0;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Keep items in one line on desktop */
 }
 
-#navbar a {
+#navbar ul li {
+  position: relative; /* For dividers */
+}
+
+/* Style for #nav-home to act as a logo area on desktop */
+#navbar #nav-home {
+  font-weight: var(--logo-font-weight);
+  padding-left: calc(var(--link-padding-horizontal) * 1.2);
+  padding-right: var(--link-padding-horizontal);
+  color: var(--text-color-nav); /* Ensure base color */
+}
+/* Optional: If you add an icon to your logo link */
+#navbar #nav-home svg,
+#navbar #nav-home img {
+  margin-right: 0.4em;
+  vertical-align: middle;
+  height: 1.1em; /* Adjust icon size */
+}
+
+
+/* General link styling inside the pill */
+#navbar ul li a {
   color: var(--text-color-nav);
   font-weight: 500;
-  text-decoration: none; /* Remove underline */
-  padding: 0.6rem 1rem; /* Adjusted padding for better hit area/look */
-  border-radius: var(--border-radius-nav);
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+  text-decoration: none;
+  padding: var(--link-padding-vertical) var(--link-padding-horizontal);
+  display: block;
   white-space: nowrap;
-  display: inline-block; /* Ensures padding is respected correctly */
+  transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+  border-radius: 0; /* Links are not individually rounded */
+  background-color: transparent;
 }
 
-#navbar a:hover,
-#navbar a:focus-visible { /* Added focus style for accessibility */
-  background-color: var(--bg-nav-hover);
+/* Dividers between li elements (inspired by "eco" image) */
+#navbar ul li:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 1em; /* Adjust height of divider */
+  background-color: var(--navbar-divider-color);
+}
+
+#navbar ul li a:hover,
+#navbar ul li a:focus-visible {
   color: var(--text-color-nav-hover);
-  outline: none; /* Remove default focus outline if custom style is sufficient */
+  background-color: rgba(0, 0, 0, 0.03); /* Very subtle hover */
 }
 
-/* Optional: Style for the active page link */
-#navbar a.active {
+#navbar ul li a.active {
   color: var(--text-color-nav-hover);
-  font-weight: 600; /* Make active link slightly bolder */
+  font-weight: 600;
 }
 
-
-/* Gamification Styles in Navbar */
-.gamification-nav {
-  display: none; /* Hidden by default */
-  /* Consider placing it at the end using margin-left: auto on the element itself or its container li */
-}
+/* Gamification Styles in Navbar (Desktop Pill) */
 
 .gamification-nav span {
   font-weight: 500;
-  color: var(--gamification-text);
-  padding: 0.5rem 0.9rem; /* Align padding closer to links */
-  background-color: var(--gamification-bg);
-  border-radius: var(--border-radius-nav); /* Match link border-radius */
-  font-size: 0.85em;
+  color: var(--gamification-text-nav);
+  padding: var(--link-padding-vertical) var(--link-padding-horizontal);
+  background-color: var(--gamification-bg-nav);
+  font-size: 0.9em; /* Slightly smaller */
   white-space: nowrap;
-  display: inline-block; /* Consistent display */
+  display: block; /* Consistent with links */
+  border-radius: 0;
 }
 
-/* --- Responsive Adjustments --- */
 
-@media (max-width: 900px) {
+/* === Hamburger Menu Toggle Button === */
+.menu-toggle {
+  display: none; /* Hidden on desktop */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-left: auto; /* Pushes toggle to the right if other direct children in #navbar */
+  z-index: 1010; /* Above other nav elements if they overlap */
+  order: 2; /* Ensures it comes after the logo if logo is direct child */
+}
+
+.menu-toggle span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background-color: var(--text-color-nav);
+  margin: 4px 0;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  border-radius: 1px;
+}
+
+/* Hamburger animation when .nav-open is on #navbar */
+#navbar.nav-open .menu-toggle span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+#navbar.nav-open .menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+#navbar.nav-open .menu-toggle span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+
+/* === Responsive Adjustments (Mobile Menu) === */
+/* Adjust this breakpoint as needed (e.g., 992px or 768px) */
+@media (max-width: 900px) { /* Breakpoint where pill might get too crowded */
   #navbar {
-    padding: 0.6rem 1rem; /* Reduce padding */
+    width: 100%;
+    max-width: 100%;
+    top: 0; /* Stick to the very top on mobile */
+    margin: 0;
+    border-radius: 0; /* Square edges for full-width mobile nav */
+    padding: 0.5rem 1rem; /* Typical mobile header padding */
+    justify-content: space-between; /* For logo (if separate) and hamburger */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Standard mobile header shadow */
   }
+
+  /* Hide the main UL on mobile by default; show hamburger */
   #navbar ul {
-    gap: 1rem; /* Reduce gap */
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    position: absolute;
+    top: 100%; /* Position below the navbar */
+    left: 0;
+    width: 100%;
+    background-color: var(--navbar-bg);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Dropdown shadow */
+    padding: 0.5rem 0; /* Padding for the dropdown container */
+    margin: 0;
+    z-index: 1000; /* Ensure dropdown is on top of content */
+    border-bottom-left-radius: 8px; /* Optional: slight rounding for dropdown */
+    border-bottom-right-radius: 8px;
+    max-height: calc(100vh - 60px); /* Limit height and allow scrolling if many items */
+    overflow-y: auto;
   }
-  #navbar a {
-    padding: 0.5rem 0.8rem; /* Reduce link padding */
+
+  #navbar.nav-open ul {
+    display: flex; /* Show when .nav-open is on #navbar */
   }
-  .gamification-nav span {
-     padding: 0.4rem 0.7rem;
-     font-size: 0.8em;
+
+  .menu-toggle {
+    display: block; /* Show hamburger icon */
+  }
+
+  /* Style items in the mobile dropdown */
+  #navbar ul li {
+    width: 100%;
+    border-right: none; /* Remove desktop dividers */
+  }
+  #navbar ul li::before {
+      display: none; /* Hide pseudo-element dividers */
+  }
+
+  #navbar ul li a,
+  #navbar .gamification-nav span {
+    padding: 0.9rem 1.5rem; /* Make mobile links easy to tap */
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 0;
+    text-align: left;
+    font-weight: 500; /* Consistent weight */
+  }
+  #navbar ul li a:hover,
+  #navbar .gamification-nav span:hover { /* Hover for items in dropdown */
+      background-color: var(--bg-nav-hover, #f5f5f5); /* Use variable or default */
+  }
+
+
+}
+
+/* Further adjustments for very small screens if needed */
+@media (max-width: 480px) {
+  #navbar {
+    padding: 0.4rem 0.8rem; /* Slightly less padding */
+  }
+  #navbar ul li a,
+  #navbar .gamification-nav span {
+    padding: 0.8rem 1.2rem; /* Adjust tap target size */
   }
 }
 
-@media (max-width: 768px) {
-  /* Keep justify-content: flex-start; */
-  /* You might want to implement a hamburger menu here instead */
-  #navbar ul {
-    gap: 0.5rem; /* Further reduce gap */
-    /* Allow wrapping to take precedence */
-  }
-   #navbar a {
-    padding: 0.5rem 0.6rem;
-  }
-}
 /* ============================================================================
    05. Landing Page (Hero, Features, CTA)
    ============================================================================ */

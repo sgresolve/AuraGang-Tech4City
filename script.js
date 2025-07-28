@@ -44,8 +44,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // --- AI API Endpoints ---
-const IMAGE_ANALYZER_API_URL = "https://ai-photo-analyser-production.up.railway.app/analyze-image";
-const TEXT_ANALYSIS_API_URL = 'https://auto-detect-model-production.up.railway.app/predict';
+const IMAGE_ANALYZER_API_URL = "https://ai-photo-analyser.onrender.com/analyze-image";
+const TEXT_ANALYSIS_API_URL = 'https://auto-detect-model.onrender.com/predict';
 const SUGGEST_AGENCY_API_URL = "https://auto-agency-suggestion-ai-production.up.railway.app/suggest-agency"; // << UPDATED URL
 
 // --- ImgBB Key ---
@@ -1628,7 +1628,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
-            const CHATBOT_API_URL = "https://chatbot-server-production-9a90.up.railway.app/chat";
+            const CHATBOT_API_URL = "https://chatbot-server-hr5x.onrender.com/chat";
             const response = await fetch(CHATBOT_API_URL, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: userInput })
             });

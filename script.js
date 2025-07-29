@@ -1628,7 +1628,7 @@ document.addEventListener('DOMContentLoaded', () => {
         chatBox.scrollTop = chatBox.scrollHeight;
 
         try {
-            const CHATBOT_API_URL = "https://chatbot-server-hr5x.onrender.com/chat";
+            const CHATBOT_API_URL = "https://chatbot-server-5cxr.onrender.com/chat";
             const response = await fetch(CHATBOT_API_URL, {
                 method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: userInput })
             });

@@ -94,4 +94,4 @@ This project is licensed under the **MIT License**. See the LICENSE file for det
 
 ## **Contact**
 For any inquiries or further information, please contact:
-**Project Maintainers**: Pushkal Vashist, Kota Neil Aryan, Neelaansh Verma, Austin Biasbas Doctor
+**Project Maintainer**: Pushkal Vashist

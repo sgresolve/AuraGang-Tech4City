@@ -1,5 +1,5 @@
 // Define a unique cache name - CHANGE THIS VERSION WHEN YOU UPDATE FILES
-const CACHE_NAME = 'sgresolve-cache-v1.3.1'; //
+const CACHE_NAME = 'sgresolve-cache-v1.4.0'; //
 
 // List the core files needed for the app shell to work offline
 // IMPORTANT: Paths must be relative to the service worker's location (root),

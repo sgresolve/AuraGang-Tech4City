@@ -19,7 +19,7 @@ category_keywords = {
 
 urgency_keywords = {
     "Low": ["not urgent", "later", "minor", "eventually", "whenever"],
-    "Medium": ["soon", "timely", "important", "prompt", "today"],
+    "Medium": ["soon", "timely", "important", "prompt", "today", "broken"],
     "High": ["urgent", "immediate", "critical", "emergency", "asap"]
 }
 

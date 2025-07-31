@@ -45,7 +45,7 @@ const db = getFirestore(app);
 
 // --- AI API Endpoints ---
 const IMAGE_ANALYZER_API_URL = "https://ai-photo-analyser.onrender.com/analyze-image";
-const TEXT_ANALYSIS_API_URL = 'https://auto-detect-model.onrender.com/predict';
+const TEXT_ANALYSIS_API_URL = 'https://auto-detect-model-production.up.railway.app/predict';
 const SUGGEST_AGENCY_API_URL = "https://auto-agency-suggestion-ai.onrender.com/suggest-agency"; // << UPDATED URL
 
 // --- ImgBB Key ---

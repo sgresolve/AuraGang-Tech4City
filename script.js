@@ -1,14 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
 import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged,
-  updateProfile,
-  EmailAuthProvider,
-  reauthenticateWithCredential,
-  updatePassword
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+    updateProfile,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+    updatePassword
 } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-auth.js";
 import {
     getFirestore,
@@ -31,12 +31,12 @@ import {
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyAgBUaMIawsOqMbLpju2mrd6kMaranT2rI",
-  authDomain: "sgresolve-login-register.firebaseapp.com",
-  projectId: "sgresolve-login-register",
-  messagingSenderId: "564104431729",
-  appId: "1:564104431729:web:57557b54673a8c18d973d0",
-  measurementId: "G-R3QDN8V84C"
+    apiKey: "AIzaSyAgBUaMIawsOqMbLpju2mrd6kMaranT2rI",
+    authDomain: "sgresolve-login-register.firebaseapp.com",
+    projectId: "sgresolve-login-register",
+    messagingSenderId: "564104431729",
+    appId: "1:564104431729:web:57557b54673a8c18d973d0",
+    measurementId: "G-R3QDN8V84C"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -53,37 +53,37 @@ const IMGBB_API_KEY = '8c3ac5bab399ca801e354b900052510d'; // Your ImgBB Key
 
 
 // --- reCAPTCHA Callbacks---
-window.onRecaptchaSuccess = function() {
-  console.log('reCAPTCHA verification successful (frontend)');
-  const submitButton = document.getElementById('submit-report-button'); // Use specific ID now
-  const recaptchaError = document.getElementById('recaptcha-error');
-  if (submitButton) submitButton.disabled = false;
-  if (recaptchaError) recaptchaError.style.display = 'none'; // Hide error message
+window.onRecaptchaSuccess = function () {
+    console.log('reCAPTCHA verification successful (frontend)');
+    const submitButton = document.getElementById('submit-report-button'); // Use specific ID now
+    const recaptchaError = document.getElementById('recaptcha-error');
+    if (submitButton) submitButton.disabled = false;
+    if (recaptchaError) recaptchaError.style.display = 'none'; // Hide error message
 };
 
-window.onRecaptchaExpired = function() {
-  console.warn('reCAPTCHA verification expired'); // Changed to warn
-  const submitButton = document.getElementById('submit-report-button');
-  const recaptchaError = document.getElementById('recaptcha-error');
-  if (submitButton) submitButton.disabled = true;
-  if (recaptchaError) {
-       recaptchaError.textContent = "CAPTCHA expired. Please verify again.";
-       recaptchaError.style.display = 'block'; // Show error message
-   }
-   // Reset the CAPTCHA widget if needed (might happen automatically)
-   // if (typeof grecaptcha !== 'undefined' && grecaptcha) grecaptcha.reset();
+window.onRecaptchaExpired = function () {
+    console.warn('reCAPTCHA verification expired'); // Changed to warn
+    const submitButton = document.getElementById('submit-report-button');
+    const recaptchaError = document.getElementById('recaptcha-error');
+    if (submitButton) submitButton.disabled = true;
+    if (recaptchaError) {
+        recaptchaError.textContent = "CAPTCHA expired. Please verify again.";
+        recaptchaError.style.display = 'block'; // Show error message
+    }
+    // Reset the CAPTCHA widget if needed (might happen automatically)
+    // if (typeof grecaptcha !== 'undefined' && grecaptcha) grecaptcha.reset();
 };
 
-window.onRecaptchaError = function() {
-  console.error('reCAPTCHA error occurred');
-  const submitButton = document.getElementById('submit-report-button');
-  const recaptchaError = document.getElementById('recaptcha-error');
-  if (submitButton) submitButton.disabled = true;
-  if (recaptchaError) {
-      recaptchaError.textContent = "CAPTCHA failed to load or verify. Please try refreshing.";
-      recaptchaError.style.display = 'block'; // Show error message
-  }
-  console.error("CAPTCHA failed to load. Please refresh the page."); // Log error instead of popup
+window.onRecaptchaError = function () {
+    console.error('reCAPTCHA error occurred');
+    const submitButton = document.getElementById('submit-report-button');
+    const recaptchaError = document.getElementById('recaptcha-error');
+    if (submitButton) submitButton.disabled = true;
+    if (recaptchaError) {
+        recaptchaError.textContent = "CAPTCHA failed to load or verify. Please try refreshing.";
+        recaptchaError.style.display = 'block'; // Show error message
+    }
+    console.error("CAPTCHA failed to load. Please refresh the page."); // Log error instead of popup
 };
 // --- End reCAPTCHA Callbacks ---
 
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!reportingMap && document.getElementById('map')) {
             reportingMap = L.map('map').setView([1.3521, 103.8198], 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(reportingMap);
-            reportingMap.on('click', function(e) {
+            reportingMap.on('click', function (e) {
                 const { lat, lng } = e.latlng;
                 if (!singaporeLatLngBounds.contains(e.latlng)) {
                     console.warn('Please select a location within Singapore.'); return; // Log warning
@@ -130,10 +130,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     function initializeNearbyMap() {
-      if (!nearbyMap && document.getElementById('nearby-map')) {
-          nearbyMap = L.map('nearby-map').setView([1.3521, 103.8198], 11);
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(nearbyMap);
-      }
+        if (!nearbyMap && document.getElementById('nearby-map')) {
+            nearbyMap = L.map('nearby-map').setView([1.3521, 103.8198], 11);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(nearbyMap);
+        }
     }
 
     initializeReportingMap();
@@ -160,12 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // Predefined Locations & Colors
-     const PREDEFINED_LOCATIONS = {
+    const PREDEFINED_LOCATIONS = {
         punggol: { lat: 1.4051, lon: 103.9025, name: "Punggol" }, sengkang: { lat: 1.3917, lon: 103.8954, name: "Sengkang" }, hougang: { lat: 1.3716, lon: 103.8931, name: "Hougang" }, serangoon: { lat: 1.3497, lon: 103.8731, name: "Serangoon" }, tampines: { lat: 1.3544, lon: 103.9439, name: "Tampines" }, pasir_ris: { lat: 1.3731, lon: 103.9493, name: "Pasir Ris" }, bedok: { lat: 1.3240, lon: 103.9298, name: "Bedok" }, changi_airport: { lat: 1.3592, lon: 103.9896, name: "Changi Airport" }, woodlands: { lat: 1.4360, lon: 103.7860, name: "Woodlands" }, yishun: { lat: 1.4295, lon: 103.8350, name: "Yishun" }, sembawang: { lat: 1.4491, lon: 103.8200, name: "Sembawang" }, ang_mo_kio: { lat: 1.3699, lon: 103.8496, name: "Ang Mo Kio" }, bishan: { lat: 1.3508, lon: 103.8484, name: "Bishan" }, toa_payoh: { lat: 1.3324, lon: 103.8497, name: "Toa Payoh" }, orchard: { lat: 1.3048, lon: 103.8318, name: "Orchard Road" }, city_hall: { lat: 1.2931, lon: 103.8525, name: "City Hall" }, raffles_place: { lat: 1.2839, lon: 103.8515, name: "Raffles Place" }, jurong_east: { lat: 1.3331, lon: 103.7422, name: "Jurong East" }, clementi: { lat: 1.3150, lon: 103.7651, name: "Clementi" }, bukit_batok: { lat: 1.3490, lon: 103.7496, name: "Bukit Batok" }, choa_chu_kang: { lat: 1.3854, lon: 103.7446, name: "Choa Chu Kang" }, boon_lay: { lat: 1.3386, lon: 103.7060, name: "Boon Lay" }, harbourfront: { lat: 1.2659, lon: 103.8214, name: "HarbourFront" }, marina_bay: { lat: 1.2808, lon: 103.8596, name: "Marina Bay Sands" },
-     };
-     const STATUS_COLORS = { 'Pending': 'rgba(255, 193, 7, 0.7)', 'In Progress': 'rgba(54, 162, 235, 0.7)', 'Resolved': 'rgba(40, 167, 69, 0.7)' };
-     const URGENCY_COLORS = { 'Low': 'rgba(75, 192, 192, 0.7)', 'Medium': 'rgba(255, 159, 64, 0.7)', 'High': 'rgba(255, 99, 132, 0.7)' };
-     const CATEGORY_COLORS_MONTHLY = { 'Infrastructure': 'rgba(153, 102, 255, 0.7)', 'Environmental': 'rgba(40, 167, 69, 0.7)', 'Safety': 'rgba(255, 99, 132, 0.7)', 'Others': 'rgba(201, 203, 207, 0.7)' };
+    };
+    const STATUS_COLORS = { 'Pending': 'rgba(255, 193, 7, 0.7)', 'In Progress': 'rgba(54, 162, 235, 0.7)', 'Resolved': 'rgba(40, 167, 69, 0.7)' };
+    const URGENCY_COLORS = { 'Low': 'rgba(75, 192, 192, 0.7)', 'Medium': 'rgba(255, 159, 64, 0.7)', 'High': 'rgba(255, 99, 132, 0.7)' };
+    const CATEGORY_COLORS_MONTHLY = { 'Infrastructure': 'rgba(153, 102, 255, 0.7)', 'Environmental': 'rgba(40, 167, 69, 0.7)', 'Safety': 'rgba(255, 99, 132, 0.7)', 'Others': 'rgba(201, 203, 207, 0.7)' };
 
     // --- Gamification Constants ---
     const POINT_VALUES = {
@@ -217,16 +217,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Page Elements
     const pages = {
-      landing: document.getElementById('landing-page'),
-      login: document.getElementById('login-page'),
-      register: document.getElementById('register-page'),
-      admin: document.getElementById('admin-page'),
-      reporting: document.getElementById('reporting-page'),
-      myReports: document.getElementById('my-reports-page'),
-      community: document.getElementById('community-forum-page'),
-      about: document.getElementById('about-page'),
-      nearbyReports: document.getElementById('nearby-reports-page'),
-      profile: document.getElementById('profile-page'), // Added profile page
+        landing: document.getElementById('landing-page'),
+        login: document.getElementById('login-page'),
+        register: document.getElementById('register-page'),
+        admin: document.getElementById('admin-page'),
+        reporting: document.getElementById('reporting-page'),
+        myReports: document.getElementById('my-reports-page'),
+        community: document.getElementById('community-forum-page'),
+        about: document.getElementById('about-page'),
+        nearbyReports: document.getElementById('nearby-reports-page'),
+        profile: document.getElementById('profile-page'), // Added profile page
     };
 
     const navbar = document.getElementById('navbar');
@@ -261,25 +261,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Invalidate maps or render content specific to the shown page
         if (pageId === 'reporting') {
             if (reportingMap) reportingMap.invalidateSize();
-             // Reset CAPTCHA when showing reporting page
-             if (typeof grecaptcha !== 'undefined' && grecaptcha) {
-                 try {
-                     const widgetContainer = document.getElementById('recaptcha-container');
-                     const widgetId = widgetContainer?.getAttribute('data-widget-id');
-                     if (widgetId) {
-                         grecaptcha.reset(widgetId);
-                     } else {
-                         grecaptcha.reset(); // Fallback
-                     }
-                     const submitBtn = document.getElementById('submit-report-button');
-                     if (submitBtn) submitBtn.disabled = true;
-                     const recaptchaError = document.getElementById('recaptcha-error');
-                     if(recaptchaError) recaptchaError.style.display = 'none';
+            // Reset CAPTCHA when showing reporting page
+            if (typeof grecaptcha !== 'undefined' && grecaptcha) {
+                try {
+                    const widgetContainer = document.getElementById('recaptcha-container');
+                    const widgetId = widgetContainer?.getAttribute('data-widget-id');
+                    if (widgetId) {
+                        grecaptcha.reset(widgetId);
+                    } else {
+                        grecaptcha.reset(); // Fallback
+                    }
+                    const submitBtn = document.getElementById('submit-report-button');
+                    if (submitBtn) submitBtn.disabled = true;
+                    const recaptchaError = document.getElementById('recaptcha-error');
+                    if (recaptchaError) recaptchaError.style.display = 'none';
 
-                 } catch (e) {
-                     console.error("Error resetting reCAPTCHA on page show:", e);
-                 }
-             }
+                } catch (e) {
+                    console.error("Error resetting reCAPTCHA on page show:", e);
+                }
+            }
         }
         else if (pageId === 'admin' && adminMap) { adminMap.invalidateSize(); renderAdminReports(); renderAdminAnalytics(); }
         else if (pageId === 'nearbyReports' && nearbyMap) nearbyMap.invalidateSize();
@@ -431,26 +431,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Re-fetch after initialization
                 const newUserSnap = await getDoc(userRef);
                 if (newUserSnap.exists()) {
-                     currentUserData = { uid: userId, ...newUserSnap.data() };
-                     // Apply defaults again
-                     currentUserData.displayName = currentUserData.displayName ?? authDisplayName;
-                     currentUserData.resolvePoints = currentUserData.resolvePoints ?? 0;
-                     currentUserData.level = currentUserData.level ?? 1;
-                     currentUserData.earnedBadges = currentUserData.earnedBadges ?? [];
-                     currentUserData.reportCount = currentUserData.reportCount ?? 0;
-                     currentUserData.reportWithImageCount = currentUserData.reportWithImageCount ?? 0;
-                     currentUserData.resolvedReportCount = currentUserData.resolvedReportCount ?? 0;
-                     currentUserData.forumPostCount = currentUserData.forumPostCount ?? 0;
-                     currentUserData.forumCommentCount = currentUserData.forumCommentCount ?? 0;
-                     currentUserData.upvoteGivenCount = currentUserData.upvoteGivenCount ?? 0; // <-- ADDED DEFAULT
+                    currentUserData = { uid: userId, ...newUserSnap.data() };
+                    // Apply defaults again
+                    currentUserData.displayName = currentUserData.displayName ?? authDisplayName;
+                    currentUserData.resolvePoints = currentUserData.resolvePoints ?? 0;
+                    currentUserData.level = currentUserData.level ?? 1;
+                    currentUserData.earnedBadges = currentUserData.earnedBadges ?? [];
+                    currentUserData.reportCount = currentUserData.reportCount ?? 0;
+                    currentUserData.reportWithImageCount = currentUserData.reportWithImageCount ?? 0;
+                    currentUserData.resolvedReportCount = currentUserData.resolvedReportCount ?? 0;
+                    currentUserData.forumPostCount = currentUserData.forumPostCount ?? 0;
+                    currentUserData.forumCommentCount = currentUserData.forumCommentCount ?? 0;
+                    currentUserData.upvoteGivenCount = currentUserData.upvoteGivenCount ?? 0; // <-- ADDED DEFAULT
                 } else {
-                     console.error("Failed to fetch user data even after initialization attempt.");
-                     // Fallback structure
-                     currentUserData = { uid: userId, displayName: authDisplayName, resolvePoints: 0, level: 1, earnedBadges: [], reportCount: 0, reportWithImageCount: 0, resolvedReportCount: 0, forumPostCount: 0, forumCommentCount: 0, upvoteGivenCount: 0 };
+                    console.error("Failed to fetch user data even after initialization attempt.");
+                    // Fallback structure
+                    currentUserData = { uid: userId, displayName: authDisplayName, resolvePoints: 0, level: 1, earnedBadges: [], reportCount: 0, reportWithImageCount: 0, resolvedReportCount: 0, forumPostCount: 0, forumCommentCount: 0, upvoteGivenCount: 0 };
                 }
             }
-             console.log("Fetched currentUserData:", currentUserData);
-             updateGamificationUI(); // Update display elements
+            console.log("Fetched currentUserData:", currentUserData);
+            updateGamificationUI(); // Update display elements
         } catch (error) {
             console.error("Error fetching user data:", error);
             currentUserData = { uid: userId, displayName: auth.currentUser?.displayName || 'User', resolvePoints: 0, level: 1, earnedBadges: [], reportCount: 0, reportWithImageCount: 0, resolvedReportCount: 0, forumPostCount: 0, forumCommentCount: 0, upvoteGivenCount: 0 };
@@ -475,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (levelDisplay) levelDisplay.textContent = `Level: -`;
         }
         if (pages.profile && pages.profile.classList.contains('show')) {
-             renderProfilePage();
+            renderProfilePage();
         }
     }
 
@@ -495,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPointsForNextLevel(currentPoints) {
         const currentLevel = calculateLevel(currentPoints);
         if (currentLevel >= LEVELS.length) {
-            return { pointsNeeded: 0, nextLevelPoints: currentPoints, currentLevelPoints: LEVELS[LEVELS.length-1] }; // Max level
+            return { pointsNeeded: 0, nextLevelPoints: currentPoints, currentLevelPoints: LEVELS[LEVELS.length - 1] }; // Max level
         }
         const nextLevelPoints = LEVELS[currentLevel];
         const currentLevelPoints = LEVELS[currentLevel - 1] || 0;
@@ -625,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newBadgesEarnedIds.forEach(badgeId => {
                     const badge = BADGES[badgeId];
                     if (badge) {
-                         console.info(`%cBadge Earned: ${badge.icon} ${badge.name}! (${badge.description})`, 'color: blue; font-weight: bold;');
+                        console.info(`%cBadge Earned: ${badge.icon} ${badge.name}! (${badge.description})`, 'color: blue; font-weight: bold;');
                     }
                 });
                 if (levelIncreased) {
@@ -648,17 +648,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderProfilePage() {
         const profilePage = pages.profile;
         if (!profilePage || !currentUserData || !currentUser) {
-             console.log("Cannot render profile: Page element, user data or current user missing.");
-             if (profilePage) profilePage.innerHTML = '<p class="loading-message">Loading profile...</p>';
-             if (!currentUserData && currentUser) {
-                 fetchAndSetCurrentUserData(currentUser.uid);
-             }
-             return;
+            console.log("Cannot render profile: Page element, user data or current user missing.");
+            if (profilePage) profilePage.innerHTML = '<p class="loading-message">Loading profile...</p>';
+            if (!currentUserData && currentUser) {
+                fetchAndSetCurrentUserData(currentUser.uid);
+            }
+            return;
         }
 
         // --- Ensure the FULL profile structure exists ---
         if (!document.getElementById('profile-username') || !document.getElementById('profile-email-display') || !document.getElementById('change-password-form')) {
-             profilePage.innerHTML = `
+            profilePage.innerHTML = `
                 <h1>My Profile & Achievements</h1>
                 <div class="profile-summary card">
                     <h2 id="profile-username">Username</h2>
@@ -696,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h2>My Badges</h2>
                     <div id="badges-container" class="badges-grid"><p id="no-badges-message" style="display: none;">...</p></div>
                 </div>`;
-             attachProfileEventListeners(); // Re-add listeners if structure rebuilt
+            attachProfileEventListeners(); // Re-add listeners if structure rebuilt
         }
 
         // Populate Summary
@@ -744,27 +744,27 @@ document.addEventListener('DOMContentLoaded', () => {
             noBadgesMessage.style.display = 'none';
             earnedBadges.forEach(badgeId => {
                 const badgeInfo = BADGES[badgeId];
-                 if (badgeInfo) {
-                     const badgeDiv = document.createElement('div');
-                     badgeDiv.classList.add('badge-item');
-                     badgeDiv.title = `${badgeInfo.name}: ${badgeInfo.description}`;
-                     badgeDiv.innerHTML = `
+                if (badgeInfo) {
+                    const badgeDiv = document.createElement('div');
+                    badgeDiv.classList.add('badge-item');
+                    badgeDiv.title = `${badgeInfo.name}: ${badgeInfo.description}`;
+                    badgeDiv.innerHTML = `
                          <span class="badge-icon" aria-hidden="true">${badgeInfo.icon}</span>
                          <span class="badge-name">${badgeInfo.name}</span>
                          <span class="badge-description">${badgeInfo.description}</span>
                      `;
-                     badgesContainer.appendChild(badgeDiv);
-                 } else {
-                      console.warn(`Badge info not found for ID: ${badgeId}`);
-                 }
+                    badgesContainer.appendChild(badgeDiv);
+                } else {
+                    console.warn(`Badge info not found for ID: ${badgeId}`);
+                }
             });
         }
-         // Clear any previous messages
+        // Clear any previous messages
         const updateMsg = document.getElementById('update-profile-message');
         const changePwMsg = document.getElementById('change-password-message');
-        if(updateMsg) updateMsg.textContent = '';
-        if(changePwMsg) changePwMsg.textContent = '';
-        if(document.getElementById('change-password-form')) document.getElementById('change-password-form').reset();
+        if (updateMsg) updateMsg.textContent = '';
+        if (changePwMsg) changePwMsg.textContent = '';
+        if (document.getElementById('change-password-form')) document.getElementById('change-password-form').reset();
     }
 
 
@@ -787,7 +787,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const longitude = parseFloat(data.longitude);
                 if (isNaN(latitude) || isNaN(longitude)) {
                     console.warn(`Report ${doc.id} has invalid coordinates: lat=${data.latitude}, lon=${data.longitude}`);
-                 }
+                }
                 reports.push({
                     id: doc.id,
                     ...data,
@@ -857,8 +857,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let validMarkersExist = false;
         reportsToDisplay.forEach(report => {
-             if (typeof report.latitude === 'number' && typeof report.longitude === 'number' &&
-                 !isNaN(report.latitude) && !isNaN(report.longitude)) {
+            if (typeof report.latitude === 'number' && typeof report.longitude === 'number' &&
+                !isNaN(report.latitude) && !isNaN(report.longitude)) {
 
                 const marker = L.marker([report.latitude, report.longitude]).addTo(adminMap);
                 let popupContent = `
@@ -875,23 +875,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 marker.bindPopup(popupContent);
                 adminReportMarkers.push(marker);
                 validMarkersExist = true;
-             } else {
-                 console.warn(`Skipping marker for report ${report.id} due to invalid coordinates.`);
-             }
+            } else {
+                console.warn(`Skipping marker for report ${report.id} due to invalid coordinates.`);
+            }
         });
 
         if (validMarkersExist && adminReportMarkers.length > 0) {
-             try {
-                 const group = new L.featureGroup(adminReportMarkers);
-                 adminMap.fitBounds(group.getBounds().pad(0.1));
-             } catch (e) {
-                 console.error("Error fitting map bounds:", e);
-                 adminMap.setView([1.3521, 103.8198], 11); // Fallback view
-             }
+            try {
+                const group = new L.featureGroup(adminReportMarkers);
+                adminMap.fitBounds(group.getBounds().pad(0.1));
+            } catch (e) {
+                console.error("Error fitting map bounds:", e);
+                adminMap.setView([1.3521, 103.8198], 11); // Fallback view
+            }
         } else if (reportsToDisplay.length > 0 && !validMarkersExist) {
             adminMap.setView([1.3521, 103.8198], 11);
         } else {
-             adminMap.setView([1.3521, 103.8198], 11);
+            adminMap.setView([1.3521, 103.8198], 11);
         }
     }
     // Helper to create status dropdown for admin reports
@@ -1055,7 +1055,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 userReportsContainer.appendChild(li);
             });
         } catch (error) {
-             console.error('Error rendering user reports:', error);
+            console.error('Error rendering user reports:', error);
             userReportsContainer.innerHTML = '<p class="error-message">Error loading your reports.</p>';
         }
     }
@@ -1077,12 +1077,12 @@ document.addEventListener('DOMContentLoaded', () => {
         destroyChart(categoryChartInstance); categoryChartInstance = null;
         window.reportsChart = null; // Make sure this is cleared too
 
-        if(statusChartCanvas) statusChartCanvas.style.display = 'block';
-        if(noStatusDataEl) noStatusDataEl.style.display = 'none';
-        if(urgencyChartCanvas) urgencyChartCanvas.style.display = 'block';
-        if(noUrgencyDataEl) noUrgencyDataEl.style.display = 'none';
-        if(categoryChartCanvas) categoryChartCanvas.style.display = 'block';
-        if(noReportsMsgEl) noReportsMsgEl.style.display = 'none';
+        if (statusChartCanvas) statusChartCanvas.style.display = 'block';
+        if (noStatusDataEl) noStatusDataEl.style.display = 'none';
+        if (urgencyChartCanvas) urgencyChartCanvas.style.display = 'block';
+        if (noUrgencyDataEl) noUrgencyDataEl.style.display = 'none';
+        if (categoryChartCanvas) categoryChartCanvas.style.display = 'block';
+        if (noReportsMsgEl) noReportsMsgEl.style.display = 'none';
 
         try {
             const [allReports, reportsThisMonth] = await Promise.all([
@@ -1126,8 +1126,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Urgency Chart
             const urgencyCtx = urgencyChartCanvas?.getContext('2d');
             const urgencyDataAvailable = Object.values(urgencyCounts).some(count => count > 0);
-             if (urgencyChartCanvas) urgencyChartCanvas.style.display = urgencyDataAvailable ? 'block' : 'none';
-             if (noUrgencyDataEl) noUrgencyDataEl.style.display = urgencyDataAvailable ? 'none' : 'block';
+            if (urgencyChartCanvas) urgencyChartCanvas.style.display = urgencyDataAvailable ? 'block' : 'none';
+            if (noUrgencyDataEl) noUrgencyDataEl.style.display = urgencyDataAvailable ? 'none' : 'block';
             if (urgencyCtx && urgencyDataAvailable) {
                 urgencyChartInstance = new Chart(urgencyCtx, {
                     type: 'bar',
@@ -1148,21 +1148,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     data: { labels: allCategories, datasets: [{ data: allCategories.map(cat => categoryCountsMonth[cat]), backgroundColor: allCategories.map(cat => CATEGORY_COLORS_MONTHLY[cat] || '#cccccc'), borderColor: allCategories.map(cat => (CATEGORY_COLORS_MONTHLY[cat] || '#cccccc').replace('0.7', '1')), borderWidth: 1 }] },
                     options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: '# Reports' } }, x: {} }, plugins: { legend: { display: false }, title: { display: false } } }
                 });
-                 window.reportsChart = categoryChartInstance; // Assign to global if needed elsewhere
+                window.reportsChart = categoryChartInstance; // Assign to global if needed elsewhere
             } else {
-                 window.reportsChart = null;
+                window.reportsChart = null;
             }
 
         } catch (error) {
             console.error("Error rendering admin analytics:", error);
             // showPopup("Error loading analytics data.", "error", 0, false); // REPLACED
             console.error("Error loading analytics data."); // Log error
-             if(statusChartCanvas) statusChartCanvas.style.display = 'none';
-             if(noStatusDataEl) { noStatusDataEl.textContent = 'Error loading status data.'; noStatusDataEl.style.display = 'block'; }
-             if(urgencyChartCanvas) urgencyChartCanvas.style.display = 'none';
-             if(noUrgencyDataEl) { noUrgencyDataEl.textContent = 'Error loading urgency data.'; noUrgencyDataEl.style.display = 'block'; }
-             if(categoryChartCanvas) categoryChartCanvas.style.display = 'none';
-             if(noReportsMsgEl) { noReportsMsgEl.textContent = 'Error loading category data.'; noReportsMsgEl.style.display = 'block'; }
+            if (statusChartCanvas) statusChartCanvas.style.display = 'none';
+            if (noStatusDataEl) { noStatusDataEl.textContent = 'Error loading status data.'; noStatusDataEl.style.display = 'block'; }
+            if (urgencyChartCanvas) urgencyChartCanvas.style.display = 'none';
+            if (noUrgencyDataEl) { noUrgencyDataEl.textContent = 'Error loading urgency data.'; noUrgencyDataEl.style.display = 'block'; }
+            if (categoryChartCanvas) categoryChartCanvas.style.display = 'none';
+            if (noReportsMsgEl) { noReportsMsgEl.textContent = 'Error loading category data.'; noReportsMsgEl.style.display = 'block'; }
         }
     }
 
@@ -1211,8 +1211,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 commentsList.appendChild(li);
             });
         } catch (error) {
-             console.error(`Error fetching comments for post ${postId}:`, error);
-             commentsList.innerHTML = '<li>Error loading comments.</li>';
+            console.error(`Error fetching comments for post ${postId}:`, error);
+            commentsList.innerHTML = '<li>Error loading comments.</li>';
         }
     }
     function formatTimeAgo(date) {
@@ -1279,8 +1279,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadMoreButton = document.getElementById('load-more-posts');
         if (!forumPostsContainer) return;
 
-         const existingNoMoreMsg = forumPostsContainer.querySelector('.no-more-posts-message');
-         if (existingNoMoreMsg && !loadMore) existingNoMoreMsg.remove();
+        const existingNoMoreMsg = forumPostsContainer.querySelector('.no-more-posts-message');
+        if (existingNoMoreMsg && !loadMore) existingNoMoreMsg.remove();
 
         if (!loadMore) {
             forumPostsContainer.innerHTML = '<p class="loading-message">Loading posts...</p>';
@@ -1297,9 +1297,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const fetchLimit = 10;
 
             if (loadMore && lastVisiblePost) {
-                 postsQuery = query(postsCollection, ...baseConstraints, startAfter(lastVisiblePost), limit(fetchLimit));
+                postsQuery = query(postsCollection, ...baseConstraints, startAfter(lastVisiblePost), limit(fetchLimit));
             } else {
-                 postsQuery = query(postsCollection, ...baseConstraints, limit(fetchLimit));
+                postsQuery = query(postsCollection, ...baseConstraints, limit(fetchLimit));
             }
             const querySnapshot = await getDocs(postsQuery);
 
@@ -1307,19 +1307,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (querySnapshot.empty && !loadMore) {
                 forumPostsContainer.innerHTML = '<p class="no-data-message">No posts yet. Be the first to post!</p>';
-                 if (loadMoreButton) loadMoreButton.style.display = 'none';
+                if (loadMoreButton) loadMoreButton.style.display = 'none';
             } else if (!querySnapshot.empty) {
                 const postPromises = querySnapshot.docs.map(async (doc) => {
                     const post = { id: doc.id, ...doc.data() };
                     try {
                         // Use stored count if available and accurate, else query
                         if (typeof post.commentCount === 'number') {
-                             // Trust stored count (can be updated via triggers/transactions)
+                            // Trust stored count (can be updated via triggers/transactions)
                         } else {
                             const commentsSnap = await getDocs(collection(db, "forumPosts", post.id, "comments"));
                             post.commentCount = commentsSnap.size;
                         }
-                    } catch(e) {
+                    } catch (e) {
                         console.warn(`Could not fetch/verify comment count for post ${post.id}`, e);
                         post.commentCount = post.commentCount || 0; // Fallback to stored or 0
                     }
@@ -1340,10 +1340,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (querySnapshot.empty && loadMore) {
                 if (loadMoreButton) loadMoreButton.style.display = 'none';
                 if (!forumPostsContainer.querySelector('.no-more-posts-message')) {
-                   const noMoreMsg = document.createElement('p');
-                   noMoreMsg.textContent = "You've reached the end!";
-                   noMoreMsg.classList.add('no-more-posts-message', 'subtle-text', 'text-center');
-                   forumPostsContainer.appendChild(noMoreMsg);
+                    const noMoreMsg = document.createElement('p');
+                    noMoreMsg.textContent = "You've reached the end!";
+                    noMoreMsg.classList.add('no-more-posts-message', 'subtle-text', 'text-center');
+                    forumPostsContainer.appendChild(noMoreMsg);
                 }
             }
 
@@ -1364,16 +1364,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!loadMore) {
                 forumPostsContainer.innerHTML = '<p class="error-message">Error loading posts.</p>';
             } else if (loadMoreButton) {
-                 loadMoreButton.textContent = 'Error loading';
-                 loadMoreButton.style.display = 'block';
+                loadMoreButton.textContent = 'Error loading';
+                loadMoreButton.style.display = 'block';
             }
             // showPopup("Error loading forum posts.", "error", 0, false); // REPLACED
             console.error("Error loading forum posts."); // Log error
         } finally {
             isLoadingForumPosts = false;
             if (loadMoreButton && loadMoreButton.style.display === 'block') {
-                 loadMoreButton.disabled = false;
-                 loadMoreButton.textContent = 'Load More Posts';
+                loadMoreButton.disabled = false;
+                loadMoreButton.textContent = 'Load More Posts';
             }
         }
     }
@@ -1404,25 +1404,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         trending.forEach(post => {
-          const postDiv = document.createElement('div');
-          postDiv.classList.add('trending-post');
-          postDiv.setAttribute('data-post-id', post.id);
-          postDiv.innerHTML = `
+            const postDiv = document.createElement('div');
+            postDiv.classList.add('trending-post');
+            postDiv.setAttribute('data-post-id', post.id);
+            postDiv.innerHTML = `
             <h4>${post.title || 'Untitled'}</h4>
             <p><small>By ${post.author || 'Anonymous'} • ${post.score} Score</small></p>
           `;
-          postDiv.addEventListener('click', () => {
-            const targetPostElement = document.querySelector(`.forum-post[data-post-id="${post.id}"]`);
-            if (targetPostElement) {
-                targetPostElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                targetPostElement.classList.add('highlight');
-                setTimeout(() => { targetPostElement.classList.remove('highlight'); }, 1500);
-            } else {
-                // showPopup("Post might not be loaded yet. Scroll down or click 'Load More Posts'.", "info", 0, false); // REPLACED
-                console.info("Post might not be loaded yet. Scroll down or click 'Load More Posts'."); // Log info
-            }
-          });
-          trendingContainer.appendChild(postDiv);
+            postDiv.addEventListener('click', () => {
+                const targetPostElement = document.querySelector(`.forum-post[data-post-id="${post.id}"]`);
+                if (targetPostElement) {
+                    targetPostElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetPostElement.classList.add('highlight');
+                    setTimeout(() => { targetPostElement.classList.remove('highlight'); }, 1500);
+                } else {
+                    // showPopup("Post might not be loaded yet. Scroll down or click 'Load More Posts'.", "info", 0, false); // REPLACED
+                    console.info("Post might not be loaded yet. Scroll down or click 'Load More Posts'."); // Log info
+                }
+            });
+            trendingContainer.appendChild(postDiv);
         });
     }
 
@@ -1457,7 +1457,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function clearNearbyMapMarkers() {
         if (nearbyMap) {
-             nearbyMarkers.forEach(marker => nearbyMap.removeLayer(marker));
+            nearbyMarkers.forEach(marker => nearbyMap.removeLayer(marker));
         }
         nearbyMarkers = [];
     }
@@ -1517,14 +1517,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 statusDiv.textContent = 'Getting your current location...';
                 centerCoords = await getDeviceLocation();
                 centerName = "Your Location";
-                 if (nearbyMap) {
-                     userMarker = L.marker([centerCoords.lat, centerCoords.lon], {
-                         icon: L.icon({ iconUrl: 'images/user-location-marker.png', iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
-                         zIndexOffset: 1000
-                     }).addTo(nearbyMap);
-                     userMarker.bindPopup("Your Current Location");
-                     nearbyMarkers.push(userMarker);
-                 }
+                if (nearbyMap) {
+                    userMarker = L.marker([centerCoords.lat, centerCoords.lon], {
+                        icon: L.icon({ iconUrl: 'images/user-location-marker.png', iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
+                        zIndexOffset: 1000
+                    }).addTo(nearbyMap);
+                    userMarker.bindPopup("Your Current Location");
+                    nearbyMarkers.push(userMarker);
+                }
             } else if (PREDEFINED_LOCATIONS[selectedLocationType]) {
                 centerCoords = PREDEFINED_LOCATIONS[selectedLocationType];
                 centerName = PREDEFINED_LOCATIONS[selectedLocationType].name;
@@ -1576,8 +1576,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         else nearbyMap.setView([centerCoords.lat, centerCoords.lon], 12);
                     }
                 } else if (nearbyMap) {
-                     if (userMarker) nearbyMap.setView(userMarker.getLatLng(), 15);
-                     else nearbyMap.setView([centerCoords.lat, centerCoords.lon], 13);
+                    if (userMarker) nearbyMap.setView(userMarker.getLatLng(), 15);
+                    else nearbyMap.setView([centerCoords.lat, centerCoords.lon], 13);
                 }
             }
         } catch (error) {
@@ -1603,7 +1603,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (chatWidget.classList.contains('active')) {
             const userInput = chatWidget.querySelector('#user-input');
             if (userInput) {
-                 setTimeout(() => userInput.focus(), 100); // Small delay for transition
+                setTimeout(() => userInput.focus(), 100); // Small delay for transition
             }
         }
     }
@@ -1667,14 +1667,14 @@ document.addEventListener('DOMContentLoaded', () => {
             sections.forEach(section => { if (section.parentElement) section.parentElement.classList.add('visible'); });
             return;
         }
-        const observer = new IntersectionObserver( (entries, obs) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        if (entry.target.parentElement) entry.target.parentElement.classList.add('visible');
-                        obs.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 }
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.parentElement) entry.target.parentElement.classList.add('visible');
+                    obs.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 }
         );
         sections.forEach(section => { observer.observe(section); });
     }
@@ -1687,9 +1687,9 @@ document.addEventListener('DOMContentLoaded', () => {
         recognition.continuous = false; // Stop after the first distinct phrase
         recognition.interimResults = true; // Get results as they are being processed
         recognition.lang = 'en-SG'; // Prioritize Singapore English
-                                    // Note: Actual preservation of Singlish (vs. "correction" to standard English)
-                                    // depends on the browser's speech recognition engine and its 'en-SG' model.
-                                    // This JS setting is a request; the engine's behavior is out of direct JS control.
+        // Note: Actual preservation of Singlish (vs. "correction" to standard English)
+        // depends on the browser's speech recognition engine and its 'en-SG' model.
+        // This JS setting is a request; the engine's behavior is out of direct JS control.
 
         recognition.onstart = () => {
             isRecognizing = true;
@@ -1713,7 +1713,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (targetInputFieldForSpeech && targetInputFieldForSpeech.inputElement) {
                 // Get the text that was in the input field *before* this recognition session started
                 const existingText = targetInputFieldForSpeech.inputElement.dataset.currentFinalText || "";
-                
+
                 if (existingText && spokenTranscriptThisSession) {
                     // Add a space if existingText is not empty and doesn't already end with one
                     targetInputFieldForSpeech.inputElement.value = existingText + (existingText.endsWith(' ') ? '' : ' ') + spokenTranscriptThisSession;
@@ -1765,7 +1765,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // The input field value should be correctly set by the last onresult.
                 // Clean up the dataset attribute for the next session.
                 delete targetInputFieldForSpeech.inputElement.dataset.currentFinalText;
-                
+
                 // Ensure the auto-detect button for problem description is enabled if there's text
                 if (targetInputFieldForSpeech.inputElement.id === 'problemDesc') {
                     const autoDetectBtn = document.getElementById('autoDetect');
@@ -1792,9 +1792,9 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetchAndSetCurrentUserData(user.uid); // Fetch/init user data
 
             if (!wasLoggedIn) { // Only change page on initial login
-                 hideAllPages();
-                 if (user.email === 'admin@sgresolve.com') showPage('admin');
-                 else showPage('reporting');
+                hideAllPages();
+                if (user.email === 'admin@sgresolve.com') showPage('admin');
+                else showPage('reporting');
             } else {
                 updateNavbar(); // Just update navbar if already logged in
                 if (pages.profile && pages.profile.classList.contains('show')) renderProfilePage(); // Refresh profile if visible
@@ -1805,18 +1805,18 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("User logged out or not logged in.");
             currentUserData = null;
             imageDataUrl = null;
-             const reportForm = document.getElementById('report-form'); if(reportForm) reportForm.reset();
-             const imgPreview = document.getElementById('imagePreview'); if(imgPreview) imgPreview.innerHTML = '';
-             const analyzeBtn = document.getElementById('analyzeImageBtn'); if(analyzeBtn) analyzeBtn.disabled = true;
-             const autoDetectBtn = document.getElementById('autoDetect'); if(autoDetectBtn) autoDetectBtn.disabled = true;
-             if (tempMarker && reportingMap) { reportingMap.removeLayer(tempMarker); tempMarker = null; }
-             if (typeof grecaptcha !== 'undefined' && grecaptcha) { try { grecaptcha.reset(); } catch(e) { console.warn("Error resetting CAPTCHA on logout:", e); } }
-             const submitBtn = document.getElementById('submit-report-button'); if (submitBtn) submitBtn.disabled = true;
+            const reportForm = document.getElementById('report-form'); if (reportForm) reportForm.reset();
+            const imgPreview = document.getElementById('imagePreview'); if (imgPreview) imgPreview.innerHTML = '';
+            const analyzeBtn = document.getElementById('analyzeImageBtn'); if (analyzeBtn) analyzeBtn.disabled = true;
+            const autoDetectBtn = document.getElementById('autoDetect'); if (autoDetectBtn) autoDetectBtn.disabled = true;
+            if (tempMarker && reportingMap) { reportingMap.removeLayer(tempMarker); tempMarker = null; }
+            if (typeof grecaptcha !== 'undefined' && grecaptcha) { try { grecaptcha.reset(); } catch (e) { console.warn("Error resetting CAPTCHA on logout:", e); } }
+            const submitBtn = document.getElementById('submit-report-button'); if (submitBtn) submitBtn.disabled = true;
 
             if (wasLoggedIn) { // Redirect to landing only if they *were* logged in
                 hideAllPages(); showPage('landing');
             } else {
-                 if (!document.querySelector('.page.show')) showPage('landing'); // Safeguard
+                if (!document.querySelector('.page.show')) showPage('landing'); // Safeguard
             }
             updateNavbar();
         }
@@ -1844,7 +1844,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    
+
 
     // Landing Page Buttons
     document.getElementById('hero-report-issue')?.addEventListener('click', (e) => { e.preventDefault(); showPage(currentUser ? 'reporting' : 'login'); });
@@ -1887,7 +1887,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
                     message = 'Invalid email or password.';
                 } else if (error.code === 'auth/invalid-email') { message = 'Invalid email format.'; }
-                 else { message = `Login error: ${error.message}`; }
+                else { message = `Login error: ${error.message}`; }
                 // showPopup(message, 'error', 0, false); // REPLACED
                 console.error(message); // Log error
             })
@@ -1961,7 +1961,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Reporting Page - Detect Location Button
-    document.getElementById('detectLocation')?.addEventListener('click', function() {
+    document.getElementById('detectLocation')?.addEventListener('click', function () {
         const button = this; button.disabled = true; button.textContent = 'Detecting...';
         getDeviceLocation().then(coords => {
             const latLng = L.latLng(coords.lat, coords.lon);
@@ -1980,8 +1980,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(error => {
             // showPopup(`Could not detect location: ${error.message}`, 'error', 0, false); // REPLACED
             console.error(`Could not detect location: ${error.message}`);
-          })
-          .finally(() => { button.disabled = false; button.textContent = 'Detect Location'; });
+        })
+            .finally(() => { button.disabled = false; button.textContent = 'Detect Location'; });
     });
 
     // Reporting Page - Image Upload & AI Analysis
@@ -1994,9 +1994,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onloadstart = () => {
-                 if (imagePreview) imagePreview.innerHTML = '<p>Loading preview...</p>';
-                 if (analyzeImageBtn) analyzeImageBtn.disabled = true;
-                 imageDataUrl = null;
+                if (imagePreview) imagePreview.innerHTML = '<p>Loading preview...</p>';
+                if (analyzeImageBtn) analyzeImageBtn.disabled = true;
+                imageDataUrl = null;
             };
             reader.onloadend = () => {
                 imageDataUrl = reader.result; // Assign base64 data URL
@@ -2027,12 +2027,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // AI Analyze Button (Image)
     analyzeImageBtn?.addEventListener('click', async () => {
         if (!imageDataUrl || !currentUser) {
-             // showPopup("Please select an image first.", "warning", 0, false); // REPLACED
-             console.warn("Please select an image first."); return;
+            // showPopup("Please select an image first.", "warning", 0, false); // REPLACED
+            console.warn("Please select an image first."); return;
         }
         if (!IMAGE_ANALYZER_API_URL || !IMAGE_ANALYZER_API_URL.startsWith('https')) {
-             // showPopup("AI Image Analyzer Service URL not configured.", "error", 0, false); // REPLACED
-             console.error("AI Image Analyzer Service URL not configured."); return;
+            // showPopup("AI Image Analyzer Service URL not configured.", "error", 0, false); // REPLACED
+            console.error("AI Image Analyzer Service URL not configured."); return;
         }
 
         analyzeImageBtn.disabled = true; analyzeImageBtn.textContent = 'Analyzing...';
@@ -2049,8 +2049,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 let errorMsg = `AI analysis failed: ${response.status}`;
-                 try { errorMsg = (await response.json()).error || errorMsg; } catch (e) {}
-                 throw new Error(errorMsg);
+                try { errorMsg = (await response.json()).error || errorMsg; } catch (e) { }
+                throw new Error(errorMsg);
             }
             const result = await response.json();
 
@@ -2058,8 +2058,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const urgencySelect = document.getElementById('urgency');
             const threatSelect = document.getElementById('threat');
             const setSelectValue = (selectElement, value) => {
-                 if (selectElement && value && [...selectElement.options].some(opt => opt.value === value)) selectElement.value = value;
-                 else if (value) console.warn(`AI suggested value "${value}" not found in dropdown "${selectElement?.id}".`);
+                if (selectElement && value && [...selectElement.options].some(opt => opt.value === value)) selectElement.value = value;
+                else if (value) console.warn(`AI suggested value "${value}" not found in dropdown "${selectElement?.id}".`);
             };
             setSelectValue(categorySelect, result.category);
             setSelectValue(urgencySelect, result.urgency);
@@ -2096,8 +2096,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('Please enter a description first.'); return;
         }
         if (!TEXT_ANALYSIS_API_URL || !TEXT_ANALYSIS_API_URL.startsWith('https')) {
-             // showPopup("Text Analysis Service URL not configured.", "error", 0, false); // REPLACED
-             console.error("Text Analysis Service URL not configured."); return;
+            // showPopup("Text Analysis Service URL not configured.", "error", 0, false); // REPLACED
+            console.error("Text Analysis Service URL not configured."); return;
         }
 
         autoDetectButton.disabled = true; autoDetectButton.textContent = 'Detecting...';
@@ -2107,20 +2107,20 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(TEXT_ANALYSIS_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: description }) });
 
-            if (!response.ok) { let errorMsg = `Text analysis failed: ${response.status}`; try { errorMsg = (await response.json()).error || errorMsg; } catch (e) {} throw new Error(errorMsg); }
+            if (!response.ok) { let errorMsg = `Text analysis failed: ${response.status}`; try { errorMsg = (await response.json()).error || errorMsg; } catch (e) { } throw new Error(errorMsg); }
             const data = await response.json();
 
             const categorySelect = document.getElementById('category'); const urgencySelect = document.getElementById('urgency'); const threatSelect = document.getElementById('threat');
             const predictedCategory = data.category || ''; const predictedUrgency = data.urgency || ''; const predictedThreat = data.threat || '';
             const setSelectValue = (selectElement, value) => {
-                 if (selectElement && value && [...selectElement.options].some(opt => opt.value === value)) selectElement.value = value;
-                 else if (value) console.warn(`AI suggested value "${value}" not found in dropdown "${selectElement?.id}".`);
+                if (selectElement && value && [...selectElement.options].some(opt => opt.value === value)) selectElement.value = value;
+                else if (value) console.warn(`AI suggested value "${value}" not found in dropdown "${selectElement?.id}".`);
             };
             setSelectValue(categorySelect, predictedCategory);
             setSelectValue(urgencySelect, predictedUrgency);
             setSelectValue(threatSelect, predictedThreat);
 
-             // Award points and check badges
+            // Award points and check badges
             const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.USE_AI_TEXT, 'useAiText');
 
             // Log success to console
@@ -2147,19 +2147,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitButton = document.getElementById('submit-report-button');
 
         if (!currentUser || !currentUserData) {
-             // showPopup("Please log in to submit a report.", "error", 0, false); // REPLACED
-             console.error("Please log in to submit a report.");
-             showPage('login'); return;
+            // showPopup("Please log in to submit a report.", "error", 0, false); // REPLACED
+            console.error("Please log in to submit a report.");
+            showPage('login'); return;
         }
 
         // CAPTCHA Check (Frontend only)
         if (submitButton.disabled) {
             const recaptchaError = document.getElementById('recaptcha-error');
-             if (recaptchaError) { recaptchaError.textContent = "Please complete the CAPTCHA verification."; recaptchaError.style.display = 'block'; }
-             console.warn("Attempted submission without completing CAPTCHA.");
-             const captchaContainer = document.getElementById('recaptcha-container');
-             if(captchaContainer){ captchaContainer.parentElement?.classList.add('shake'); setTimeout(() => { captchaContainer.parentElement?.classList.remove('shake'); }, 500); }
-             return; // Stop submission
+            if (recaptchaError) { recaptchaError.textContent = "Please complete the CAPTCHA verification."; recaptchaError.style.display = 'block'; }
+            console.warn("Attempted submission without completing CAPTCHA.");
+            const captchaContainer = document.getElementById('recaptcha-container');
+            if (captchaContainer) { captchaContainer.parentElement?.classList.add('shake'); setTimeout(() => { captchaContainer.parentElement?.classList.remove('shake'); }, 500); }
+            return; // Stop submission
         }
 
         const locationNameInput = document.getElementById('locationName');
@@ -2203,23 +2203,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // ImgBB Upload
         if (file && imageDataUrl && IMGBB_API_KEY) {
             try {
-                 console.log("Attempting image upload to ImgBB...");
-                 const formData = new FormData();
-                 const base64Data = imageDataUrl.split(',')[1];
-                 if (!base64Data) throw new Error("Invalid base64 image data.");
-                 formData.append('image', base64Data); formData.append('key', IMGBB_API_KEY);
-                 const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
-                 const imgbbData = await imgbbResponse.json();
-                 console.log("ImgBB Response:", imgbbData);
-                 if (imgbbData.success && imgbbData.data && imgbbData.data.url) {
-                     uploadedImageUrl = imgbbData.data.url; console.log('Image Upload Success:', uploadedImageUrl);
-                 } else {
-                     throw new Error(imgbbData.error?.message || `ImgBB upload failed. Status: ${imgbbData.status_code || 'Unknown'}`);
-                 }
+                console.log("Attempting image upload to ImgBB...");
+                const formData = new FormData();
+                const base64Data = imageDataUrl.split(',')[1];
+                if (!base64Data) throw new Error("Invalid base64 image data.");
+                formData.append('image', base64Data); formData.append('key', IMGBB_API_KEY);
+                const imgbbResponse = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: formData });
+                const imgbbData = await imgbbResponse.json();
+                console.log("ImgBB Response:", imgbbData);
+                if (imgbbData.success && imgbbData.data && imgbbData.data.url) {
+                    uploadedImageUrl = imgbbData.data.url; console.log('Image Upload Success:', uploadedImageUrl);
+                } else {
+                    throw new Error(imgbbData.error?.message || `ImgBB upload failed. Status: ${imgbbData.status_code || 'Unknown'}`);
+                }
             } catch (error) {
-                 console.error('Image Upload Error:', error);
-                 // showPopup(`Image upload failed: ${error.message}. Report will be submitted without image.`, 'warning', 0, false); // REPLACED
-                 console.warn(`Image upload failed: ${error.message}. Report will be submitted without image.`);
+                console.error('Image Upload Error:', error);
+                // showPopup(`Image upload failed: ${error.message}. Report will be submitted without image.`, 'warning', 0, false); // REPLACED
+                console.warn(`Image upload failed: ${error.message}. Report will be submitted without image.`);
             }
         } else if (file) {
             console.warn("Image file selected, but imageDataUrl or ImgBB key missing.");
@@ -2278,14 +2278,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // showPopup(`Error submitting report: ${error.message}`, 'error', 0, false); // REPLACED
             console.error(`Error submitting report: ${error.message}`);
         } finally {
-             // Re-enable button ONLY if submission failed
-             if (submitButton && !docRef) {
-                 submitButton.disabled = false;
-                 if (typeof grecaptcha !== 'undefined' && grecaptcha) grecaptcha.reset(); // Reset captcha on failure too
-             } else if (submitButton && docRef) {
-                 submitButton.disabled = true; // Keep disabled on success
-             }
-             if (submitButton) submitButton.textContent = 'Submit Report';
+            // Re-enable button ONLY if submission failed
+            if (submitButton && !docRef) {
+                submitButton.disabled = false;
+                if (typeof grecaptcha !== 'undefined' && grecaptcha) grecaptcha.reset(); // Reset captcha on failure too
+            } else if (submitButton && docRef) {
+                submitButton.disabled = true; // Keep disabled on success
+            }
+            if (submitButton) submitButton.textContent = 'Submit Report';
         }
     });
 
@@ -2294,26 +2294,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('apply-filters')?.addEventListener('click', renderAdminReports);
     document.getElementById('reset-filters')?.addEventListener('click', () => {
         const imageFilter = document.getElementById('image-filter'); const categoryFilter = document.getElementById('category-filter'); const urgencyFilter = document.getElementById('urgency-filter'); const threatFilter = document.getElementById('threat-filter');
-        if(imageFilter) imageFilter.value = 'all'; if(categoryFilter) categoryFilter.value = 'all'; if(urgencyFilter) urgencyFilter.value = 'all'; if(threatFilter) threatFilter.value = 'all';
+        if (imageFilter) imageFilter.value = 'all'; if (categoryFilter) categoryFilter.value = 'all'; if (urgencyFilter) urgencyFilter.value = 'all'; if (threatFilter) threatFilter.value = 'all';
         renderAdminReports();
-     });
+    });
     document.getElementById('refresh-reports')?.addEventListener('click', async () => {
-         const button = document.getElementById('refresh-reports');
-         if (!button || button.disabled) return;
-         button.disabled = true; button.textContent = 'Refreshing...';
-         // showPopup("Refreshing data...", "info", 0, false); // REPLACED - Rely on button text
-         console.info("Refreshing data...");
-         try {
-             await Promise.all([renderAdminReports(), renderAdminAnalytics()]);
-             // showPopup("Data refreshed!", "success", 0, true); // REPLACED
-             console.log("Data refreshed!");
-         } catch (error) {
-             console.error("Refresh Error:", error);
-             // showPopup("Failed to refresh data.", "error", 0, false); // REPLACED
-             console.error("Failed to refresh data.");
-         } finally {
-             if (button) { button.disabled = false; button.textContent = 'Refresh Reports'; }
-         }
+        const button = document.getElementById('refresh-reports');
+        if (!button || button.disabled) return;
+        button.disabled = true; button.textContent = 'Refreshing...';
+        // showPopup("Refreshing data...", "info", 0, false); // REPLACED - Rely on button text
+        console.info("Refreshing data...");
+        try {
+            await Promise.all([renderAdminReports(), renderAdminAnalytics()]);
+            // showPopup("Data refreshed!", "success", 0, true); // REPLACED
+            console.log("Data refreshed!");
+        } catch (error) {
+            console.error("Refresh Error:", error);
+            // showPopup("Failed to refresh data.", "error", 0, false); // REPLACED
+            console.error("Failed to refresh data.");
+        } finally {
+            if (button) { button.disabled = false; button.textContent = 'Refresh Reports'; }
+        }
     });
     document.getElementById('export-data')?.addEventListener('click', async () => {
         const button = document.getElementById('export-data'); if (!button) return;
@@ -2323,8 +2323,8 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const allReports = await fetchReports();
             if (allReports.length === 0) {
-                 // showPopup("No reports to export.", "info", 0, true); // REPLACED
-                 console.info("No reports to export."); return;
+                // showPopup("No reports to export.", "info", 0, true); // REPLACED
+                console.info("No reports to export."); return;
             }
             const csvRows = []; const headers = ['ID', 'User ID', 'User Name', 'Location Name', 'Latitude', 'Longitude', 'Description', 'Category', 'Urgency', 'Threat', 'Image URL', 'Status', 'Timestamp'];
             csvRows.push(headers.join(','));
@@ -2344,9 +2344,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn("CSV generated, but auto-download not supported by this browser.");
             }
         } catch (error) {
-             console.error('Error exporting reports:', error);
-             // showPopup(`Export failed: ${error.message}`, 'error', 0, false); // REPLACED
-             console.error(`Export failed: ${error.message}`);
+            console.error('Error exporting reports:', error);
+            // showPopup(`Export failed: ${error.message}`, 'error', 0, false); // REPLACED
+            console.error(`Export failed: ${error.message}`);
         } finally {
             if (button) { button.disabled = false; button.textContent = 'Export Data'; }
         }
@@ -2376,16 +2376,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     reporterUserId = reportSnap.data().userId;
                     currentStatusInDB = reportSnap.data().status; // Get current status
                 } else {
-                     throw new Error("Report not found.");
+                    throw new Error("Report not found.");
                 }
 
                 // Only proceed if status is actually changing
-                 if (currentStatusInDB === newStatus) {
-                      // showPopup("Status is already set to " + newStatus + ".", "info", 0, true); // REPLACED
-                      console.info("Status is already set to " + newStatus + ".");
-                      updateButton.disabled = false; updateButton.textContent = 'Update';
-                      return; // Exit early
-                 }
+                if (currentStatusInDB === newStatus) {
+                    // showPopup("Status is already set to " + newStatus + ".", "info", 0, true); // REPLACED
+                    console.info("Status is already set to " + newStatus + ".");
+                    updateButton.disabled = false; updateButton.textContent = 'Update';
+                    return; // Exit early
+                }
 
                 // Update the status in Firestore
                 await updateDoc(reportRef, { status: newStatus });
@@ -2396,16 +2396,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Award points if marked Resolved AND reporter ID found AND status changed TO Resolved
                 let pointsAwardedForResolution = 0;
                 if (newStatus === 'Resolved' && currentStatusInDB !== 'Resolved' && reporterUserId) {
-                     console.log(`Report ${reportId} marked Resolved. Awarding resolution points to user ${reporterUserId}.`);
-                     pointsAwardedForResolution = await awardPointsAndCheckBadges(reporterUserId, POINT_VALUES.REPORT_RESOLVED, 'reportResolved');
-                     // Show RP gain via sidebar if points were awarded
-                     if (pointsAwardedForResolution > 0) {
-                         // Note: This notification goes to the ADMIN triggering the action,
-                         // not necessarily the user who submitted the report.
-                         // Ideally, a notification system would inform the original reporter.
-                         // For now, the admin sees the sidebar notification related to the points awarded.
-                         showRpNotification("Report resolved points awarded", pointsAwardedForResolution);
-                     }
+                    console.log(`Report ${reportId} marked Resolved. Awarding resolution points to user ${reporterUserId}.`);
+                    pointsAwardedForResolution = await awardPointsAndCheckBadges(reporterUserId, POINT_VALUES.REPORT_RESOLVED, 'reportResolved');
+                    // Show RP gain via sidebar if points were awarded
+                    if (pointsAwardedForResolution > 0) {
+                        // Note: This notification goes to the ADMIN triggering the action,
+                        // not necessarily the user who submitted the report.
+                        // Ideally, a notification system would inform the original reporter.
+                        // For now, the admin sees the sidebar notification related to the points awarded.
+                        showRpNotification("Report resolved points awarded", pointsAwardedForResolution);
+                    }
                 }
 
                 await renderAdminAnalytics(); // Refresh analytics
@@ -2416,15 +2416,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(`Failed to update status for report ${reportId}: ${error.message}`);
                 if (originalStatusSpan && originalStatusText) originalStatusSpan.textContent = originalStatusText; // Revert UI
             } finally {
-                 updateButton.disabled = false; updateButton.textContent = 'Update';
+                updateButton.disabled = false; updateButton.textContent = 'Update';
             }
         }
 
         // --- Handle Report Deletion ---
         if (target.classList.contains('delete-report-btn')) {
-             if (confirm(`Are you sure you want to DELETE report ${reportId}? This cannot be undone.`)) {
-                 const deleteButton = target; if (deleteButton.disabled) return;
-                 deleteButton.disabled = true; deleteButton.textContent = 'Deleting...';
+            if (confirm(`Are you sure you want to DELETE report ${reportId}? This cannot be undone.`)) {
+                const deleteButton = target; if (deleteButton.disabled) return;
+                deleteButton.disabled = true; deleteButton.textContent = 'Deleting...';
                 try {
                     await deleteDoc(doc(db, "reports", reportId));
                     // showPopup('Report deleted successfully.', 'success', 0, true); // REPLACED
@@ -2435,13 +2435,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     const filteredRemaining = applyFilters(remainingReports);
                     renderAdminMap(filteredRemaining);
                     await renderAdminAnalytics();
-                 } catch (error) {
-                     console.error('Error deleting report:', error);
-                     // showPopup(`Failed to delete report: ${error.message}`, 'error', 0, false); // REPLACED
-                     console.error(`Failed to delete report ${reportId}: ${error.message}`);
-                     deleteButton.disabled = false; deleteButton.textContent = 'Delete Report';
-                 }
-             }
+                } catch (error) {
+                    console.error('Error deleting report:', error);
+                    // showPopup(`Failed to delete report: ${error.message}`, 'error', 0, false); // REPLACED
+                    console.error(`Failed to delete report ${reportId}: ${error.message}`);
+                    deleteButton.disabled = false; deleteButton.textContent = 'Delete Report';
+                }
+            }
         }
     });
 
@@ -2453,15 +2453,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('forum-post-form')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || !currentUserData) {
-                 // showPopup("Please log in to create a post.", "error", 0, false); // REPLACED
-                 console.error("Please log in to create a post.");
-                 showPage('login'); return;
+                // showPopup("Please log in to create a post.", "error", 0, false); // REPLACED
+                console.error("Please log in to create a post.");
+                showPage('login'); return;
             }
             const titleInput = document.getElementById('post-title'); const contentInput = document.getElementById('post-content'); const categorySelect = document.getElementById('post-category'); const submitButton = document.getElementById('submit-button');
             const title = titleInput?.value.trim(); const content = contentInput?.value.trim(); const category = categorySelect?.value;
             if (!title || !content || !category) {
-                 // showPopup("Please fill in title, content, and category.", "warning", 0, false); // REPLACED
-                 console.warn("Please fill in title, content, and category."); return;
+                // showPopup("Please fill in title, content, and category.", "warning", 0, false); // REPLACED
+                console.warn("Please fill in title, content, and category."); return;
             }
 
             submitButton.disabled = true; submitButton.textContent = 'Posting...';
@@ -2501,16 +2501,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Handle Comment Toggling
             if (target.classList.contains('toggle-comments-btn')) {
-                 const commentsSection = postElement.querySelector('.comments-section');
-                 if (commentsSection) {
-                     const isHidden = commentsSection.style.display === 'none';
-                     commentsSection.style.display = isHidden ? 'block' : 'none';
-                     if (isHidden) {
-                         await renderComments(postId);
-                         const textarea = commentsSection.querySelector('.comment-form textarea');
-                         if (textarea) textarea.focus();
-                     }
-                 }
+                const commentsSection = postElement.querySelector('.comments-section');
+                if (commentsSection) {
+                    const isHidden = commentsSection.style.display === 'none';
+                    commentsSection.style.display = isHidden ? 'block' : 'none';
+                    if (isHidden) {
+                        await renderComments(postId);
+                        const textarea = commentsSection.querySelector('.comment-form textarea');
+                        if (textarea) textarea.focus();
+                    }
+                }
             }
 
             // Handle Voting
@@ -2518,7 +2518,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!currentUser) {
                     // showPopup("Please log in to vote.", "error", 0, false); // REPLACED
                     console.error("Please log in to vote."); return;
-                 }
+                }
                 if (target.disabled) return;
                 target.disabled = true;
 
@@ -2541,10 +2541,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         const pointsAwarded = await awardPointsAndCheckBadges(currentUser.uid, POINT_VALUES.GIVE_UPVOTE, 'giveUpvote');
 
                         // Update UI optimistically
-                         const countMatch = target.textContent.match(/\d+$/);
-                         const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
-                         const icon = target.textContent.split(' ')[0];
-                         target.textContent = `${icon} ${currentCount + 1}`;
+                        const countMatch = target.textContent.match(/\d+$/);
+                        const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
+                        const icon = target.textContent.split(' ')[0];
+                        target.textContent = `${icon} ${currentCount + 1}`;
 
                         // Show RP gain via sidebar if points > 0
                         if (pointsAwarded > 0) {
@@ -2554,26 +2554,26 @@ document.addEventListener('DOMContentLoaded', () => {
                         setTimeout(() => { target.disabled = false; }, 500); // Re-enable
 
                     } catch (error) {
-                         console.error("Voting error:", error);
-                         // showPopup("Error recording vote.", "error", 0, false); // REPLACED
-                         console.error("Error recording vote.");
-                         target.disabled = false; // Re-enable on error
+                        console.error("Voting error:", error);
+                        // showPopup("Error recording vote.", "error", 0, false); // REPLACED
+                        console.error("Error recording vote.");
+                        target.disabled = false; // Re-enable on error
                     }
                 } else { // Handle downvote (no points, just update DB/UI)
-                     try {
-                         await updateDoc(docRef, { [voteField]: increment(1) });
-                         // Update UI optimistically
-                         const countMatch = target.textContent.match(/\d+$/);
-                         const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
-                         const icon = target.textContent.split(' ')[0];
-                         target.textContent = `${icon} ${currentCount + 1}`;
-                         setTimeout(() => { target.disabled = false; }, 500);
-                     } catch (error) {
-                         console.error("Voting error:", error);
-                         // showPopup("Error recording vote.", "error", 0, false); // REPLACED
-                         console.error("Error recording vote.");
-                         target.disabled = false;
-                     }
+                    try {
+                        await updateDoc(docRef, { [voteField]: increment(1) });
+                        // Update UI optimistically
+                        const countMatch = target.textContent.match(/\d+$/);
+                        const currentCount = countMatch ? parseInt(countMatch[0], 10) : 0;
+                        const icon = target.textContent.split(' ')[0];
+                        target.textContent = `${icon} ${currentCount + 1}`;
+                        setTimeout(() => { target.disabled = false; }, 500);
+                    } catch (error) {
+                        console.error("Voting error:", error);
+                        // showPopup("Error recording vote.", "error", 0, false); // REPLACED
+                        console.error("Error recording vote.");
+                        target.disabled = false;
+                    }
                 }
             }
 
@@ -2588,7 +2588,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // showPopup(`Post successfully ${isPinned ? 'unpinned' : 'pinned'}.`, 'success', 0, true); // REPLACED
                     console.log(`Post successfully ${isPinned ? 'unpinned' : 'pinned'}: ${postId}`);
                     await renderForumPosts(); // Re-render list for order
-                } catch(error) {
+                } catch (error) {
                     console.error("Pinning error:", error);
                     // showPopup("Error changing pin status.", "error", 0, false); // REPLACED
                     console.error(`Error changing pin status for post ${postId}: ${error.message}`);
@@ -2596,88 +2596,88 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-             // Handle Post Deletion (Admin or Author)
+            // Handle Post Deletion (Admin or Author)
             if (target.classList.contains('delete-post-btn')) {
-                 const postAuthorId = postElement.querySelector('.post-author .user-link')?.getAttribute('data-user');
-                 if (currentUser && (currentUser.email === 'admin@sgresolve.com' || currentUser.uid === postAuthorId)) {
-                     if (confirm(`Are you sure you want to DELETE this post and all its comments?`)) {
-                         if (target.disabled) return;
-                         target.disabled = true; target.textContent = 'Deleting...';
-                         try {
+                const postAuthorId = postElement.querySelector('.post-author .user-link')?.getAttribute('data-user');
+                if (currentUser && (currentUser.email === 'admin@sgresolve.com' || currentUser.uid === postAuthorId)) {
+                    if (confirm(`Are you sure you want to DELETE this post and all its comments?`)) {
+                        if (target.disabled) return;
+                        target.disabled = true; target.textContent = 'Deleting...';
+                        try {
                             // Delete comments first
-                             const commentsQuery = query(collection(db, "forumPosts", postId, "comments"));
-                             const commentsSnapshot = await getDocs(commentsQuery);
-                             const deletePromises = commentsSnapshot.docs.map(commentDoc => deleteDoc(commentDoc.ref));
-                             await Promise.all(deletePromises);
+                            const commentsQuery = query(collection(db, "forumPosts", postId, "comments"));
+                            const commentsSnapshot = await getDocs(commentsQuery);
+                            const deletePromises = commentsSnapshot.docs.map(commentDoc => deleteDoc(commentDoc.ref));
+                            await Promise.all(deletePromises);
                             // Delete post
-                             await deleteDoc(doc(db, "forumPosts", postId));
-                             // showPopup('Post and comments deleted.', 'success', 0, true); // REPLACED
-                             console.log(`Post and comments deleted: ${postId}`);
-                             postElement.remove();
-                         } catch (error) {
-                             console.error("Error deleting post:", error);
-                             // showPopup(`Failed to delete post: ${error.message}`, 'error', 0, false); // REPLACED
-                             console.error(`Failed to delete post ${postId}: ${error.message}`);
-                             target.disabled = false; target.textContent = '🗑️ Delete';
-                         }
-                     }
-                 } else if (!currentUser) {
+                            await deleteDoc(doc(db, "forumPosts", postId));
+                            // showPopup('Post and comments deleted.', 'success', 0, true); // REPLACED
+                            console.log(`Post and comments deleted: ${postId}`);
+                            postElement.remove();
+                        } catch (error) {
+                            console.error("Error deleting post:", error);
+                            // showPopup(`Failed to delete post: ${error.message}`, 'error', 0, false); // REPLACED
+                            console.error(`Failed to delete post ${postId}: ${error.message}`);
+                            target.disabled = false; target.textContent = '🗑️ Delete';
+                        }
+                    }
+                } else if (!currentUser) {
                     // showPopup("Please log in to delete posts.", "error", 0, false); // REPLACED
                     console.error("Please log in to delete posts.");
-                 } else {
+                } else {
                     // showPopup("You do not have permission.", "error", 0, false); // REPLACED
                     console.error("You do not have permission to delete this post.");
-                 }
-             }
+                }
+            }
 
-             // Handle Comment Deletion (Author or Admin)
-             if (target.classList.contains('delete-comment-btn')) {
+            // Handle Comment Deletion (Author or Admin)
+            if (target.classList.contains('delete-comment-btn')) {
                 const commentLi = target.closest('.comment-item');
                 const commentId = target.getAttribute('data-comment-id');
                 let commentAuthorId = null;
                 try { // Fetch comment author
-                     const commentRef = doc(db, "forumPosts", postId, "comments", commentId);
-                     const commentSnap = await getDoc(commentRef);
-                     if (commentSnap.exists()) commentAuthorId = commentSnap.data().authorId;
-                     else { throw new Error("Comment not found in DB."); } // Check if comment exists before proceeding
+                    const commentRef = doc(db, "forumPosts", postId, "comments", commentId);
+                    const commentSnap = await getDoc(commentRef);
+                    if (commentSnap.exists()) commentAuthorId = commentSnap.data().authorId;
+                    else { throw new Error("Comment not found in DB."); } // Check if comment exists before proceeding
                 } catch (fetchError) {
-                     console.error("Could not fetch comment details:", fetchError);
-                     // showPopup("Error checking comment ownership.", "error", 0, false); // REPLACED
-                     console.error("Error checking comment ownership or comment not found."); return;
+                    console.error("Could not fetch comment details:", fetchError);
+                    // showPopup("Error checking comment ownership.", "error", 0, false); // REPLACED
+                    console.error("Error checking comment ownership or comment not found."); return;
                 }
 
-                 if (currentUser && commentId && (currentUser.email === 'admin@sgresolve.com' || currentUser.uid === commentAuthorId)) {
-                      if (confirm("Delete this comment?")) {
-                          if (target.disabled) return;
-                          target.disabled = true; target.textContent = 'Deleting...';
-                          try {
-                              await deleteDoc(doc(db, "forumPosts", postId, "comments", commentId));
-                              // showPopup("Comment deleted.", "success", 0, true); // REPLACED
-                              console.log(`Comment deleted: ${commentId} from post ${postId}`);
-                              if(commentLi) commentLi.remove();
-                              // Decrement comment count on post (handle potential race conditions if needed, but increment(-1) is generally safe)
-                              await updateDoc(doc(db, "forumPosts", postId), { commentCount: increment(-1) });
-                              // Update count display
-                              const commentBtn = postElement.querySelector('.toggle-comments-btn');
-                              if (commentBtn) {
-                                  const countMatch = commentBtn.textContent.match(/\((\d+)\)/);
-                                  const currentCount = countMatch ? parseInt(countMatch[1], 10) : 1; // Start from 1 if count was messed up
-                                  commentBtn.textContent = `💬 Comments (${Math.max(0, currentCount - 1)})`;
-                              }
-                          } catch (error) {
-                              console.error("Error deleting comment:", error);
-                              // showPopup(`Failed to delete comment: ${error.message}`, 'error', 0, false); // REPLACED
-                              console.error(`Failed to delete comment ${commentId}: ${error.message}`);
-                              target.disabled = false; target.textContent = 'Delete';
-                          }
-                      }
-                 } else if (!currentUser) {
+                if (currentUser && commentId && (currentUser.email === 'admin@sgresolve.com' || currentUser.uid === commentAuthorId)) {
+                    if (confirm("Delete this comment?")) {
+                        if (target.disabled) return;
+                        target.disabled = true; target.textContent = 'Deleting...';
+                        try {
+                            await deleteDoc(doc(db, "forumPosts", postId, "comments", commentId));
+                            // showPopup("Comment deleted.", "success", 0, true); // REPLACED
+                            console.log(`Comment deleted: ${commentId} from post ${postId}`);
+                            if (commentLi) commentLi.remove();
+                            // Decrement comment count on post (handle potential race conditions if needed, but increment(-1) is generally safe)
+                            await updateDoc(doc(db, "forumPosts", postId), { commentCount: increment(-1) });
+                            // Update count display
+                            const commentBtn = postElement.querySelector('.toggle-comments-btn');
+                            if (commentBtn) {
+                                const countMatch = commentBtn.textContent.match(/\((\d+)\)/);
+                                const currentCount = countMatch ? parseInt(countMatch[1], 10) : 1; // Start from 1 if count was messed up
+                                commentBtn.textContent = `💬 Comments (${Math.max(0, currentCount - 1)})`;
+                            }
+                        } catch (error) {
+                            console.error("Error deleting comment:", error);
+                            // showPopup(`Failed to delete comment: ${error.message}`, 'error', 0, false); // REPLACED
+                            console.error(`Failed to delete comment ${commentId}: ${error.message}`);
+                            target.disabled = false; target.textContent = 'Delete';
+                        }
+                    }
+                } else if (!currentUser) {
                     // showPopup("Please log in to delete comments.", "error", 0, false); // REPLACED
                     console.error("Please log in to delete comments.");
-                 } else {
+                } else {
                     // showPopup("You do not have permission.", "error", 0, false); // REPLACED
                     console.error("You do not have permission to delete this comment.");
-                 }
+                }
             }
         });
 
@@ -2689,7 +2689,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // showPopup("Please log in to comment.", "error", 0, false); // REPLACED
                     console.error("Please log in to comment.");
                     showPage('login'); return;
-                 }
+                }
                 const postElement = e.target.closest('.forum-post'); const postId = postElement?.getAttribute('data-post-id'); const textarea = e.target.querySelector('textarea'); const submitButton = e.target.querySelector('button[type="submit"]'); const content = textarea?.value.trim();
                 if (!postId || !textarea || !content || !submitButton) return;
 
@@ -2707,17 +2707,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     await updateDoc(doc(db, "forumPosts", postId), { commentCount: increment(1) });
                     // Update UI count
                     const commentBtn = postElement.querySelector('.toggle-comments-btn');
-                     if (commentBtn) {
-                         const countMatch = commentBtn.textContent.match(/\((\d+)\)/);
-                         const currentCount = countMatch ? parseInt(countMatch[1], 10) : 0;
-                         commentBtn.textContent = `💬 Comments (${currentCount + 1})`;
-                     }
+                    if (commentBtn) {
+                        const countMatch = commentBtn.textContent.match(/\((\d+)\)/);
+                        const currentCount = countMatch ? parseInt(countMatch[1], 10) : 0;
+                        commentBtn.textContent = `💬 Comments (${currentCount + 1})`;
+                    }
 
                     // Show RP gain via sidebar if points > 0
                     if (pointsAwarded > 0) {
                         showRpNotification("Comment added", pointsAwarded);
                     } else {
-                         console.log(`Comment added to post ${postId}`); // Log if no points
+                        console.log(`Comment added to post ${postId}`); // Log if no points
                     }
 
                     await renderComments(postId); // Refresh comments list
@@ -2727,7 +2727,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // showPopup(`Failed to post comment: ${error.message}`, 'error', 0, false); // REPLACED
                     console.error(`Failed to post comment to ${postId}: ${error.message}`);
                 } finally {
-                     submitButton.disabled = false; submitButton.textContent = 'Comment';
+                    submitButton.disabled = false; submitButton.textContent = 'Comment';
                 }
             }
         });
@@ -2743,8 +2743,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!forumPostsContainer) return;
 
             if (loadMoreButton) loadMoreButton.style.display = 'none'; // Hide load more during search
-             const existingNoMoreMsg = forumPostsContainer.querySelector('.no-more-posts-message');
-             if (existingNoMoreMsg) existingNoMoreMsg.remove();
+            const existingNoMoreMsg = forumPostsContainer.querySelector('.no-more-posts-message');
+            if (existingNoMoreMsg) existingNoMoreMsg.remove();
 
             if (!searchTerm) { renderForumPosts(); return; } // Reload initial if search cleared
 
@@ -2758,11 +2758,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const matchingPosts = [];
                     querySnapshot.forEach((doc) => {
                         const post = { id: doc.id, ...doc.data() };
-                        if ( (post.title && post.title.toLowerCase().includes(searchTerm)) ||
-                             (post.content && post.content.toLowerCase().includes(searchTerm)) ||
-                             (post.author && post.author.toLowerCase().includes(searchTerm)) ||
-                             (post.category && post.category.toLowerCase().includes(searchTerm)) // Search category too
-                           ) {
+                        if ((post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                            (post.content && post.content.toLowerCase().includes(searchTerm)) ||
+                            (post.author && post.author.toLowerCase().includes(searchTerm)) ||
+                            (post.category && post.category.toLowerCase().includes(searchTerm)) // Search category too
+                        ) {
                             matchingPosts.push(post);
                         }
                     });
@@ -2810,23 +2810,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const messageArea = document.getElementById('update-profile-message');
             const newName = nameInput?.value.trim();
 
-            if (!newName) { if(messageArea) messageArea.textContent = 'Display name cannot be empty.'; if(messageArea) messageArea.className = 'form-message error'; return; }
+            if (!newName) { if (messageArea) messageArea.textContent = 'Display name cannot be empty.'; if (messageArea) messageArea.className = 'form-message error'; return; }
             const currentName = currentUserData.displayName || currentUser.displayName || '';
-            if (newName === currentName) { if(messageArea) messageArea.textContent = 'Name is already set to this value.'; if(messageArea) messageArea.className = 'form-message info'; return; }
+            if (newName === currentName) { if (messageArea) messageArea.textContent = 'Name is already set to this value.'; if (messageArea) messageArea.className = 'form-message info'; return; }
 
             updateButton.disabled = true; updateButton.textContent = 'Updating...';
-            if(messageArea) messageArea.textContent = ''; messageArea.className = 'form-message';
+            if (messageArea) messageArea.textContent = ''; messageArea.className = 'form-message';
 
             try {
                 await updateProfile(auth.currentUser, { displayName: newName }); console.log("Auth profile updated.");
                 const userRef = doc(db, "users", currentUser.uid); await updateDoc(userRef, { displayName: newName }); console.log("Firestore document updated.");
                 await fetchAndSetCurrentUserData(currentUser.uid); // Refresh local data & UI
-                if(messageArea) messageArea.textContent = 'Display name updated successfully!'; messageArea.className = 'form-message success';
+                if (messageArea) messageArea.textContent = 'Display name updated successfully!'; messageArea.className = 'form-message success';
                 // showPopup('Display name updated!', 'success', 0, true); // REPLACED
                 console.log('Display name updated!'); // Log success
             } catch (error) {
                 console.error("Error updating display name:", error);
-                if(messageArea) messageArea.textContent = `Error updating name: ${error.message}`; messageArea.className = 'form-message error';
+                if (messageArea) messageArea.textContent = `Error updating name: ${error.message}`; messageArea.className = 'form-message error';
                 // showPopup(`Error updating name: ${error.message}`, 'error', 0, false); // REPLACED
                 console.error(`Error updating name: ${error.message}`); // Log error
             } finally {
@@ -2845,21 +2845,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const messageArea = document.getElementById('change-password-message');
             const currentPassword = currentPasswordInput?.value; const newPassword = newPasswordInput?.value; const confirmPassword = confirmPasswordInput?.value;
 
-            if (!currentPassword || !newPassword || !confirmPassword) { if(messageArea) messageArea.textContent = 'Please fill all fields.'; if(messageArea) messageArea.className = 'form-message error'; return; }
-            if (newPassword !== confirmPassword) { if(messageArea) messageArea.textContent = 'New passwords do not match.'; if(messageArea) messageArea.className = 'form-message error'; return; }
-            if (newPassword.length < 6) { if(messageArea) messageArea.textContent = 'New password must be at least 6 characters.'; if(messageArea) messageArea.className = 'form-message error'; return; }
+            if (!currentPassword || !newPassword || !confirmPassword) { if (messageArea) messageArea.textContent = 'Please fill all fields.'; if (messageArea) messageArea.className = 'form-message error'; return; }
+            if (newPassword !== confirmPassword) { if (messageArea) messageArea.textContent = 'New passwords do not match.'; if (messageArea) messageArea.className = 'form-message error'; return; }
+            if (newPassword.length < 6) { if (messageArea) messageArea.textContent = 'New password must be at least 6 characters.'; if (messageArea) messageArea.className = 'form-message error'; return; }
 
             changeButton.disabled = true; changeButton.textContent = 'Changing...';
-            if(messageArea) messageArea.textContent = 'Re-authenticating...'; messageArea.className = 'form-message info';
+            if (messageArea) messageArea.textContent = 'Re-authenticating...'; messageArea.className = 'form-message info';
 
             try {
                 // Re-authenticate
                 const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
                 await reauthenticateWithCredential(currentUser, credential); console.log("User re-authenticated.");
-                if(messageArea) messageArea.textContent = 'Updating password...';
+                if (messageArea) messageArea.textContent = 'Updating password...';
                 // Update password
                 await updatePassword(currentUser, newPassword); console.log("Password updated.");
-                if(messageArea) messageArea.textContent = 'Password changed successfully!'; messageArea.className = 'form-message success';
+                if (messageArea) messageArea.textContent = 'Password changed successfully!'; messageArea.className = 'form-message success';
                 // showPopup('Password changed successfully!', 'success', 0, true); // REPLACED
                 console.log('Password changed successfully!'); // Log success
                 currentPasswordInput.value = ''; newPasswordInput.value = ''; confirmPasswordInput.value = ''; // Clear fields
@@ -2869,7 +2869,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (error.code === 'auth/wrong-password') friendlyMessage = 'Incorrect current password.';
                 else if (error.code === 'auth/weak-password') friendlyMessage = 'New password is too weak.';
                 else if (error.code === 'auth/requires-recent-login') friendlyMessage = 'Requires recent login. Please log out and log back in.';
-                if(messageArea) messageArea.textContent = friendlyMessage; messageArea.className = 'form-message error';
+                if (messageArea) messageArea.textContent = friendlyMessage; messageArea.className = 'form-message error';
                 // showPopup(`Password change failed: ${friendlyMessage}`, 'error', 0, false); // REPLACED
                 console.error(`Password change failed: ${friendlyMessage}`); // Log error
             } finally {
@@ -2885,7 +2885,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('chat-icon')?.addEventListener('click', toggleChat);
     document.querySelector('.send-button')?.addEventListener('click', sendChatMessage);
     document.getElementById('user-input')?.addEventListener('keypress', (e) => {
-         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChatMessage(); }
     });
     document.getElementById('chat-close-button')?.addEventListener('click', toggleChat);
 
@@ -2901,14 +2901,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             targetInputFieldForSpeech = { inputElement: chatbotUserInput, micButton: chatbotMicBtn };
             // Store the text that is ALREADY in the input field before starting new recognition
-            chatbotUserInput.dataset.currentFinalText = chatbotUserInput.value; 
+            chatbotUserInput.dataset.currentFinalText = chatbotUserInput.value;
             try {
                 recognition.start();
             } catch (e) {
                 isRecognizing = false; // Ensure state is correct if start fails
                 console.error("Error starting recognition (chatbot):", e);
                 console.error("Could not start voice recognition. " + e.message);
-                 if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
+                if (targetInputFieldForSpeech && targetInputFieldForSpeech.micButton) {
                     targetInputFieldForSpeech.micButton.classList.remove('recognizing');
                     targetInputFieldForSpeech.micButton.innerHTML = '<i class="fas fa-microphone"></i>';
                     targetInputFieldForSpeech.micButton.title = 'Use Microphone';
@@ -2931,7 +2931,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             targetInputFieldForSpeech = { inputElement: problemDescTextarea, micButton: reportDescMicBtn };
             // Store the text that is ALREADY in the input field before starting new recognition
-            problemDescTextarea.dataset.currentFinalText = problemDescTextarea.value; 
+            problemDescTextarea.dataset.currentFinalText = problemDescTextarea.value;
             try {
                 recognition.start();
             } catch (e) {
@@ -2954,7 +2954,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Setup ---
     console.log("SGResolve App Initialized (No Center Popups). Using RP Sidebar & Console Logs.");
-     if (!auth.currentUser && !document.querySelector('.page.show')) {
-         showPage('landing'); // Ensure landing page is shown if not logged in
-     }
+    if (!auth.currentUser && !document.querySelector('.page.show')) {
+        showPage('landing'); // Ensure landing page is shown if not logged in
+    }
+});
+
+// --- Sticky Trending posts ---
+(function () {
+    const nav = document.getElementById('navbar');
+    const trending = document.getElementById('trending-posts');
+    const heading = trending ? trending.querySelector('h2') : null;
+
+    function recalc() {
+        const navH = nav ? nav.offsetHeight : 0;
+        const headH = heading ? heading.offsetHeight : 0;
+        document.documentElement.style.setProperty('--nav-h', navH + 'px');
+        document.documentElement.style.setProperty('--trend-head', headH + 'px');
+    }
+
+    // Recalculate on load, resize, and whenever the navbar/head size changes
+    const ro = new ResizeObserver(recalc);
+    if (nav) ro.observe(nav);
+    if (heading) ro.observe(heading);
+    window.addEventListener('resize', recalc);
+    document.addEventListener('DOMContentLoaded', recalc);
+    recalc();
+
+    // (Styling parity) If you dynamically inject trending items, ensure they use .post-card.
+    // Call this after you populate #trending-container.
+    window.ensureTrendingCardsMatch = function () {
+        const c = document.getElementById('trending-container');
+        if (!c) return;
+        c.querySelectorAll(':scope > *').forEach(el => el.classList.add('post-card'));
+    };
+
+    // If your hamburger toggles the navbar height, recalc on toggle clicks too.
+    const toggleBtn = document.querySelector('#navbar .menu-toggle');
+    if (toggleBtn) toggleBtn.addEventListener('click', () => {
+        // Let the menu animate, then measure
+        setTimeout(recalc, 250);
     });
+})();

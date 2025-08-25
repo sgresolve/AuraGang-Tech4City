@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,14 +12,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0969da">
-    <!-- Basic iOS PWA Meta Tags-->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="/NAISC-NAPA/images/icons/icon-192x192.png"> <!-- Example size -->
+  <!-- Basic iOS PWA Meta Tags-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="/NAISC-NAPA/images/icons/icon-192x192.png"> <!-- Example size -->
   <!-- Add Google reCAPTCHA v2 Script -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <!-- End Google reCAPTCHA v2 Script -->
@@ -28,41 +30,53 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 0px 8px; /* Adjust as needed */
-      font-size: 1.1em; /* Adjust as needed */
+      padding: 0px 8px;
+      /* Adjust as needed */
+      font-size: 1.1em;
+      /* Adjust as needed */
       color: #555;
       vertical-align: middle;
     }
+
     .mic-button:hover {
       color: var(--primary-color);
     }
+
     .mic-button.recognizing i {
       color: red;
     }
+
     .chat-input {
       display: flex;
       align-items: center;
     }
+
     .chat-input .input-box {
       flex-grow: 1;
-      margin-right: 5px; /* Space before mic button */
+      margin-right: 5px;
+      /* Space before mic button */
     }
-    #report-form textarea + .mic-button {
-        margin-top: 5px; /* Space above mic button */
-        margin-bottom: 10px; /* Space below mic button */
-        /* display: block; */ /* If it should be on its own line */
+
+    #report-form textarea+.mic-button {
+      margin-top: 5px;
+      /* Space above mic button */
+      margin-bottom: 10px;
+      /* Space below mic button */
+      /* display: block; */
+      /* If it should be on its own line */
     }
   </style>
 </head>
+
 <body>
   <div id="app">
 
     <nav id="navbar">
-  <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navbar-ul">
-    <span></span>
-    <span></span>
-    <span></span>
-  </button>
+      <button class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navbar-ul">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul id="navbar-ul">
         <li><a href="#" id="nav-home">Home</a></li>
         <li><a href="#" id="nav-my-reports">My Reports</a></li>
@@ -124,33 +138,35 @@
           <a href="#" id="cta-register" class="button primary-button">Register Now</a>
           <a href="#" id="cta-login" class="button secondary-button">Login</a>
         </div>
-              <p>
-        Follow us on
-        <a href="https://t.me/+8VF80QalI3thZDU1" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-telegram-plane" aria-hidden="true"></i> Telegram
-        </a>
-        for live updates.
-      </p>
+        <p>
+          Follow us on
+          <a href="https://t.me/+8VF80QalI3thZDU1" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-telegram-plane" aria-hidden="true"></i> Telegram
+          </a>
+          for live updates.
+        </p>
       </section>
     </div>
 
     <!-- Custom Chatbot -->
     <div class="chat-widget">
       <div id="chat-container" class="chat-container">
-          <div class="chat-header"> <!-- Added wrapper for header -->
-             <h2>SGResolve AI Chatbot</h2>
-             <button id="chat-close-button" class="chat-close-btn" aria-label="Close chat">×</button> <!-- Changed X to multiplication sign -->
-          </div>
+        <div class="chat-header"> <!-- Added wrapper for header -->
+          <h2>SGResolve AI Chatbot</h2>
+          <button id="chat-close-button" class="chat-close-btn" aria-label="Close chat">×</button>
+          <!-- Changed X to multiplication sign -->
+        </div>
         <div class="chat-box" id="chat-box"></div>
         <div class="chat-input">
           <input type="text" id="user-input" class="input-box" placeholder="Type a message...">
-          <button id="chatbot-mic-btn" class="mic-button" aria-label="Use microphone for chat input" title="Use Microphone"><i class="fas fa-microphone"></i></button>
+          <button id="chatbot-mic-btn" class="mic-button" aria-label="Use microphone for chat input"
+            title="Use Microphone"><i class="fas fa-microphone"></i></button>
           <button class="send-button">Send</button>
         </div>
       </div>
       <div id="chat-icon" class="chat-icon">
         <img src="images/chat-icon.png" alt="Chat">
-    </div>
+      </div>
     </div>
 
     <!-- Login Page -->
@@ -184,195 +200,196 @@
       <h1>Admin Dashboard</h1>
       <div class="admin-container">
 
-          <!-- New Enhanced Analytics Section -->
-          <div class="admin-analytics-grid">
+        <!-- New Enhanced Analytics Section -->
+        <div class="admin-analytics-grid">
 
-              <!-- Stat Card: Total Reports -->
-              <div class="stat-card">
-                  <div class="stat-icon"><i class="icon-files"></i></div>
-                  <div class="stat-content">
-                      <span class="stat-value" id="stat-total-reports">0</span>
-                      <span class="stat-label">Total Reports</span>
-                  </div>
-              </div>
-
-              <!-- Stat Card: Pending Reports -->
-              <div class="stat-card">
-                  <div class="stat-icon" style="color: #ffc107;"><i class="icon-clock"></i></div>
-                  <div class="stat-content">
-                      <span class="stat-value" id="stat-pending-reports">0</span>
-                      <span class="stat-label">Pending Reports</span>
-                  </div>
-              </div>
-
-              <!-- Stat Card: Resolved Reports -->
-              <div class="stat-card">
-                   <div class="stat-icon" style="color: var(--secondary-color);"><i class="icon-check"></i></div>
-                  <div class="stat-content">
-                      <span class="stat-value" id="stat-resolved-reports">0</span>
-                      <span class="stat-label">Resolved Reports</span>
-                  </div>
-              </div>
-
-              <!-- Chart: Reports by Status -->
-              <div class="chart-card">
-                  <h3>Reports by Status</h3>
-                  <div class="chart-wrapper" style="height:250px;">
-                      <canvas id="status-chart"></canvas>
-                  </div>
-                  <div id="no-status-data" class="no-data-message" style="display: none;">No status data available.</div>
-              </div>
-
-              <!-- Chart: Reports by Urgency -->
-              <div class="chart-card">
-                  <h3>Reports by Urgency</h3>
-                  <div class="chart-wrapper" style="height:250px;">
-                      <canvas id="urgency-chart"></canvas>
-                  </div>
-                  <div id="no-urgency-data" class="no-data-message" style="display: none;">No urgency data available.</div>
-              </div>
-
-               <!-- Chart: Reports by Category (Monthly) - Kept from before -->
-               <div class="chart-card">
-                  <h3>Reports This Month by Category</h3>
-                   <p id="total-reports-month" class="subtle-text">Total this month: 0</p>
-                  <div class="chart-wrapper" style="height:250px;">
-                      <canvas id="reports-chart"></canvas> <!-- Keep original ID -->
-                  </div>
-                  <div id="no-reports-message" class="no-data-message" style="display: none;">No reports this month.</div>
-              </div>
-
-          </div>
-          <!-- End of Enhanced Analytics Section -->
-
-
-          <!-- Existing Admin Reports Section -->
-          <div class="admin-reports">
-              <h2>Submitted Reports</h2>
-              <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-              <div class="admin-actions">
-                  <!-- Filter Controls Here -->
-                  <div class="admin-filters">
-                      <label for="image-filter">Image:</label>
-                      <select id="image-filter">
-                          <option value="all" selected>All</option>
-                          <option value="with">With Image</option>
-                          <option value="without">Without Image</option>
-                      </select>
-
-                      <label for="category-filter">Category:</label>
-                      <select id="category-filter">
-                          <option value="all" selected>All</option>
-                          <option value="Infrastructure">Infrastructure</option>
-                          <option value="Environmental">Environmental</option>
-                          <option value="Safety">Safety</option>
-                          <option value="Others">Others</option>
-                      </select>
-
-                      <label for="urgency-filter">Urgency:</label>
-                      <select id="urgency-filter">
-                          <option value="all" selected>All</option>
-                          <option value="Low">Low</option>
-                          <option value="Medium">Medium</option>
-                          <option value="High">High</option>
-                      </select>
-
-                      <label for="threat-filter">Threat:</label>
-                      <select id="threat-filter">
-                          <option value="all" selected>All</option>
-                          <option value="Minor">Minor</option>
-                          <option value="Moderate">Moderate</option>
-                          <option value="Severe">Severe</option>
-                      </select>
-
-                      <button id="apply-filters" class="button">Apply Filters</button>
-                      <button id="reset-filters" class="button secondary-button">Reset Filters</button>
-                  </div>
-                  <button id="refresh-reports" class="button">Refresh Reports</button>
-                  <button id="export-data" class="button secondary-button">Export Data</button>
-              </div>
-              <ul id="admin-reports-container">
-                  <!-- Report items rendered dynamically -->
-              </ul>
+          <!-- Stat Card: Total Reports -->
+          <div class="stat-card">
+            <div class="stat-icon"><i class="icon-files"></i></div>
+            <div class="stat-content">
+              <span class="stat-value" id="stat-total-reports">0</span>
+              <span class="stat-label">Total Reports</span>
+            </div>
           </div>
 
-          <div class="admin-logout">
-              <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
+          <!-- Stat Card: Pending Reports -->
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #ffc107;"><i class="icon-clock"></i></div>
+            <div class="stat-content">
+              <span class="stat-value" id="stat-pending-reports">0</span>
+              <span class="stat-label">Pending Reports</span>
+            </div>
           </div>
+
+          <!-- Stat Card: Resolved Reports -->
+          <div class="stat-card">
+            <div class="stat-icon" style="color: var(--secondary-color);"><i class="icon-check"></i></div>
+            <div class="stat-content">
+              <span class="stat-value" id="stat-resolved-reports">0</span>
+              <span class="stat-label">Resolved Reports</span>
+            </div>
+          </div>
+
+          <!-- Chart: Reports by Status -->
+          <div class="chart-card">
+            <h3>Reports by Status</h3>
+            <div class="chart-wrapper" style="height:250px;">
+              <canvas id="status-chart"></canvas>
+            </div>
+            <div id="no-status-data" class="no-data-message" style="display: none;">No status data available.</div>
+          </div>
+
+          <!-- Chart: Reports by Urgency -->
+          <div class="chart-card">
+            <h3>Reports by Urgency</h3>
+            <div class="chart-wrapper" style="height:250px;">
+              <canvas id="urgency-chart"></canvas>
+            </div>
+            <div id="no-urgency-data" class="no-data-message" style="display: none;">No urgency data available.</div>
+          </div>
+
+          <!-- Chart: Reports by Category (Monthly) - Kept from before -->
+          <div class="chart-card">
+            <h3>Reports This Month by Category</h3>
+            <p id="total-reports-month" class="subtle-text">Total this month: 0</p>
+            <div class="chart-wrapper" style="height:250px;">
+              <canvas id="reports-chart"></canvas> <!-- Keep original ID -->
+            </div>
+            <div id="no-reports-message" class="no-data-message" style="display: none;">No reports this month.</div>
+          </div>
+
+        </div>
+        <!-- End of Enhanced Analytics Section -->
+
+
+        <!-- Existing Admin Reports Section -->
+        <div class="admin-reports">
+          <h2>Submitted Reports</h2>
+          <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+          <div class="admin-actions">
+            <!-- Filter Controls Here -->
+            <div class="admin-filters">
+              <label for="image-filter">Image:</label>
+              <select id="image-filter">
+                <option value="all" selected>All</option>
+                <option value="with">With Image</option>
+                <option value="without">Without Image</option>
+              </select>
+
+              <label for="category-filter">Category:</label>
+              <select id="category-filter">
+                <option value="all" selected>All</option>
+                <option value="Infrastructure">Infrastructure</option>
+                <option value="Environmental">Environmental</option>
+                <option value="Safety">Safety</option>
+                <option value="Others">Others</option>
+              </select>
+
+              <label for="urgency-filter">Urgency:</label>
+              <select id="urgency-filter">
+                <option value="all" selected>All</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+
+              <label for="threat-filter">Threat:</label>
+              <select id="threat-filter">
+                <option value="all" selected>All</option>
+                <option value="Minor">Minor</option>
+                <option value="Moderate">Moderate</option>
+                <option value="Severe">Severe</option>
+              </select>
+
+              <button id="apply-filters" class="button">Apply Filters</button>
+              <button id="reset-filters" class="button secondary-button">Reset Filters</button>
+            </div>
+            <button id="refresh-reports" class="button">Refresh Reports</button>
+            <button id="export-data" class="button secondary-button">Export Data</button>
+          </div>
+          <ul id="admin-reports-container">
+            <!-- Report items rendered dynamically -->
+          </ul>
+        </div>
+
+        <div class="admin-logout">
+          <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
+        </div>
       </div>
     </div>
 
     <!-- Reporting Page -->
     <div id="reporting-page" class="page" style="display: none;">
-        <h1>Report an Issue</h1>
-        <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-        <form id="report-form">
-            <input type="text" id="locationName" placeholder="Location Name" required>
-            <input type="number" id="latitude" step="any" placeholder="Latitude" required>
-            <input type="number" id="longitude" step="any" placeholder="Longitude" required>
-            <button type="button" id="detectLocation">Detect Location</button>
-            <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
-            <button type="button" id="report-desc-mic-btn" class="mic-button" aria-label="Use microphone for report description" title="Use Microphone"><i class="fas fa-microphone"></i></button>
-            <!-- Text-based Auto Detect Button -->
-            <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>
+      <h1>Report an Issue</h1>
+      <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+      <form id="report-form">
+        <input type="text" id="locationName" placeholder="Location Name" required>
+        <input type="number" id="latitude" step="any" placeholder="Latitude" required>
+        <input type="number" id="longitude" step="any" placeholder="Longitude" required>
+        <button type="button" id="detectLocation">Detect Location</button>
+        <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
+        <button type="button" id="report-desc-mic-btn" class="mic-button"
+          aria-label="Use microphone for report description" title="Use Microphone"><i
+            class="fas fa-microphone"></i></button>
+        <!-- Text-based Auto Detect Button -->
+        <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>
 
-            <!-- Dropdowns -->
-            <select id="category" required>
-                <option value="">Select Category</option>
-                <option value="Infrastructure">Infrastructure</option>
-                <option value="Environmental">Environmental</option>
-                <option value="Safety">Safety</option>
-                <option value="Others">Others</option>
-            </select>
-            <select id="urgency" required>
-                <option value="">Select Urgency Level</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
-            </select>
-            <select id="threat" required>
-                <option value="">Select Threat Amount</option>
-                <option value="Minor">Minor</option>
-                <option value="Moderate">Moderate</option>
-                <option value="Severe">Severe</option>
-            </select>
+        <!-- Dropdowns -->
+        <select id="category" required>
+          <option value="">Select Category</option>
+          <option value="Infrastructure">Infrastructure</option>
+          <option value="Environmental">Environmental</option>
+          <option value="Safety">Safety</option>
+          <option value="Others">Others</option>
+        </select>
+        <select id="urgency" required>
+          <option value="">Select Urgency Level</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <select id="threat" required>
+          <option value="">Select Threat Amount</option>
+          <option value="Minor">Minor</option>
+          <option value="Moderate">Moderate</option>
+          <option value="Severe">Severe</option>
+        </select>
 
-            <!-- Image Upload and Analysis -->
-            <label for="imageUpload">Upload Image (optional)</label>
-            <div class="image-upload-controls"> <!-- Wrapper for layout -->
-                <input type="file" id="imageUpload" accept="image/*">
-                <!-- NEW: AI Analyze Button -->
-                <button type="button" id="analyzeImageBtn" class="button secondary-button" disabled>Analyze Image with AI</button>
-            </div>
-            <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Image preview area -->
+        <!-- Image Upload and Analysis -->
+        <label for="imageUpload">Upload Image (optional)</label>
+        <div class="image-upload-controls"> <!-- Wrapper for layout -->
+          <input type="file" id="imageUpload" accept="image/*">
+          <!-- NEW: AI Analyze Button -->
+          <button type="button" id="analyzeImageBtn" class="button secondary-button" disabled>Analyze Image with
+            AI</button>
+        </div>
+        <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Image preview area -->
 
-            <!-- reCAPTCHA v2 Checkbox -->
-            <div class="form-group recaptcha-group">
-                <div id="recaptcha-container"
-                     class="g-recaptcha"
-                     data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
-                     data-callback="onRecaptchaSuccess"
-                     data-expired-callback="onRecaptchaExpired"
-                     data-error-callback="onRecaptchaError">
-                </div>
-                <!-- Add an error message placeholder for CAPTCHA -->
-                <p id="recaptcha-error" class="error-message" style="display: none; text-align: center; margin-top: 5px;">Please complete the CAPTCHA verification.</p>
-            </div>
-            <!-- End reCAPTCHA v2 Checkbox -->
+        <!-- reCAPTCHA v2 Checkbox -->
+        <div class="form-group recaptcha-group">
+          <div id="recaptcha-container" class="g-recaptcha" data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
+            data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"
+            data-error-callback="onRecaptchaError">
+          </div>
+          <!-- Add an error message placeholder for CAPTCHA -->
+          <p id="recaptcha-error" class="error-message" style="display: none; text-align: center; margin-top: 5px;">
+            Please complete the CAPTCHA verification.</p>
+        </div>
+        <!-- End reCAPTCHA v2 Checkbox -->
 
 
-            <!-- Submit Button - Initially Disabled -->
-            <button type="submit" id="submit-report-button" disabled>Submit Report</button>
-        </form>
+        <!-- Submit Button - Initially Disabled -->
+        <button type="submit" id="submit-report-button" disabled>Submit Report</button>
+      </form>
     </div>
 
 
     <!-- My Reports Page -->
     <div id="my-reports-page" class="page" style="display: none;">
-        <h1>My Reports</h1>
-        <ul id="user-reports-container">
-            <!-- User reports rendered dynamically -->
-        </ul>
+      <h1>My Reports</h1>
+      <ul id="user-reports-container">
+        <!-- User reports rendered dynamically -->
+      </ul>
     </div>
 
     <!-- Nearby Reports Page -->
@@ -416,9 +433,9 @@
         </select>
         <label for="radius-selector" style="margin-left: 15px;">Within:</label>
         <select id="radius-selector">
-            <option value="1000">1 km</option>
-            <option value="2000" selected>2 km</option>
-            <option value="5000">5 km</option>
+          <option value="1000">1 km</option>
+          <option value="2000" selected>2 km</option>
+          <option value="5000">5 km</option>
         </select>
         <button id="load-nearby-reports" class="button">Load Reports</button>
       </div>
@@ -431,270 +448,284 @@
 
     <!-- Community Forum Page -->
     <div id="community-forum-page" class="page" style="display: none;">
-        <h1>Community Forum</h1>
-        <div class="forum-layout">
-            <div class="forum-main">
-                <div id="new-post">
-                    <h2>Create a New Post</h2>
-                    <form id="forum-post-form">
-                        <input type="text" id="post-title" placeholder="Title" required>
-                        <select id="post-category" required>
-                            <option value="">Select Category</option>
-                            <option value="General">General</option>
-                            <option value="Issues">Issues</option>
-                            <option value="Ideas">Ideas</option>
-                            <option value="Events">Events</option>
-                        </select>
-                        <textarea id="post-content" placeholder="Share your thoughts..." required></textarea>
-                        <button id="submit-button" type="submit">Post</button>
-                    </form>
-                </div>
-                <div class="forum-controls">
-                    <input type="search" class="search-input" placeholder="Search posts...">
-                    <!-- Add sorting/filtering controls here if needed -->
-                </div>
-                <div id="forum-posts">
-                    <!-- Forum posts loaded dynamically -->
-                </div>
-                <!-- Load More Button -->
-                <button id="load-more-posts" class="button secondary-button" style="display: none; margin-top: 20px;">Load More Posts</button>
-            </div>
-            <aside class="forum-sidebar">
-                <div id="trending-posts">
-                    <h2>Trending Posts</h2>
-                    <div id="trending-container">
-                        <!-- Trending posts loaded here -->
-                    </div>
-                </div>
-                <!-- Add other sidebar content like Categories, Recent Comments, etc. -->
-            </aside>
+      <h1>Community Forum</h1>
+      <div class="forum-layout">
+        <div class="forum-main">
+          <div id="new-post">
+            <h2>Create a New Post</h2>
+            <form id="forum-post-form">
+              <input type="text" id="post-title" placeholder="Title" required>
+              <select id="post-category" required>
+                <option value="">Select Category</option>
+                <option value="General">General</option>
+                <option value="Issues">Issues</option>
+                <option value="Ideas">Ideas</option>
+                <option value="Events">Events</option>
+              </select>
+              <textarea id="post-content" placeholder="Share your thoughts..." required></textarea>
+              <button id="submit-button" type="submit">Post</button>
+            </form>
+          </div>
+          <div class="forum-controls">
+            <input type="search" class="search-input" placeholder="Search posts...">
+            <!-- Add sorting/filtering controls here if needed -->
+          </div>
+          <div id="forum-posts">
+            <!-- Forum posts loaded dynamically -->
+          </div>
+          <!-- Load More Button -->
+          <button id="load-more-posts" class="button secondary-button" style="display: none; margin-top: 20px;">Load
+            More Posts</button>
         </div>
+        <aside class="forum-sidebar">
+          <div id="trending-posts">
+            <h2>Trending Posts</h2>
+            <div id="trending-container">
+              <!-- Trending posts loaded here -->
+            </div>
+          </div>
+          <!-- Add other sidebar content like Categories, Recent Comments, etc. -->
+        </aside>
+      </div>
     </div>
 
     <!-- About Page -->
     <div id="about-page" class="page" style="display: none;">
-        <p><a href="#" id="back-to-landing-from-about" class="back-link">← Back to Home</a></p>
-        <h1>About SGResolve</h1>
+      <p><a href="#" id="back-to-landing-from-about" class="back-link">← Back to Home</a></p>
+      <h1>About SGResolve</h1>
 
-        <section class="about-section">
-            <div class="content">
-            <h2>Our Mission</h2>
-            <p>
-                SGResolve is dedicated to transforming Singapore into an AI-first Smart Nation.
-                Our platform enables citizens to report issues—from potholes to street light outages—and track the progress of their requests.
-                By leveraging cloud-based workflows and AI-powered categorization, we aim to enhance urban safety and efficiency.
-            </p>
-            <p>
-                Inspired by the mission to bring digital solutions to every person, home, and organization, SGResolve is your partner in creating a fully connected, intelligent city.
-            </p>
-            </div>
-        </section>
+      <section class="about-section">
+        <div class="content">
+          <h2>Our Mission</h2>
+          <p>
+            SGResolve is dedicated to transforming Singapore into an AI-first Smart Nation.
+            Our platform enables citizens to report issues—from potholes to street light outages—and track the progress
+            of their requests.
+            By leveraging cloud-based workflows and AI-powered categorization, we aim to enhance urban safety and
+            efficiency.
+          </p>
+          <p>
+            Inspired by the mission to bring digital solutions to every person, home, and organization, SGResolve is
+            your partner in creating a fully connected, intelligent city.
+          </p>
+        </div>
+      </section>
 
-        <section class="about-section">
-            <div class="content">
-            <h2>How We Help Citizens</h2>
-            <ul>
-                <li><strong>Simplified Reporting:</strong> Report community issues in under 2 minutes with our user-friendly mobile app or web interface</li>
-                <li><strong>Real-time Updates:</strong> Receive notifications as your reported issues progress through resolution stages</li>
-                <li><strong>Community Transparency:</strong> View issues reported by others in your neighborhood and their resolution status</li>
-                <li><strong>Multiple Reporting Methods:</strong> Submit via app, website, SMS, or our 24/7 hotline at 1800-SGR-HELP</li>
-                <li><strong>Accessible Design:</strong> Our platform meets WCAG 2.1 AA standards, ensuring all citizens can access our services</li>
-            </ul>
-            </div>
-        </section>
+      <section class="about-section">
+        <div class="content">
+          <h2>How We Help Citizens</h2>
+          <ul>
+            <li><strong>Simplified Reporting:</strong> Report community issues in under 2 minutes with our user-friendly
+              mobile app or web interface</li>
+            <li><strong>Real-time Updates:</strong> Receive notifications as your reported issues progress through
+              resolution stages</li>
+            <li><strong>Community Transparency:</strong> View issues reported by others in your neighborhood and their
+              resolution status</li>
+            <li><strong>Multiple Reporting Methods:</strong> Submit via app, website, SMS, or our 24/7 hotline at
+              1800-SGR-HELP</li>
+            <li><strong>Accessible Design:</strong> Our platform meets WCAG 2.1 AA standards, ensuring all citizens can
+              access our services</li>
+          </ul>
+        </div>
+      </section>
 
-        <section class="about-section">
-            <div class="content">
-            <h2>Our Impact</h2>
-            <div class="stats-container">
-                <div class="stat-box">
-                <span class="stat-number">95%</span>
-                <span class="stat-description">Issues resolved within 7 days</span>
-                </div>
-                <div class="stat-box">
-                <span class="stat-number">27</span>
-                <span class="stat-description">Active citizen users</span>
-                </div>
-                <div class="stat-box">
-                <span class="stat-number">80</span>
-                <span class="stat-description">Monthly reports processed</span>
-                </div>
+      <section class="about-section">
+        <div class="content">
+          <h2>Our Impact</h2>
+          <div class="stats-container">
+            <div class="stat-box">
+              <span class="stat-number">95%</span>
+              <span class="stat-description">Issues resolved within 7 days</span>
             </div>
-            <p>Through collaborative efforts between citizens and government agencies, SGResolve has helped improve neighborhood safety, infrastructure maintenance, and community satisfaction across Singapore.</p>
+            <div class="stat-box">
+              <span class="stat-number">27</span>
+              <span class="stat-description">Active citizen users</span>
             </div>
-        </section>
+            <div class="stat-box">
+              <span class="stat-number">80</span>
+              <span class="stat-description">Monthly reports processed</span>
+            </div>
+          </div>
+          <p>Through collaborative efforts between citizens and government agencies, SGResolve has helped improve
+            neighborhood safety, infrastructure maintenance, and community satisfaction across Singapore.</p>
+        </div>
+      </section>
 
-        <!--Horizontal Slideshow -->
-        <section class="about-section">
-            <div class="content">
-            <h2>How It Works</h2>
-            <div class="slideshow-container">
-                <div class="slide-track">
-                <!-- Original slides -->
-                <div class="slide">
-                    <h3>Report</h3>
-                    <p>Submit an issue through our app, website, or hotline with photos and location.</p>
-                </div>
-                <div class="slide">
-                    <h3>AI Analysis</h3>
-                    <p>Our system automatically categorizes and prioritizes your report.</p>
-                </div>
-                <div class="slide">
-                    <h3>Assignment</h3>
-                    <p>The appropriate government agency or town council receives your report.</p>
-                </div>
-                <div class="slide">
-                    <h3>Resolution</h3>
-                    <p>Work crews address the issue and document their solution.</p>
-                </div>
-                <div class="slide">
-                    <h3>Verification</h3>
-                    <p>You receive an update and can confirm if the issue is resolved.</p>
-                </div>
-                <!-- Duplicate slides for seamless looping -->
-                <div class="slide">
-                    <h3>Report</h3>
-                    <p>Submit an issue through our app, website, or hotline with photos and location.</p>
-                </div>
-                <div class="slide">
-                    <h3>AI Analysis</h3>
-                    <p>Our system automatically categorizes and prioritizes your report.</p>
-                </div>
-                <div class="slide">
-                    <h3>Assignment</h3>
-                    <p>The appropriate government agency or town council receives your report.</p>
-                </div>
-                <div class="slide">
-                    <h3>Resolution</h3>
-                    <p>Work crews address the issue and document their solution.</p>
-                </div>
-                <div class="slide">
-                    <h3>Verification</h3>
-                    <p>You receive an update and can confirm if the issue is resolved.</p>
-                </div>
-                </div>
+      <!--Horizontal Slideshow -->
+      <section class="about-section">
+        <div class="content">
+          <h2>How It Works</h2>
+          <div class="slideshow-container">
+            <div class="slide-track">
+              <!-- Original slides -->
+              <div class="slide">
+                <h3>Report</h3>
+                <p>Submit an issue through our app, website, or hotline with photos and location.</p>
+              </div>
+              <div class="slide">
+                <h3>AI Analysis</h3>
+                <p>Our system automatically categorizes and prioritizes your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Assignment</h3>
+                <p>The appropriate government agency or town council receives your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Resolution</h3>
+                <p>Work crews address the issue and document their solution.</p>
+              </div>
+              <div class="slide">
+                <h3>Verification</h3>
+                <p>You receive an update and can confirm if the issue is resolved.</p>
+              </div>
+              <!-- Duplicate slides for seamless looping -->
+              <div class="slide">
+                <h3>Report</h3>
+                <p>Submit an issue through our app, website, or hotline with photos and location.</p>
+              </div>
+              <div class="slide">
+                <h3>AI Analysis</h3>
+                <p>Our system automatically categorizes and prioritizes your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Assignment</h3>
+                <p>The appropriate government agency or town council receives your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Resolution</h3>
+                <p>Work crews address the issue and document their solution.</p>
+              </div>
+              <div class="slide">
+                <h3>Verification</h3>
+                <p>You receive an update and can confirm if the issue is resolved.</p>
+              </div>
             </div>
-            </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- Supported Issue Categories -->
-        <section class="about-section">
-            <div class="content">
-            <h2>Supported Issue Categories</h2>
-            <div class="categories-grid">
-                <div class="category-item"><i class="icon-road"></i><span>Road & Sidewalk</span></div>
-                <div class="category-item"><i class="icon-light"></i><span>Street Lighting</span></div>
-                <div class="category-item"><i class="icon-trash"></i><span>Waste & Cleanliness</span></div>
-                <div class="category-item"><i class="icon-nature"></i><span>Trees & Greenery</span></div>
-                <div class="category-item"><i class="icon-construction"></i><span>Construction Safety</span></div>
-                <div class="category-item"><i class="icon-pest"></i><span>Pest Control</span></div>
-                <div class="category-item"><i class="icon-noise"></i><span>Noise Concerns</span></div>
-                <div class="category-item"><i class="icon-facilities"></i><span>Public Facilities</span></div>
-            </div>
-            </div>
-        </section>
+      <!-- Supported Issue Categories -->
+      <section class="about-section">
+        <div class="content">
+          <h2>Supported Issue Categories</h2>
+          <div class="categories-grid">
+            <div class="category-item"><i class="icon-road"></i><span>Road & Sidewalk</span></div>
+            <div class="category-item"><i class="icon-light"></i><span>Street Lighting</span></div>
+            <div class="category-item"><i class="icon-trash"></i><span>Waste & Cleanliness</span></div>
+            <div class="category-item"><i class="icon-nature"></i><span>Trees & Greenery</span></div>
+            <div class="category-item"><i class="icon-construction"></i><span>Construction Safety</span></div>
+            <div class="category-item"><i class="icon-pest"></i><span>Pest Control</span></div>
+            <div class="category-item"><i class="icon-noise"></i><span>Noise Concerns</span></div>
+            <div class="category-item"><i class="icon-facilities"></i><span>Public Facilities</span></div>
+          </div>
+        </div>
+      </section>
 
-        <!-- Privacy & Security -->
-        <section class="about-section">
-            <div class="content">
-            <h2>Privacy & Security</h2>
-            <p>SGResolve prioritizes your data security. Personal information is protected using enterprise-grade encryption, and we maintain compliance with Singapore's Personal Data Protection Act (PDPA). Your contact details are shared only with relevant agencies for issue resolution.</p>
-            <p>For full details on our data handling practices, please refer to our <a href="#privacy">Privacy Policy</a>.</p>
-            </div>
-        </section>
+      <!-- Privacy & Security -->
+      <section class="about-section">
+        <div class="content">
+          <h2>Privacy & Security</h2>
+          <p>SGResolve prioritizes your data security. Personal information is protected using enterprise-grade
+            encryption, and we maintain compliance with Singapore's Personal Data Protection Act (PDPA). Your contact
+            details are shared only with relevant agencies for issue resolution.</p>
+          <p>For full details on our data handling practices, please refer to our <a href="#privacy">Privacy Policy</a>.
+          </p>
+        </div>
+      </section>
 
-        <!-- Contact Us -->
-        <section class="about-section">
-            <div class="content">
-            <h2>Contact Us</h2>
-            <p>Have questions or feedback about SGResolve? We're here to help:</p>
-            <ul class="contact-list">
-                <li><strong>Email:</strong> <a href="mailto:admin@sgresolve.com">admin@sgresolve.com</a></li>
-                <li><strong>Operating Hours:</strong> Support available 24/7</li>
-            </ul>
-            <p>For urgent matters requiring immediate attention (e.g., safety hazards), please contact emergency services at 999 or 995.</p>
-            </div>
-        </section>
+      <!-- Contact Us -->
+      <section class="about-section">
+        <div class="content">
+          <h2>Contact Us</h2>
+          <p>Have questions or feedback about SGResolve? We're here to help:</p>
+          <ul class="contact-list">
+            <li><strong>Email:</strong> <a href="mailto:admin@sgresolve.com">admin@sgresolve.com</a></li>
+            <li><strong>Operating Hours:</strong> Support available 24/7</li>
+          </ul>
+          <p>For urgent matters requiring immediate attention (e.g., safety hazards), please contact emergency services
+            at 999 or 995.</p>
+        </div>
+      </section>
     </div>
 
     <!-- Contact Page (Original - kept for completeness) -->
     <div id="contact-page" class="page" style="display: none;">
-        <h1>Contact Us</h1>
-        <p>
-            If you have any questions or need support, please contact us at
-            <a href="mailto:contact@sgresolve.com">contact@sgresolve.com</a>.
-        </p>
-        <p>
-            You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
-        </p>
+      <h1>Contact Us</h1>
+      <p>
+        If you have any questions or need support, please contact us at
+        <a href="mailto:contact@sgresolve.com">contact@sgresolve.com</a>.
+      </p>
+      <p>
+        You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
+      </p>
     </div>
 
     <!-- Profile Page -->
     <div id="profile-page" class="page" style="display: none;">
-        <h1>My Profile & Achievements</h1>
+      <h1>My Profile & Achievements</h1>
 
-        <!-- Existing Summary Card -->
-        <div class="profile-summary card">
-          <h2 id="profile-username">Username</h2>
-          <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
-          <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
-          <div class="progress-bar-container">
-            <div id="level-progress-bar" class="progress-bar-fill"></div>
-          </div>
-          <p><small id="rp-to-next-level">XXX RP to next level</small></p>
+      <!-- Existing Summary Card -->
+      <div class="profile-summary card">
+        <h2 id="profile-username">Username</h2>
+        <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
+        <p>Resolve Points (RP): <strong id="profile-rp">0</strong></p>
+        <div class="progress-bar-container">
+          <div id="level-progress-bar" class="progress-bar-fill"></div>
         </div>
-
-
-        <!-- Existing Badges Card -->
-        <div class="profile-badges card">
-          <h2>My Badges</h2>
-          <div id="badges-container" class="badges-grid">
-            <!-- Badges loaded dynamically -->
-            <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
-          </div>
-        </div>
-
-                <!-- NEW: Profile Details Card -->
-                <div class="profile-details card">
-                    <h2>Account Details</h2>
-                    <p><strong>Email:</strong> <span id="profile-email-display">Loading...</span></p>
-                    <form id="update-profile-form">
-                        <label for="profile-new-name"><strong>Display Name:</strong></label>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
-                          <input type="text" id="profile-new-name" placeholder="Your display name" required style="flex-grow: 1;">
-                          <button type="submit" id="update-profile-button" class="button primary-button">Update Name</button>
-                        </div>
-                    </form>
-                    <p id="update-profile-message" class="form-message"></p> <!-- For feedback -->
-                </div>
-
-                <!-- NEW: Change Password Card -->
-                <div class="change-password card">
-                    <h2>Change Password</h2>
-                    <form id="change-password-form">
-                        <label for="current-password">Current Password:</label>
-                        <input type="password" id="current-password" required autocomplete="current-password">
-
-                        <label for="new-password">New Password:</label>
-                        <input type="password" id="new-password" required autocomplete="new-password" minlength="6">
-
-                        <label for="confirm-new-password">Confirm New Password:</label>
-                        <input type="password" id="confirm-new-password" required autocomplete="new-password">
-
-                        <button type="submit" id="change-password-button" class="button secondary-button">Change Password</button>
-                    </form>
-                    <p id="change-password-message" class="form-message"></p> <!-- For feedback -->
-                </div>
-
+        <p><small id="rp-to-next-level">XXX RP to next level</small></p>
       </div>
+
+
+      <!-- Existing Badges Card -->
+      <div class="profile-badges card">
+        <h2>My Badges</h2>
+        <div id="badges-container" class="badges-grid">
+          <!-- Badges loaded dynamically -->
+          <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
+        </div>
+      </div>
+
+      <!-- NEW: Profile Details Card -->
+      <div class="profile-details card">
+        <h2>Account Details</h2>
+        <p><strong>Email:</strong> <span id="profile-email-display">Loading...</span></p>
+        <form id="update-profile-form">
+          <label for="profile-new-name"><strong>Display Name:</strong></label>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+            <input type="text" id="profile-new-name" placeholder="Your display name" required style="flex-grow: 1;">
+            <button type="submit" id="update-profile-button" class="button primary-button">Update Name</button>
+          </div>
+        </form>
+        <p id="update-profile-message" class="form-message"></p> <!-- For feedback -->
+      </div>
+
+      <!-- NEW: Change Password Card -->
+      <div class="change-password card">
+        <h2>Change Password</h2>
+        <form id="change-password-form">
+          <label for="current-password">Current Password:</label>
+          <input type="password" id="current-password" required autocomplete="current-password">
+
+          <label for="new-password">New Password:</label>
+          <input type="password" id="new-password" required autocomplete="new-password" minlength="6">
+
+          <label for="confirm-new-password">Confirm New Password:</label>
+          <input type="password" id="confirm-new-password" required autocomplete="new-password">
+
+          <button type="submit" id="change-password-button" class="button secondary-button">Change Password</button>
+        </form>
+        <p id="change-password-message" class="form-message"></p> <!-- For feedback -->
+      </div>
+
+    </div>
     <!-- Popup Overlay (For Modals: Success, Error, Badge, Level Up) -->
     <div id="popup-overlay" class="popup-overlay">
-        <div id="popup" class="popup">
-            <span id="popup-close" class="popup-close">×</span>
-            <div id="popup-icon" class="popup-icon"></div>
-            <p id="popup-message"></p>
-            <!-- Points indicator removed from here -->
-        </div>
+      <div id="popup" class="popup">
+        <span id="popup-close" class="popup-close">×</span>
+        <div id="popup-icon" class="popup-icon"></div>
+        <p id="popup-message"></p>
+        <!-- Points indicator removed from here -->
+      </div>
     </div>
 
     <!-- RP Notification Sidebar (For RP gains) -->
@@ -706,8 +737,10 @@
 
   </div>
 
-    <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+    crossorigin="anonymous"></script>
   <script type="module" src="script.js"></script>
   <!-- PWA Service Worker Registration -->
   <script>
@@ -725,4 +758,5 @@
     }
   </script>
 </body>
+
 </html>

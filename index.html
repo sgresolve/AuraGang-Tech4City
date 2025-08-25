@@ -256,122 +256,123 @@
       </div>
     </div>
 
-<!-- Reporting Page -->
-<div id="reporting-page" class="page" style="display:none;">
-  <div class="reporting-container">
-    <h1>Report an Issue</h1>
-    <p class="subtitle">Pin the spot on the map, or use the search and detect buttons.</p>
+    <!-- Reporting Page -->
+    <div id="reporting-page" class="page" style="display:none;">
+      <div class="reporting-container">
+        <h1>Report an Issue</h1>
+        <p class="subtitle">Pin the spot on the map, or use the search and detect buttons.</p>
 
-    <!-- Map with detect button (search handled by Leaflet control) -->
-    <div id="map" aria-label="Map to select issue location">
-      
-      <div class="map-toolbar" role="search" aria-label="Map search toolbar">
-        <!-- Removed custom map-search div since Leaflet geocoder handles search -->
-                    <button type="button" id="detectLocation" class="chip-btn" aria-label="Detect my location">
-          <i aria-hidden="true"></i>
-          Detect
-        </button>
+        <!-- Map with detect button (search handled by Leaflet control) -->
+        <div id="map" aria-label="Map to select issue location">
+
+          <div class="map-toolbar" role="search" aria-label="Map search toolbar">
+            <!-- Removed custom map-search div since Leaflet geocoder handles search -->
+            <button type="button" id="detectLocation" class="chip-btn" aria-label="Detect my location">
+              <i aria-hidden="true"></i>
+              Detect
+            </button>
+          </div>
+
+          <div class="map-hint">Click on the map to set the exact location</div>
+
+        </div>
+
+        <form id="report-form" novalidate>
+          <!-- Location name (kept separate from map search so you can label the place) -->
+          <div class="form-row">
+            <label for="locationName">Location Name (e.g., “Opposite Tampines Mall”)</label>
+            <input type="text" id="locationName" placeholder="A brief name for the location" required />
+            <input type="hidden" id="latitude" name="latitude" />
+            <input type="hidden" id="longitude" name="longitude" />
+          </div>
+
+          <!-- Description full width with mic inside -->
+          <div class="form-row">
+            <label for="problemDesc">Describe the Issue</label>
+            <div class="textarea-wrap">
+              <textarea id="problemDesc" placeholder="Please provide a detailed description of the problem…"
+                required></textarea>
+              <button type="button" id="report-desc-mic-btn" class="mic-btn" aria-label="Use microphone for description"
+                title="Voice input">
+                <i class="fas fa-microphone" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Two-column details -->
+          <div class="details-grid">
+            <!-- LEFT: categories -->
+            <div class="grid-left">
+              <div class="form-row">
+                <label for="category">Category</label>
+                <select id="category" required>
+                  <option value="" disabled selected>Select a Category</option>
+                  <option value="Infrastructure">Infrastructure (e.g., potholes, broken lights)</option>
+                  <option value="Environmental">Environmental (e.g., littering, pests)</option>
+                  <option value="Safety">Safety (e.g., blocked paths, hazards)</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="urgency">Urgency Level</label>
+                <select id="urgency" required>
+                  <option value="" disabled selected>Select Urgency</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="threat">Threat Amount</label>
+                <select id="threat" required>
+                  <option value="" disabled selected>Select Threat</option>
+                  <option value="Minor">Minor</option>
+                  <option value="Moderate">Moderate</option>
+                  <option value="Severe">Severe</option>
+                </select>
+              </div>
+
+              <button type="button" id="autoDetect" class="button secondary full-width" disabled>
+                <i class="fas fa-magic" aria-hidden="true"></i> Auto Fill In Details
+              </button>
+            </div>
+
+            <!-- RIGHT: image upload -->
+            <div class="grid-right">
+              <div class="form-row image-upload">
+                <label for="imageUpload" class="image-drop">
+                  <i class="fas fa-camera" aria-hidden="true"></i>
+                  <span>Upload Image</span>
+                  <small>(Optional but recommended)</small>
+                </label>
+                <input type="file" id="imageUpload" accept="image/*" />
+                <div id="imagePreview" aria-label="Image preview"></div>
+              </div>
+
+              <button type="button" id="analyzeImageBtn" class="button ai full-width" disabled>
+                <i class="fas fa-robot" aria-hidden="true"></i> Analyze Image with AI
+              </button>
+            </div>
+          </div>
+
+          <!-- reCAPTCHA -->
+          <div class="form-row recaptcha-row">
+            <div id="recaptcha-container" class="g-recaptcha" data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
+              data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"
+              data-error-callback="onRecaptchaError"></div>
+            <p id="recaptcha-error" class="error-message" style="display:none;">Please complete the CAPTCHA
+              verification.</p>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" id="submit-report-button" class="button primary full-width" disabled>
+            Submit Report
+          </button>
+        </form>
       </div>
-      
-      <div class="map-hint">Click on the map to set the exact location</div>
-      
     </div>
-
-    <form id="report-form" novalidate>
-      <!-- Location name (kept separate from map search so you can label the place) -->
-      <div class="form-row">
-        <label for="locationName">Location Name (e.g., “Opposite Tampines Mall”)</label>
-        <input type="text" id="locationName" placeholder="A brief name for the location" required />
-        <input type="hidden" id="latitude" name="latitude" />
-        <input type="hidden" id="longitude" name="longitude" />
-      </div>
-
-      <!-- Description full width with mic inside -->
-      <div class="form-row">
-        <label for="problemDesc">Describe the Issue</label>
-        <div class="textarea-wrap">
-          <textarea id="problemDesc" placeholder="Please provide a detailed description of the problem…" required></textarea>
-          <button type="button" id="report-desc-mic-btn" class="mic-btn" aria-label="Use microphone for description" title="Voice input">
-            <i class="fas fa-microphone" aria-hidden="true"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Two-column details -->
-      <div class="details-grid">
-        <!-- LEFT: categories -->
-        <div class="grid-left">
-          <div class="form-row">
-            <label for="category">Category</label>
-            <select id="category" required>
-              <option value="" disabled selected>Select a Category</option>
-              <option value="Infrastructure">Infrastructure (e.g., potholes, broken lights)</option>
-              <option value="Environmental">Environmental (e.g., littering, pests)</option>
-              <option value="Safety">Safety (e.g., blocked paths, hazards)</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
-
-          <div class="form-row">
-            <label for="urgency">Urgency Level</label>
-            <select id="urgency" required>
-              <option value="" disabled selected>Select Urgency</option>
-              <option value="Low">Low</option>
-              <option value="Medium">Medium</option>
-              <option value="High">High</option>
-            </select>
-          </div>
-
-          <div class="form-row">
-            <label for="threat">Threat Amount</label>
-            <select id="threat" required>
-              <option value="" disabled selected>Select Threat</option>
-              <option value="Minor">Minor</option>
-              <option value="Moderate">Moderate</option>
-              <option value="Severe">Severe</option>
-            </select>
-          </div>
-
-          <button type="button" id="autoDetect" class="button secondary full-width" disabled>
-            <i class="fas fa-magic" aria-hidden="true"></i> Auto Fill In Details
-          </button>
-        </div>
-
-        <!-- RIGHT: image upload -->
-        <div class="grid-right">
-          <div class="form-row image-upload">
-            <label for="imageUpload" class="image-drop">
-              <i class="fas fa-camera" aria-hidden="true"></i>
-              <span>Upload Image</span>
-              <small>(Optional but recommended)</small>
-            </label>
-            <input type="file" id="imageUpload" accept="image/*" />
-            <div id="imagePreview" aria-label="Image preview"></div>
-          </div>
-
-          <button type="button" id="analyzeImageBtn" class="button ai full-width" disabled>
-            <i class="fas fa-robot" aria-hidden="true"></i> Analyze Image with AI
-          </button>
-        </div>
-      </div>
-
-      <!-- reCAPTCHA -->
-      <div class="form-row recaptcha-row">
-        <div id="recaptcha-container" class="g-recaptcha"
-             data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
-             data-callback="onRecaptchaSuccess"
-             data-expired-callback="onRecaptchaExpired"
-             data-error-callback="onRecaptchaError"></div>
-        <p id="recaptcha-error" class="error-message" style="display:none;">Please complete the CAPTCHA verification.</p>
-      </div>
-
-      <!-- Submit -->
-      <button type="submit" id="submit-report-button" class="button primary full-width" disabled>
-        Submit Report
-      </button>
-    </form>
-  </div>
-</div>
 
     <!-- My Reports Page -->
     <div id="my-reports-page" class="page" style="display: none;">
@@ -468,6 +469,9 @@
     <div id="about-page" class="page" style="display: none;">
       <p><a href="#" id="back-to-landing-from-about" class="back-link">← Back to Home</a></p>
       <h1>About SGResolve</h1>
+      <p class="subtitle" style="text-align:center; color:var(--muted-color); margin-top:-.25rem;">
+        Co-create a safer, smarter city with your reports.
+      </p>
 
       <section class="about-section">
         <div class="content">

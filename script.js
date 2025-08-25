@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let nearbyMap = null;
     let tempMarker; // Moved here, global for reporting map clicks
 
-function initializeReportingMap() {
+    function initializeReportingMap() {
         if (!reportingMap && document.getElementById('map')) {
             reportingMap = L.map('map').setView([1.3521, 103.8198], 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(reportingMap);
@@ -119,19 +119,19 @@ function initializeReportingMap() {
                         'bounded': 1
                     }
                 })
-            }).on('markgeocode', function(e) {
+            }).on('markgeocode', function (e) {
                 const { center, name } = e.geocode;
-                
+
                 if (tempMarker) {
                     reportingMap.removeLayer(tempMarker);
                 }
-                
+
                 reportingMap.setView(center, 16);
                 tempMarker = L.marker(center).addTo(reportingMap);
-                
+
                 document.getElementById('latitude').value = center.lat.toFixed(6);
                 document.getElementById('longitude').value = center.lng.toFixed(6);
-                
+
                 // Clean up the name provided by the geocoder
                 const cleanName = name.split(',').slice(0, 2).join(', ');
                 document.getElementById('locationName').value = cleanName;
@@ -145,7 +145,7 @@ function initializeReportingMap() {
                 if (!singaporeLatLngBounds.contains(e.latlng)) {
                     console.warn('Please select a location within Singapore.'); return;
                 }
-                
+
                 if (tempMarker) {
                     reportingMap.removeLayer(tempMarker);
                 }
@@ -153,9 +153,9 @@ function initializeReportingMap() {
                 tempMarker = L.marker([lat, lng]).addTo(reportingMap);
                 document.getElementById('latitude').value = lat.toFixed(6);
                 document.getElementById('longitude').value = lng.toFixed(6);
-                
+
                 // Clear the location name field when clicking manually
-                document.getElementById('locationName').value = ''; 
+                document.getElementById('locationName').value = '';
                 document.getElementById('locationName').placeholder = 'Please provide a name for this location';
             });
         }
@@ -1700,20 +1700,64 @@ function initializeReportingMap() {
     // --- About Page Animation ---
     function initializeAboutPageObserver() {
         const sections = document.querySelectorAll('#about-page .about-section .content');
+        const numbers = document.querySelectorAll('#about-page .stat-number');
+
+        // Count-up helper
+        const countTo = (el, end, duration = 1200) => {
+            const start = 0;
+            const startTime = performance.now();
+            const fmt = (v) => {
+                // keep integers as-is; add % for percentages if original has %
+                return el.textContent.trim().includes('%') ? `${Math.round(v)}%` : `${Math.round(v)}`;
+            };
+            const tick = (now) => {
+                const p = Math.min(1, (now - startTime) / duration);
+                const eased = 1 - Math.pow(1 - p, 3);
+                el.textContent = fmt(start + (end - start) * eased);
+                if (p < 1) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+        };
+
+        // If IntersectionObserver unsupported, just reveal
         if (sections.length === 0 || !('IntersectionObserver' in window)) {
-            sections.forEach(section => { if (section.parentElement) section.parentElement.classList.add('visible'); });
+            sections.forEach(s => s.parentElement?.classList.add('visible'));
+            // still trigger numbers once
+            numbers.forEach(n => {
+                const raw = parseInt(n.textContent.replace(/\D/g, ''), 10) || 0;
+                countTo(n, raw, 1);
+            });
             return;
         }
-        const observer = new IntersectionObserver((entries, obs) => {
+
+        const sectionObserver = new IntersectionObserver((entries, obs) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    if (entry.target.parentElement) entry.target.parentElement.classList.add('visible');
+                    entry.target.parentElement?.classList.add('visible');
                     obs.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.1 }
-        );
-        sections.forEach(section => { observer.observe(section); });
+        }, { threshold: 0.12 });
+
+        sections.forEach(section => sectionObserver.observe(section));
+
+        // Animate stat numbers once when stats container first appears
+        const stats = document.querySelector('#about-page .stats-container');
+        if (stats) {
+            const statsObserver = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    numbers.forEach(n => {
+                        const raw = parseInt(n.textContent.replace(/\D/g, ''), 10) || 0;
+                        // reset to 0 first for a clean animation
+                        n.textContent = n.textContent.trim().includes('%') ? '0%' : '0';
+                        countTo(n, raw, 1200);
+                    });
+                    obs.unobserve(entry.target);
+                });
+            }, { threshold: 0.35 });
+            statsObserver.observe(stats);
+        }
     }
 
 

@@ -418,6 +418,30 @@ button:disabled {
   /* Slightly smaller padding */
 }
 
+/* Detect Location button specific styles */
+#detectLocation {
+  padding: 8px 12px; /* Slightly larger padding for better clickability */
+  font-size: 0.9rem; /* Adjust font size for readability */
+  background-color: #007bff; /* Primary blue color */
+  color: #fff; /* White text */
+  border: none; /* Remove default border */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: background-color 0.3s, transform 0.2s; /* Smooth hover effects */
+}
+
+#detectLocation:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+  transform: translateY(-2px); /* Lift effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+}
+
+#detectLocation:active {
+  background-color: #003f7f; /* Even darker blue on click */
+  transform: translateY(0); /* Reset lift effect */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
 /* Add icons using ::before if desired */
 #detectLocation::before {
   content: '📍 ';
@@ -1659,476 +1683,562 @@ button:disabled {
   padding: 0.6rem 1.2rem;
 }
 
-
 /* ============================================================================
-     08. Reporting Page
-     ============================================================================ */
-/* ============================================================================
-  08. Reporting Page (Extensive Version with Photo-Based Reporting)
-  ============================================================================ */
+   Reporting Page — Full CSS (Blue/Green Theme + Leaflet Search + Image Delete)
+   ========================================================================== */
 
-/* Base Container */
+/* ---- Theme tokens ---- */
+:root {
+  --blue-50:  #e0f2fe;
+  --blue-100: #bae6fd;
+  --blue-200: #93c5fd;
+  --blue-500: #0ea5e9;
+  --blue-600: #0284c7;
+  --blue-700: #0369a1;
+
+  --green-500:#10b981;
+  --green-600:#059669;
+
+  --ink:      #0f172a;
+  --muted:    #f1f5f9;
+  --muted-ink:#475569;
+  --white:    #ffffff;
+  --error:    #dc2626;
+
+  --radius-xl: 20px;
+  --radius-lg: 18px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 9999px;
+
+  --shadow-1: 0 6px 18px rgba(2,132,199,.12);
+  --shadow-2: 0 10px 28px rgba(2,132,199,.18);
+  --shadow-inset: inset 0 1px 3px rgba(2,132,199,.15);
+
+  --font-heading: ui-rounded, "Poppins", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+  --font-body: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+
+  --ring-blue: 0 0 0 4px rgba(14,165,233,.18);
+}
+
+/* ---- Page container ---- */
 #reporting-page {
-  max-width: 960px;
-  margin: 4rem auto;
-  padding: 2.5rem;
-  background: #f8f9fa;
-  /* Slightly darker neutral white */
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-medium);
-  animation: slideUp 0.8s ease-out forwards;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(0, 48, 135, 0.25);
-  /* Darker border */
-  transition: box-shadow 0.3s ease;
+  max-width: 1100px;
+  margin: 3.5rem auto;
+  padding: 2.25rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(2,132,199,.18);
+  box-shadow: var(--shadow-1);
+  animation: rp-slideUp .6s ease-out both;
+  font-family: var(--font-body);
+  color: var(--ink);
 }
 
-#reporting-page:hover {
-  box-shadow: var(--shadow-heavy);
-}
+#reporting-page * { box-sizing: border-box; font-family: inherit; }
 
-/* Background Pattern with Animation */
-#reporting-page::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><circle cx="60" cy="60" r="3" fill="rgba(0,48,135,0.15)"/><rect x="50" y="50" width="20" height="20" fill="rgba(0,169,206,0.1)" transform="rotate(45 60 60)"/></svg>');
-  opacity: 0.8;
-  /* Slightly darker pattern */
-  z-index: 0;
-  animation: drift 25s linear infinite;
-}
-
-/* Content Layering */
-#reporting-page>* {
-  position: relative;
-  z-index: 1;
-}
-
-/* Heading with Subtitle */
 #reporting-page h1 {
   font-family: var(--font-heading);
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #083d77;
-  /* Darker blue */
-  margin-bottom: 0.75rem;
-  text-align: center;
-  transition: transform 0.3s ease, color 0.3s ease;
+  font-weight: 750;
+  font-size: 2.1rem;
+  color: var(--ink);
+  margin: 0 0 .35rem;
+  letter-spacing: .2px;
 }
 
-#reporting-page h1:hover {
-  transform: scale(1.03);
-  color: #1d92c0;
-  /* Darker teal */
+#reporting-page .subtitle {
+  margin: 0 0 1.25rem;
+  color: var(--muted-ink);
 }
 
-#reporting-page h1::after {
-  content: 'Report city issues quickly and efficiently';
-  display: block;
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  font-weight: 400;
-  color: #586069;
-  /* Darker muted text */
-  margin-top: 0.5rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-#reporting-page h1:hover::after {
-  opacity: 1;
-}
-
-/* Map Container */
-#map {
-  height: 480px;
-  width: 100%;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-medium);
-  margin-bottom: 2.5rem;
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  border: 1px solid rgba(0, 168, 206, 0.993);
-  /* Darker border */
+/* ============================================================================
+   MAP
+   ========================================================================== */
+#reporting-page #map {
   position: relative;
+  height: 460px;
+  width: 100%;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(14,165,233,.35);
+  box-shadow: var(--shadow-1);
+  overflow: hidden; /* contain tiles/controls */
+  background: linear-gradient(135deg, var(--blue-50), #ffffff);
+  cursor: crosshair;
 }
 
-#map:hover {
-  transform: scale(1.015);
-  box-shadow: var(--shadow-heavy);
-}
+/* Prevent global img max-width from breaking Leaflet tiles */
+#reporting-page #map img { max-width: none !important; }
 
-#map::before {
-  content: 'Click to set location';
+/* Hint pill (bottom-left) */
+#reporting-page #map .map-hint {
   position: absolute;
-  top: 1rem;
   left: 1rem;
-  background: rgba(8, 61, 119, 0.9);
-  /* Darker blue */
-  color: #ffffff;
-  padding: 0.5rem 1rem;
-  border-radius: var(--input-radius);
-  font-size: 0.9rem;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  bottom: 1rem;
+  background: rgba(2,132,199,.95);
+  color: var(--white);
+  padding: .5rem .75rem;
+  border-radius: var(--radius-pill);
+  font-size: .85rem;
+  pointer-events: none;
+  user-select: none;
+  box-shadow: var(--shadow-1);
+  z-index: 1000;
 }
 
-#map:hover::before {
-  opacity: 1;
-}
-
-/* Form Wrapper */
-#report-form {
+/* Toolbar overlay (top) */
+#reporting-page #map .map-toolbar {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  top: .9rem;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  background: #e9ecef;
-  /* Slightly darker grey */
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  grid-template-columns: 1fr max-content;
+  gap: .6rem;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Form Section Headers */
-#report-form::before {
-  content: 'Issue Details';
-  grid-column: 1 / -1;
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #083d77;
-  /* Darker blue */
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-/* Input Fields */
-#report-form input[type="text"],
-#report-form input[type="number"],
-#report-form textarea,
-#report-form select {
-  width: 100%;
-  padding: 1rem;
-  border: 1px solid #586069;
-  /* Darker muted border */
-  border-radius: var(--input-radius);
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  background: #ffffff;
-  transition: all 0.3s ease;
+/* Custom search bar (works even if not using a plugin) */
+#reporting-page #map .map-search {
   position: relative;
-  z-index: 1;
-  box-shadow: inset 0 1px 3px rgb(22, 210, 243);
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(2,132,199,.28);
+  border-radius: var(--radius-pill);
+  padding: .65rem 1rem .65rem 2.4rem;
+  box-shadow: var(--shadow-1);
+}
+#reporting-page #map .map-search::before {
+  content: "🔎";
+  position: absolute;
+  left: .9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  color: var(--blue-600);
+}
+#reporting-page #map .map-search .icon {
+  position: absolute;
+  left: .9rem;
+  font-size: 1rem;
+  color: var(--blue-600);
+}
+#reporting-page #map #mapSearch {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--ink);
 }
 
-#report-form textarea {
-  min-height: 140px;
-  resize: vertical;
-  grid-column: 1 / -1;
+/* Detect chip */
+#reporting-page #map .chip-btn,
+#reporting-page #map #detectLocation {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  border: 1px solid rgba(2,132,199,.28);
+  border-radius: var(--radius-pill);
+  padding: .7rem 1rem;
+  background: linear-gradient(180deg, var(--blue-500), var(--blue-600));
+  color: var(--white);
+  font-weight: 700;
+  box-shadow: var(--shadow-1);
+  transition: transform .12s ease, box-shadow .2s ease, filter .2s ease, opacity .2s ease;
+}
+#reporting-page #map .chip-btn:hover,
+#reporting-page #map #detectLocation:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+#reporting-page #map .chip-btn:active,
+#reporting-page #map #detectLocation:active {
+  transform: translateY(0);
+  filter: saturate(1.1);
+}
+#reporting-page #map #detectLocation[disabled] { opacity: .6; cursor: not-allowed; }
+
+/* Leaflet zoom buttons */
+#reporting-page .leaflet-control-zoom a {
+  border-radius: var(--radius-sm) !important;
+  background: rgba(255,255,255,.96) !important;
+  border: 1px solid rgba(2,132,199,.25) !important;
+  box-shadow: var(--shadow-1) !important;
+  color: var(--ink) !important;
 }
 
-#report-form input::placeholder,
-#report-form textarea::placeholder {
-  color: #000000;
-  /* Darker muted text */
-  opacity: 0.8;
+/* Leaflet Geocoder (compat) */
+#reporting-page .leaflet-control-geocoder {
+  background: rgba(255,255,255,.95) !important;
+  border: 1px solid rgba(2,132,199,.25) !important;
+  border-radius: var(--radius-pill) !important;
+  box-shadow: var(--shadow-1) !important;
+  overflow: hidden;
+}
+#reporting-page .leaflet-control-geocoder input {
+  border: 0 !important;
+  outline: none !important;
+  padding: .55rem .75rem !important;
+  font-size: .95rem !important;
+  color: var(--ink) !important;
+  width: 240px !important;
 }
 
-#report-form input:focus,
-#report-form textarea:focus,
-#report-form select:focus {
-  border-color: #46c4f7;
-  /* Darker teal */
-  box-shadow: 0 0 0 4px rgb(255, 255, 255), inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+/* Leaflet Search (plugin) */
+#reporting-page .leaflet-control-search {
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(2,132,199,.25);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-1);
+  padding: .35rem .5rem;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  font-family: var(--font-body);
+}
+#reporting-page .leaflet-top.leaflet-left .leaflet-control-search {
+  margin-top: 56px;
+  margin-left: 10px;
+}
+#reporting-page .leaflet-control-search .search-input {
+  width: 230px;
+  border: 1px solid rgba(2,132,199,.35);
+  border-radius: var(--radius-pill);
+  padding: .55rem .9rem;
+  font-size: .95rem;
+  color: var(--ink);
+  background: #fff;
+  box-shadow: inset 0 1px 2px rgba(14,165,233,.15);
+}
+#reporting-page .leaflet-control-search .search-input::placeholder { color: #64748b; }
+#reporting-page .leaflet-control-search .search-input:focus {
+  border-color: var(--blue-600);
+  box-shadow: var(--ring-blue);
+  outline: none;
+}
+#reporting-page .leaflet-control-search .search-button,
+#reporting-page .leaflet-control-search .search-cancel {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(2,132,199,.28);
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition: transform .1s ease, box-shadow .2s ease, background .2s ease;
+}
+#reporting-page .leaflet-control-search .search-button {
+  background: linear-gradient(180deg, var(--blue-500), var(--blue-600));
+  color: #fff;
+}
+#reporting-page .leaflet-control-search .search-cancel {
+  background: #eef6ff;
+  color: var(--blue-700);
+  border: 1px solid rgba(2,132,199,.35);
+}
+#reporting-page .leaflet-control-search .search-button:hover,
+#reporting-page .leaflet-control-search .search-cancel:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+#reporting-page .leaflet-control-search .search-tooltip {
+  border-radius: 12px;
+  border: 1px solid rgba(2,132,199,.2);
+  box-shadow: var(--shadow-1);
+}
+#reporting-page .leaflet-control-search .search-tip {
+  font-family: var(--font-body);
+  padding: .5rem .75rem;
+}
+#reporting-page .leaflet-control-search .search-tip:hover { background: var(--blue-50); }
+
+/* ============================================================================
+   FORM
+   ========================================================================== */
+#reporting-page #report-form {
+  margin-top: 1.25rem;
+  padding: 1.5rem;
+  background: linear-gradient(180deg, #ffffff, #f6fbff);
+  border: 1px solid rgba(2,132,199,.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-inset);
+}
+
+#reporting-page #report-form .form-row {
+  display: grid;
+  gap: .55rem;
+  margin-bottom: 1rem;
+}
+
+#reporting-page #report-form label {
+  font-weight: 650;
+  color: #0b2942;
+}
+
+#reporting-page #report-form input[type="text"],
+#reporting-page #report-form input[type="email"],
+#reporting-page #report-form input[type="tel"],
+#reporting-page #report-form select,
+#reporting-page #report-form textarea {
+  width: 100%;
+  border: 1px solid rgba(2,132,199,.35);
+  border-radius: 14px;
+  padding: 1rem 1rem;
+  font-size: 1rem;
+  color: var(--ink);
+  background: #fff;
+  transition: border-color .15s ease, box-shadow .2s ease, background .2s ease;
+}
+#reporting-page #report-form input::placeholder,
+#reporting-page #report-form textarea::placeholder { color: #64748b; }
+#reporting-page #report-form input:focus,
+#reporting-page #report-form select:focus,
+#reporting-page #report-form textarea:focus {
+  border-color: var(--blue-600);
+  box-shadow: var(--ring-blue);
   outline: none;
 }
 
-#report-form input:hover:not(:focus),
-#report-form textarea:hover:not(:focus),
-#report-form select:hover:not(:focus) {
-  border-color: #2d8ef5;
-  /* Darker blue */
-  transform: translateY(-1px);
+/* Textarea with mic */
+#reporting-page #report-form .textarea-wrap { position: relative; }
+#reporting-page #report-form textarea {
+  min-height: 170px;
+  resize: vertical;
+  padding-right: 3.2rem;
 }
-
-/* Labels with Tooltips */
-#report-form label {
-  font-family: var(--font-primary);
-  font-size: 0.95rem;
-  color: #000000;
-  /* Darker text */
-  margin-bottom: 0.5rem;
-  display: block;
-  position: relative;
-}
-
-#report-form label:hover::after {
-  background: #05668d;
-  /* Darker teal */
-}
-
-/* Buttons */
-#report-form button {
+#reporting-page #report-form .mic-btn {
+  position: absolute;
+  right: .6rem;
+  bottom: .6rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1px solid rgba(2,132,199,.35);
+  background: linear-gradient(180deg, var(--green-500), var(--green-600));
+  color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2rem;
-  border-radius: var(--border-radius);
-  font-family: var(--font-heading);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.75px;
+  box-shadow: var(--shadow-1);
+  transition: transform .12s ease, box-shadow .2s ease;
+}
+#reporting-page #report-form .mic-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+#reporting-page #report-form .mic-btn.recording { animation: rp-pulse 1.5s infinite; }
+
+/* Two-column details grid */
+#reporting-page .details-grid {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 1.2rem;
+  margin-top: .25rem;
+}
+#reporting-page #issue-description { grid-column: 1 / -1; }
+
+/* ============================================================================
+   IMAGE UPLOAD + PREVIEW + DELETE
+   ========================================================================== */
+#reporting-page .image-upload { margin-bottom: .75rem; }
+
+#reporting-page .image-drop {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: .25rem;
+  width: 100%;
+  padding: 1.1rem;
+  border: 1.5px dashed rgba(2,132,199,.45);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff, #f3fbff);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  border: none;
-}
-
-/* Detect Location Button */
-#detectLocation {
-  background: #05668d;
-  /* Darker teal */
-  color: #ffffff;
-  grid-column: 2 / 3;
-}
-
-#detectLocation:hover {
-  background: #045a75;
-  /* Even darker teal */
-}
-
-/* Auto Detect Button */
-#autoDetect {
-  background: #e0e0e0;
-  /* Slightly darker grey */
-  color: #24292e;
-  cursor: not-allowed;
-  grid-column: 1 / -1;
-}
-
-#autoDetect:not(:disabled):hover {
-  background: #083d77;
-  /* Darker blue */
-  color: #ffffff;
-}
-
-/* Analyze Image Button */
-#analyzeImageBtn {
-  background: white;
-  border: 2px solid #083d77;
-  /* Darker blue */
-  color: #083d77;
-}
-
-#analyzeImageBtn:not(:disabled):hover {
-  background: #083d77;
-  /* Darker blue */
-  color: #ffffff;
-}
-
-/* Style the Choose File Button */
-#report-form input[type="file"] {
-  display: none;
-  /* Hide the default file input */
-}
-
-#report-form label[for="imageUpload"] {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background-color: var(--primary-color);
-  color: var(--white);
-  font-size: 1rem;
-  font-weight: 500;
-  border-radius: var(--border-radius);
-  cursor: pointer;
+  box-shadow: var(--shadow-inset);
+  transition: border-color .2s ease, transform .12s ease, box-shadow .2s ease, background .2s ease;
   text-align: center;
-  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  color: var(--muted-ink);
+}
+#reporting-page .image-drop:hover {
+  border-color: var(--blue-600);
+  box-shadow: var(--shadow-1);
+  transform: translateY(-1px);
+}
+#reporting-page #imageUpload { display: none; }
+
+#reporting-page #imagePreview {
+  margin-top: .75rem;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 16px;
+  background: #eef6ff;
+  border: 1px solid rgba(2,132,199,.25);
+  background-image:
+    linear-gradient(45deg, #f6fbff 25%, transparent 25%),
+    linear-gradient(-45deg, #f6fbff 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f6fbff 75%),
+    linear-gradient(-45deg, transparent 75%, #f6fbff 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  color: #94a3b8;
+  position: relative;
+}
+#reporting-page #imagePreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-#report-form label[for="imageUpload"]:hover {
-  background-color: var(--primary-dark);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+/* Remove image button */
+#reporting-page .image-remove-btn {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(2,132,199,.35);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff, #f6fbff);
+  color: #0b2942;
+  font-weight: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-1);
+  transition: transform .1s ease, box-shadow .2s ease, background .2s ease;
+}
+#reporting-page #imagePreview.has-image .image-remove-btn { display: inline-flex; }
+#reporting-page .image-remove-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+
+/* ============================================================================
+   BUTTONS
+   ========================================================================== */
+#reporting-page .button,
+#reporting-page .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1rem;
+  border: 0;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .2s ease, filter .2s ease, opacity .2s ease;
+}
+#reporting-page .button.full-width,
+#reporting-page .btn.full-width { width: 100%; }
+
+#reporting-page .button.primary,
+#reporting-page .btn-primary {
+  background: linear-gradient(180deg, var(--blue-500), var(--blue-700));
+  color: var(--white);
+  box-shadow: var(--shadow-1);
+}
+#reporting-page .button.primary:hover,
+#reporting-page .btn-primary:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+
+#reporting-page .button.secondary,
+#reporting-page .btn-secondary {
+  background: #e9f6ff;
+  color: #0b2942;
+  border: 1px solid rgba(2,132,199,.35);
+}
+#reporting-page .button.secondary:hover,
+#reporting-page .btn-secondary:hover { transform: translateY(-1px); box-shadow: var(--shadow-1); }
+
+#reporting-page .button.ai,
+#reporting-page .btn-green {
+  background: linear-gradient(180deg, var(--green-500), var(--green-600));
+  color: var(--white);
+  box-shadow: var(--shadow-1);
+}
+#reporting-page .button.ai:hover,
+#reporting-page .btn-green:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+
+#reporting-page .button:disabled,
+#reporting-page .btn:disabled,
+#reporting-page button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none !important;
 }
 
-#report-form label[for="imageUpload"]:active {
-  transform: scale(0.98);
-  box-shadow: var(--shadow-light);
-}
-
-/* Submit Button */
-#report-form button[type="submit"] {
-  background: linear-gradient(90deg, #083d77, #05668d);
-  /* Darker gradient */
-  color: #ffffff;
-  grid-column: 1 / -1;
-  animation: pulseButton 2s infinite;
-  padding: 1.25rem 2.5rem;
-  font-size: 1.1rem;
-}
-
-#report-form button[type="submit"]:hover {
-  background: linear-gradient(90deg, #045a75, #034a63);
-  /* Even darker gradient */
+/* Utility row under categories */
+#reporting-page .util-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin-top: .75rem;
 }
 
 /* ============================================================================
-   Related Animations (Add to your animations section)
-   ============================================================================ */
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+   CAPTCHA + ERRORS
+   ========================================================================== */
+#reporting-page .recaptcha-row {
+  display: grid;
+  place-items: center;
+  margin: .6rem 0 1rem;
 }
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulseButton {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 48, 135, 0.5);
-  }
-
-  70% {
-    box-shadow: 0 0 0 12px rgba(0, 48, 135, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 48, 135, 0);
-  }
-}
-
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  20% {
-    transform: translateX(-6px);
-  }
-
-  40% {
-    transform: translateX(6px);
-  }
-
-  60% {
-    transform: translateX(-3px);
-  }
-
-  80% {
-    transform: translateX(3px);
-  }
-}
-
-@keyframes drift {
-  0% {
-    background-position: 0 0;
-  }
-
-  100% {
-    background-position: 120px 120px;
-  }
+#reporting-page .error-message {
+  color: #c2410c;
+  font-weight: 600;
+  margin-top: .4rem;
 }
 
 /* ============================================================================
-   Responsive Adjustments (Add to your media queries section)
-   ============================================================================ */
-@media (max-width: 960px) {
-  #reporting-page {
-    width: 90%;
-    margin: 2.5rem auto;
-    padding: 2rem;
-  }
+   FOCUS & ANIMATIONS
+   ========================================================================== */
+#reporting-page .chip-btn:focus-visible,
+#reporting-page .button:focus-visible,
+#reporting-page .btn:focus-visible,
+#reporting-page input:focus-visible,
+#reporting-page select:focus-visible,
+#reporting-page textarea:focus-visible {
+  outline: 3px solid rgba(14,165,233,.35);
+  outline-offset: 2px;
+}
 
-  #report-form {
+@keyframes rp-slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rp-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,.35); }
+  70% { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 980px) {
+  #reporting-page #map { height: 420px; }
+  #reporting-page .details-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  #reporting-page #map .map-toolbar {
     grid-template-columns: 1fr;
-  }
-
-  #detectLocation {
-    grid-column: 1 / -1;
+    gap: .5rem;
   }
 }
-
-@media (max-width: 768px) {
-  #reporting-page {
-    padding: 1.5rem;
-  }
-
-  #map {
-    height: 400px;
-  }
-
-  #report-form {
-    padding: 1.5rem;
-    gap: 1.25rem;
-  }
-
-  .image-upload-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  #report-form button {
-    width: 100%;
-    padding: 0.875rem;
-  }
+@media (max-width: 640px) {
+  #reporting-page { padding: 1.25rem; }
+  #reporting-page #map { height: 380px; }
+  #reporting-page .leaflet-control-search .search-input { width: 180px; }
+}
+@media (max-width: 420px) {
+  #reporting-page #map { height: 340px; }
+  #reporting-page .leaflet-control-search .search-input { width: 150px; }
 }
 
-@media (max-width: 480px) {
-  #reporting-page h1 {
-    font-size: 2rem;
-  }
 
-  #reporting-page h1::after {
-    font-size: 0.9rem;
-  }
-
-  #map {
-    height: 320px;
-  }
-
-  #report-form::before {
-    font-size: 1.25rem;
-  }
-
-  #report-form input[type="text"],
-  #report-form input[type="number"],
-  #report-form textarea,
-  #report-form select {
-    padding: 0.75rem;
-  }
-}
 
 /* ============================================================================
    09. My Reports Page
@@ -2350,6 +2460,8 @@ button:disabled {
   font-weight: bold;
   margin-right: 5px;
 }
+
+
 
 
 .post-header {
@@ -2948,7 +3060,6 @@ button:disabled {
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  font-size: 1rem;
 }
 
 .send-button:hover {
@@ -3847,7 +3958,6 @@ button:disabled {
 .rp-notification-sidebar.fade-out {
   opacity: 0;
   transition: opacity 0.5s ease-out;
-  /* Match JS timeout */
 }
 
 
@@ -3892,8 +4002,6 @@ button:disabled {
   /* Add space */
   font-size: 1em;
   /* Match surrounding text */
-  /* animation: pointsPulse 1s ease-out; */
-  /* Optional animation */
 }
 
 /* ============================================================================
@@ -3919,9 +4027,7 @@ button:disabled {
   font-size: 1.6rem;
   cursor: pointer;
   box-shadow: var(--shadow-light);
-  transition: background 0.3s, transform 0.2s;
-  outline: none;
-  position: relative;
+  transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .voice-input-btn:active,

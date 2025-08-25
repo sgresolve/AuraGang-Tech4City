@@ -5,67 +5,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SGResolve</title>
-  <link rel="stylesheet" href="styles.css">
-  <!-- Add Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Add Leaflet CDN for maps -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+
+  <!-- STYLES - Order is less critical but good practice -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- PWA & Mobile Meta Tags -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0969da">
-  <!-- Basic iOS PWA Meta Tags-->
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes"> <!-- Added for deprecation warning -->
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="/NAISC-NAPA/images/icons/icon-192x192.png"> <!-- Example size -->
-  <!-- Add Google reCAPTCHA v2 Script -->
+  <link rel="apple-touch-icon" href="images/icons/icon-192x192.png">
+
+  <!-- SCRIPTS - ORDER IS CRITICAL -->
+  <!-- 1. Main Libraries First -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- 2. Library Plugins After Main Library -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- 3. Other external scripts -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-  <!-- End Google reCAPTCHA v2 Script -->
-  <style>
-    /* Basic styling for mic buttons - consider moving to styles.css */
-    .mic-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0px 8px;
-      /* Adjust as needed */
-      font-size: 1.1em;
-      /* Adjust as needed */
-      color: #555;
-      vertical-align: middle;
-    }
-
-    .mic-button:hover {
-      color: var(--primary-color);
-    }
-
-    .mic-button.recognizing i {
-      color: red;
-    }
-
-    .chat-input {
-      display: flex;
-      align-items: center;
-    }
-
-    .chat-input .input-box {
-      flex-grow: 1;
-      margin-right: 5px;
-      /* Space before mic button */
-    }
-
-    #report-form textarea+.mic-button {
-      margin-top: 5px;
-      /* Space above mic button */
-      margin-bottom: 10px;
-      /* Space below mic button */
-      /* display: block; */
-      /* If it should be on its own line */
-    }
-  </style>
 </head>
 
 <body>
@@ -151,10 +116,9 @@
     <!-- Custom Chatbot -->
     <div class="chat-widget">
       <div id="chat-container" class="chat-container">
-        <div class="chat-header"> <!-- Added wrapper for header -->
+        <div class="chat-header">
           <h2>SGResolve AI Chatbot</h2>
           <button id="chat-close-button" class="chat-close-btn" aria-label="Close chat">×</button>
-          <!-- Changed X to multiplication sign -->
         </div>
         <div class="chat-box" id="chat-box"></div>
         <div class="chat-input">
@@ -199,11 +163,7 @@
     <div id="admin-page" class="page" style="display: none;">
       <h1>Admin Dashboard</h1>
       <div class="admin-container">
-
-        <!-- New Enhanced Analytics Section -->
         <div class="admin-analytics-grid">
-
-          <!-- Stat Card: Total Reports -->
           <div class="stat-card">
             <div class="stat-icon"><i class="icon-files"></i></div>
             <div class="stat-content">
@@ -211,8 +171,6 @@
               <span class="stat-label">Total Reports</span>
             </div>
           </div>
-
-          <!-- Stat Card: Pending Reports -->
           <div class="stat-card">
             <div class="stat-icon" style="color: #ffc107;"><i class="icon-clock"></i></div>
             <div class="stat-content">
@@ -220,8 +178,6 @@
               <span class="stat-label">Pending Reports</span>
             </div>
           </div>
-
-          <!-- Stat Card: Resolved Reports -->
           <div class="stat-card">
             <div class="stat-icon" style="color: var(--secondary-color);"><i class="icon-check"></i></div>
             <div class="stat-content">
@@ -229,8 +185,6 @@
               <span class="stat-label">Resolved Reports</span>
             </div>
           </div>
-
-          <!-- Chart: Reports by Status -->
           <div class="chart-card">
             <h3>Reports by Status</h3>
             <div class="chart-wrapper" style="height:250px;">
@@ -238,8 +192,6 @@
             </div>
             <div id="no-status-data" class="no-data-message" style="display: none;">No status data available.</div>
           </div>
-
-          <!-- Chart: Reports by Urgency -->
           <div class="chart-card">
             <h3>Reports by Urgency</h3>
             <div class="chart-wrapper" style="height:250px;">
@@ -247,27 +199,19 @@
             </div>
             <div id="no-urgency-data" class="no-data-message" style="display: none;">No urgency data available.</div>
           </div>
-
-          <!-- Chart: Reports by Category (Monthly) - Kept from before -->
           <div class="chart-card">
             <h3>Reports This Month by Category</h3>
             <p id="total-reports-month" class="subtle-text">Total this month: 0</p>
             <div class="chart-wrapper" style="height:250px;">
-              <canvas id="reports-chart"></canvas> <!-- Keep original ID -->
+              <canvas id="reports-chart"></canvas>
             </div>
             <div id="no-reports-message" class="no-data-message" style="display: none;">No reports this month.</div>
           </div>
-
         </div>
-        <!-- End of Enhanced Analytics Section -->
-
-
-        <!-- Existing Admin Reports Section -->
         <div class="admin-reports">
           <h2>Submitted Reports</h2>
-          <div id="admin-map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
+          <div id="admin-map"></div>
           <div class="admin-actions">
-            <!-- Filter Controls Here -->
             <div class="admin-filters">
               <label for="image-filter">Image:</label>
               <select id="image-filter">
@@ -275,7 +219,6 @@
                 <option value="with">With Image</option>
                 <option value="without">Without Image</option>
               </select>
-
               <label for="category-filter">Category:</label>
               <select id="category-filter">
                 <option value="all" selected>All</option>
@@ -284,7 +227,6 @@
                 <option value="Safety">Safety</option>
                 <option value="Others">Others</option>
               </select>
-
               <label for="urgency-filter">Urgency:</label>
               <select id="urgency-filter">
                 <option value="all" selected>All</option>
@@ -292,7 +234,6 @@
                 <option value="Medium">Medium</option>
                 <option value="High">High</option>
               </select>
-
               <label for="threat-filter">Threat:</label>
               <select id="threat-filter">
                 <option value="all" selected>All</option>
@@ -300,7 +241,6 @@
                 <option value="Moderate">Moderate</option>
                 <option value="Severe">Severe</option>
               </select>
-
               <button id="apply-filters" class="button">Apply Filters</button>
               <button id="reset-filters" class="button secondary-button">Reset Filters</button>
             </div>
@@ -308,87 +248,135 @@
             <button id="export-data" class="button secondary-button">Export Data</button>
           </div>
           <ul id="admin-reports-container">
-            <!-- Report items rendered dynamically -->
           </ul>
         </div>
-
         <div class="admin-logout">
           <p><a href="#" id="logout-admin" class="button danger-button">Logout</a></p>
         </div>
       </div>
     </div>
 
-    <!-- Reporting Page -->
-    <div id="reporting-page" class="page" style="display: none;">
-      <h1>Report an Issue</h1>
-      <div id="map" style="height: 400px; width: 100%; margin-bottom: 20px;"></div>
-      <form id="report-form">
-        <input type="text" id="locationName" placeholder="Location Name" required>
-        <input type="number" id="latitude" step="any" placeholder="Latitude" required>
-        <input type="number" id="longitude" step="any" placeholder="Longitude" required>
-        <button type="button" id="detectLocation">Detect Location</button>
-        <textarea id="problemDesc" placeholder="Describe the issue..." required></textarea>
-        <button type="button" id="report-desc-mic-btn" class="mic-button"
-          aria-label="Use microphone for report description" title="Use Microphone"><i
-            class="fas fa-microphone"></i></button>
-        <!-- Text-based Auto Detect Button -->
-        <button type="button" id="autoDetect" disabled>Auto Detect (Text)</button>
+<!-- Reporting Page -->
+<div id="reporting-page" class="page" style="display:none;">
+  <div class="reporting-container">
+    <h1>Report an Issue</h1>
+    <p class="subtitle">Pin the spot on the map, or use the search and detect buttons.</p>
 
-        <!-- Dropdowns -->
-        <select id="category" required>
-          <option value="">Select Category</option>
-          <option value="Infrastructure">Infrastructure</option>
-          <option value="Environmental">Environmental</option>
-          <option value="Safety">Safety</option>
-          <option value="Others">Others</option>
-        </select>
-        <select id="urgency" required>
-          <option value="">Select Urgency Level</option>
-          <option value="Low">Low</option>
-          <option value="Medium">Medium</option>
-          <option value="High">High</option>
-        </select>
-        <select id="threat" required>
-          <option value="">Select Threat Amount</option>
-          <option value="Minor">Minor</option>
-          <option value="Moderate">Moderate</option>
-          <option value="Severe">Severe</option>
-        </select>
-
-        <!-- Image Upload and Analysis -->
-        <label for="imageUpload">Upload Image (optional)</label>
-        <div class="image-upload-controls"> <!-- Wrapper for layout -->
-          <input type="file" id="imageUpload" accept="image/*">
-          <!-- NEW: AI Analyze Button -->
-          <button type="button" id="analyzeImageBtn" class="button secondary-button" disabled>Analyze Image with
-            AI</button>
-        </div>
-        <div id="imagePreview" style="margin-top: 10px;"></div> <!-- Image preview area -->
-
-        <!-- reCAPTCHA v2 Checkbox -->
-        <div class="form-group recaptcha-group">
-          <div id="recaptcha-container" class="g-recaptcha" data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
-            data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"
-            data-error-callback="onRecaptchaError">
-          </div>
-          <!-- Add an error message placeholder for CAPTCHA -->
-          <p id="recaptcha-error" class="error-message" style="display: none; text-align: center; margin-top: 5px;">
-            Please complete the CAPTCHA verification.</p>
-        </div>
-        <!-- End reCAPTCHA v2 Checkbox -->
-
-
-        <!-- Submit Button - Initially Disabled -->
-        <button type="submit" id="submit-report-button" disabled>Submit Report</button>
-      </form>
+    <!-- Map with detect button (search handled by Leaflet control) -->
+    <div id="map" aria-label="Map to select issue location">
+      
+      <div class="map-toolbar" role="search" aria-label="Map search toolbar">
+        <!-- Removed custom map-search div since Leaflet geocoder handles search -->
+                    <button type="button" id="detectLocation" class="chip-btn" aria-label="Detect my location">
+          <i aria-hidden="true"></i>
+          Detect
+        </button>
+      </div>
+      
+      <div class="map-hint">Click on the map to set the exact location</div>
+      
     </div>
 
+    <form id="report-form" novalidate>
+      <!-- Location name (kept separate from map search so you can label the place) -->
+      <div class="form-row">
+        <label for="locationName">Location Name (e.g., “Opposite Tampines Mall”)</label>
+        <input type="text" id="locationName" placeholder="A brief name for the location" required />
+        <input type="hidden" id="latitude" name="latitude" />
+        <input type="hidden" id="longitude" name="longitude" />
+      </div>
+
+      <!-- Description full width with mic inside -->
+      <div class="form-row">
+        <label for="problemDesc">Describe the Issue</label>
+        <div class="textarea-wrap">
+          <textarea id="problemDesc" placeholder="Please provide a detailed description of the problem…" required></textarea>
+          <button type="button" id="report-desc-mic-btn" class="mic-btn" aria-label="Use microphone for description" title="Voice input">
+            <i class="fas fa-microphone" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Two-column details -->
+      <div class="details-grid">
+        <!-- LEFT: categories -->
+        <div class="grid-left">
+          <div class="form-row">
+            <label for="category">Category</label>
+            <select id="category" required>
+              <option value="" disabled selected>Select a Category</option>
+              <option value="Infrastructure">Infrastructure (e.g., potholes, broken lights)</option>
+              <option value="Environmental">Environmental (e.g., littering, pests)</option>
+              <option value="Safety">Safety (e.g., blocked paths, hazards)</option>
+              <option value="Others">Others</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="urgency">Urgency Level</label>
+            <select id="urgency" required>
+              <option value="" disabled selected>Select Urgency</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="threat">Threat Amount</label>
+            <select id="threat" required>
+              <option value="" disabled selected>Select Threat</option>
+              <option value="Minor">Minor</option>
+              <option value="Moderate">Moderate</option>
+              <option value="Severe">Severe</option>
+            </select>
+          </div>
+
+          <button type="button" id="autoDetect" class="button secondary full-width" disabled>
+            <i class="fas fa-magic" aria-hidden="true"></i> Auto Fill In Details
+          </button>
+        </div>
+
+        <!-- RIGHT: image upload -->
+        <div class="grid-right">
+          <div class="form-row image-upload">
+            <label for="imageUpload" class="image-drop">
+              <i class="fas fa-camera" aria-hidden="true"></i>
+              <span>Upload Image</span>
+              <small>(Optional but recommended)</small>
+            </label>
+            <input type="file" id="imageUpload" accept="image/*" />
+            <div id="imagePreview" aria-label="Image preview"></div>
+          </div>
+
+          <button type="button" id="analyzeImageBtn" class="button ai full-width" disabled>
+            <i class="fas fa-robot" aria-hidden="true"></i> Analyze Image with AI
+          </button>
+        </div>
+      </div>
+
+      <!-- reCAPTCHA -->
+      <div class="form-row recaptcha-row">
+        <div id="recaptcha-container" class="g-recaptcha"
+             data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
+             data-callback="onRecaptchaSuccess"
+             data-expired-callback="onRecaptchaExpired"
+             data-error-callback="onRecaptchaError"></div>
+        <p id="recaptcha-error" class="error-message" style="display:none;">Please complete the CAPTCHA verification.</p>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" id="submit-report-button" class="button primary full-width" disabled>
+        Submit Report
+      </button>
+    </form>
+  </div>
+</div>
 
     <!-- My Reports Page -->
     <div id="my-reports-page" class="page" style="display: none;">
       <h1>My Reports</h1>
       <ul id="user-reports-container">
-        <!-- User reports rendered dynamically -->
       </ul>
     </div>
 
@@ -399,37 +387,30 @@
         <label for="location-selector">Show reports near:</label>
         <select id="location-selector">
           <option value="current">My Current Location</option>
-          <!-- North-East -->
           <option value="punggol">Punggol</option>
           <option value="sengkang">Sengkang</option>
           <option value="hougang">Hougang</option>
           <option value="serangoon">Serangoon</option>
-          <!-- East -->
           <option value="tampines">Tampines</option>
           <option value="pasir_ris">Pasir Ris</option>
           <option value="bedok">Bedok</option>
           <option value="changi_airport">Changi Airport</option>
-          <!-- North -->
           <option value="woodlands">Woodlands</option>
           <option value="yishun">Yishun</option>
           <option value="sembawang">Sembawang</option>
-          <!-- Central -->
           <option value="ang_mo_kio">Ang Mo Kio</option>
           <option value="bishan">Bishan</option>
           <option value="toa_payoh">Toa Payoh</option>
           <option value="orchard">Orchard Road</option>
           <option value="city_hall">City Hall</option>
           <option value="raffles_place">Raffles Place</option>
-          <!-- West -->
           <option value="jurong_east">Jurong East</option>
           <option value="clementi">Clementi</option>
           <option value="bukit_batok">Bukit Batok</option>
           <option value="choa_chu_kang">Choa Chu Kang</option>
           <option value="boon_lay">Boon Lay</option>
-          <!-- South -->
           <option value="harbourfront">HarbourFront</option>
           <option value="marina_bay">Marina Bay Sands</option>
-          <!-- Add more predefined locations as needed -->
         </select>
         <label for="radius-selector" style="margin-left: 15px;">Within:</label>
         <select id="radius-selector">
@@ -439,10 +420,9 @@
         </select>
         <button id="load-nearby-reports" class="button">Load Reports</button>
       </div>
-      <div id="nearby-map" style="height: 400px; width: 100%; margin: 20px 0;"></div>
+      <div id="nearby-map"></div>
       <div id="nearby-status" style="margin-bottom: 15px;">Select a location and click Load.</div>
       <ul id="nearby-reports-container">
-        <!-- Nearby reports will be loaded here -->
       </ul>
     </div>
 
@@ -468,12 +448,9 @@
           </div>
           <div class="forum-controls">
             <input type="search" class="search-input" placeholder="Search posts...">
-            <!-- Add sorting/filtering controls here if needed -->
           </div>
           <div id="forum-posts">
-            <!-- Forum posts loaded dynamically -->
           </div>
-          <!-- Load More Button -->
           <button id="load-more-posts" class="button secondary-button" style="display: none; margin-top: 20px;">Load
             More Posts</button>
         </div>
@@ -481,10 +458,8 @@
           <div id="trending-posts">
             <h2>Trending Posts</h2>
             <div id="trending-container">
-              <!-- Trending posts loaded here -->
             </div>
           </div>
-          <!-- Add other sidebar content like Categories, Recent Comments, etc. -->
         </aside>
       </div>
     </div>
@@ -551,13 +526,11 @@
         </div>
       </section>
 
-      <!--Horizontal Slideshow -->
       <section class="about-section">
         <div class="content">
           <h2>How It Works</h2>
           <div class="slideshow-container">
             <div class="slide-track">
-              <!-- Original slides -->
               <div class="slide">
                 <h3>Report</h3>
                 <p>Submit an issue through our app, website, or hotline with photos and location.</p>
@@ -578,7 +551,6 @@
                 <h3>Verification</h3>
                 <p>You receive an update and can confirm if the issue is resolved.</p>
               </div>
-              <!-- Duplicate slides for seamless looping -->
               <div class="slide">
                 <h3>Report</h3>
                 <p>Submit an issue through our app, website, or hotline with photos and location.</p>
@@ -604,7 +576,6 @@
         </div>
       </section>
 
-      <!-- Supported Issue Categories -->
       <section class="about-section">
         <div class="content">
           <h2>Supported Issue Categories</h2>
@@ -621,7 +592,6 @@
         </div>
       </section>
 
-      <!-- Privacy & Security -->
       <section class="about-section">
         <div class="content">
           <h2>Privacy & Security</h2>
@@ -633,7 +603,6 @@
         </div>
       </section>
 
-      <!-- Contact Us -->
       <section class="about-section">
         <div class="content">
           <h2>Contact Us</h2>
@@ -648,23 +617,9 @@
       </section>
     </div>
 
-    <!-- Contact Page (Original - kept for completeness) -->
-    <div id="contact-page" class="page" style="display: none;">
-      <h1>Contact Us</h1>
-      <p>
-        If you have any questions or need support, please contact us at
-        <a href="mailto:contact@sgresolve.com">contact@sgresolve.com</a>.
-      </p>
-      <p>
-        You can also reach us via our social media channels or visit our office at 123 Smart City Ave, Singapore.
-      </p>
-    </div>
-
     <!-- Profile Page -->
     <div id="profile-page" class="page" style="display: none;">
       <h1>My Profile & Achievements</h1>
-
-      <!-- Existing Summary Card -->
       <div class="profile-summary card">
         <h2 id="profile-username">Username</h2>
         <p>Level: <strong id="profile-level">1</strong> (<span id="profile-level-name">Civic Starter</span>)</p>
@@ -674,18 +629,12 @@
         </div>
         <p><small id="rp-to-next-level">XXX RP to next level</small></p>
       </div>
-
-
-      <!-- Existing Badges Card -->
       <div class="profile-badges card">
         <h2>My Badges</h2>
         <div id="badges-container" class="badges-grid">
-          <!-- Badges loaded dynamically -->
           <p id="no-badges-message" style="display: none;">You haven't earned any badges yet. Keep contributing!</p>
         </div>
       </div>
-
-      <!-- NEW: Profile Details Card -->
       <div class="profile-details card">
         <h2>Account Details</h2>
         <p><strong>Email:</strong> <span id="profile-email-display">Loading...</span></p>
@@ -696,39 +645,24 @@
             <button type="submit" id="update-profile-button" class="button primary-button">Update Name</button>
           </div>
         </form>
-        <p id="update-profile-message" class="form-message"></p> <!-- For feedback -->
+        <p id="update-profile-message" class="form-message"></p>
       </div>
-
-      <!-- NEW: Change Password Card -->
       <div class="change-password card">
         <h2>Change Password</h2>
         <form id="change-password-form">
           <label for="current-password">Current Password:</label>
           <input type="password" id="current-password" required autocomplete="current-password">
-
           <label for="new-password">New Password:</label>
           <input type="password" id="new-password" required autocomplete="new-password" minlength="6">
-
           <label for="confirm-new-password">Confirm New Password:</label>
           <input type="password" id="confirm-new-password" required autocomplete="new-password">
-
           <button type="submit" id="change-password-button" class="button secondary-button">Change Password</button>
         </form>
-        <p id="change-password-message" class="form-message"></p> <!-- For feedback -->
-      </div>
-
-    </div>
-    <!-- Popup Overlay (For Modals: Success, Error, Badge, Level Up) -->
-    <div id="popup-overlay" class="popup-overlay">
-      <div id="popup" class="popup">
-        <span id="popup-close" class="popup-close">×</span>
-        <div id="popup-icon" class="popup-icon"></div>
-        <p id="popup-message"></p>
-        <!-- Points indicator removed from here -->
+        <p id="change-password-message" class="form-message"></p>
       </div>
     </div>
 
-    <!-- RP Notification Sidebar (For RP gains) -->
+    <!-- RP Notification Sidebar -->
     <div id="rp-notification-sidebar" class="rp-notification-sidebar">
       <span class="rp-icon">✨</span>
       <span class="rp-message"></span>
@@ -737,19 +671,16 @@
 
   </div>
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
-    crossorigin="anonymous"></script>
+  <!-- Your main script file, loaded as a module -->
   <script type="module" src="script.js"></script>
+
   <!-- PWA Service Worker Registration -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        // IMPORTANT: Path must be relative to the root domain
-        navigator.serviceWorker.register('/NAISC-NAPA/service-worker.js')
+        navigator.serviceWorker.register('service-worker.js') // Simplified path
           .then(registration => {
-            console.log('Service Worker registered successfully with scope:', registration.scope);
+            console.log('Service Worker registered successfully:', registration.scope);
           })
           .catch(error => {
             console.error('Service Worker registration failed:', error);

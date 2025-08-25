@@ -102,24 +102,61 @@ document.addEventListener('DOMContentLoaded', () => {
     let nearbyMap = null;
     let tempMarker; // Moved here, global for reporting map clicks
 
-    function initializeReportingMap() {
+function initializeReportingMap() {
         if (!reportingMap && document.getElementById('map')) {
             reportingMap = L.map('map').setView([1.3521, 103.8198], 11);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(reportingMap);
+
+            // --- NEW: Add Autocomplete Geocoder Control ---
+            const geocoder = L.Control.geocoder({
+                defaultMarkGeocode: false, // We'll handle the marker ourselves
+                placeholder: 'Search by address or postal code...',
+                errorMessage: 'Nothing found.',
+                geocoder: new L.Control.Geocoder.Nominatim({
+                    geocodingQueryParams: {
+                        'countrycodes': 'sg', // Prioritize Singapore results
+                        'viewbox': '103.6,1.15,104.0,1.47', // Bounding box for Singapore
+                        'bounded': 1
+                    }
+                })
+            }).on('markgeocode', function(e) {
+                const { center, name } = e.geocode;
+                
+                if (tempMarker) {
+                    reportingMap.removeLayer(tempMarker);
+                }
+                
+                reportingMap.setView(center, 16);
+                tempMarker = L.marker(center).addTo(reportingMap);
+                
+                document.getElementById('latitude').value = center.lat.toFixed(6);
+                document.getElementById('longitude').value = center.lng.toFixed(6);
+                
+                // Clean up the name provided by the geocoder
+                const cleanName = name.split(',').slice(0, 2).join(', ');
+                document.getElementById('locationName').value = cleanName;
+
+            }).addTo(reportingMap);
+
+
+            // --- MODIFIED: Map Click Event ---
             reportingMap.on('click', function (e) {
                 const { lat, lng } = e.latlng;
                 if (!singaporeLatLngBounds.contains(e.latlng)) {
-                    console.warn('Please select a location within Singapore.'); return; // Log warning
+                    console.warn('Please select a location within Singapore.'); return;
                 }
-                // Remove previous temp marker if exists
+                
                 if (tempMarker) {
                     reportingMap.removeLayer(tempMarker);
-                    tempMarker = null; // Clear reference
                 }
-                // Add new marker
+
                 tempMarker = L.marker([lat, lng]).addTo(reportingMap);
                 document.getElementById('latitude').value = lat.toFixed(6);
                 document.getElementById('longitude').value = lng.toFixed(6);
+                
+                // Clear the location name field when clicking manually
+                document.getElementById('locationName').value = ''; 
+                document.getElementById('locationName').placeholder = 'Please provide a name for this location';
             });
         }
     }

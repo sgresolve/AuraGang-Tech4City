@@ -4043,8 +4043,3 @@ button:disabled {
   display: grid;
   gap: 6px;
 }
-
-#forum-posts .post-card,
-#trending-container .post-card {
-  /* inherit from .post-card */
-}

@@ -1096,112 +1096,284 @@ document.addEventListener('DOMContentLoaded', () => {
             userReportsContainer.innerHTML = '<p class="error-message">Error loading your reports.</p>';
         }
     }
-    async function renderAdminAnalytics() {
-        const totalReportsEl = document.getElementById('stat-total-reports');
-        const pendingReportsEl = document.getElementById('stat-pending-reports');
-        const resolvedReportsEl = document.getElementById('stat-resolved-reports');
-        const totalMonthEl = document.getElementById('total-reports-month');
-        const statusChartCanvas = document.getElementById('status-chart');
-        const noStatusDataEl = document.getElementById('no-status-data');
-        const urgencyChartCanvas = document.getElementById('urgency-chart');
-        const noUrgencyDataEl = document.getElementById('no-urgency-data');
-        const categoryChartCanvas = document.getElementById('reports-chart');
-        const noReportsMsgEl = document.getElementById('no-reports-message');
+    // === Admin Analytics (KPI + Charts) ===
+async function renderAdminAnalytics() {
+  // ---- Dom helpers ----
+  const $ = (id) => document.getElementById(id);
+  const fmtPct = (v, dp = 0) => isFinite(v) ? `${(v * 100).toFixed(dp)}%` : '–';
+  const clamp0 = (n) => Math.max(0, n|0);
 
-        const destroyChart = (instance) => { if (instance) instance.destroy(); };
-        destroyChart(statusChartInstance); statusChartInstance = null;
-        destroyChart(urgencyChartInstance); urgencyChartInstance = null;
-        destroyChart(categoryChartInstance); categoryChartInstance = null;
-        window.reportsChart = null; // Make sure this is cleared too
+  // ---- Elements (KPI + charts) ----
+  const el = {
+    kpiTotal: $('kpi-total'),
+    kpiPending: $('kpi-pending'),
+    kpiResolved: $('kpi-resolved'),
+    kpiPendingShare: $('kpi-pending-share'),
+    kpiResolvedShare: $('kpi-resolved-share'),
+    kpiImgRate: $('kpi-img-rate'),
+    kpiImgCount: $('kpi-img-count'),
+    kpiMonthTotal: $('kpi-month-total'),
+    kpiMonthDelta: $('kpi-month-delta'),
+    kpiTopCategory: $('kpi-top-category'),
+    sparkTotal: $('spark-total'),
+    sparkPending: $('spark-pending'),
+    sparkResolved: $('spark-resolved'),
+    statusCanvas: $('status-chart'),
+    urgencyCanvas: $('urgency-chart'),
+    categoryCanvas: $('reports-chart'),
+    dailyCanvas: $('daily-chart'),
+    tabsRoot: $('analytics-tabs')
+  };
 
-        if (statusChartCanvas) statusChartCanvas.style.display = 'block';
-        if (noStatusDataEl) noStatusDataEl.style.display = 'none';
-        if (urgencyChartCanvas) urgencyChartCanvas.style.display = 'block';
-        if (noUrgencyDataEl) noUrgencyDataEl.style.display = 'none';
-        if (categoryChartCanvas) categoryChartCanvas.style.display = 'block';
-        if (noReportsMsgEl) noReportsMsgEl.style.display = 'none';
+  // ---- Colors (fallbacks if global constants not present) ----
+  const STATUS_COLORS = (window.STATUS_COLORS) || {
+    'Pending': 'rgba(251,191,36,0.85)',      // amber-400
+    'In Progress': 'rgba(54,162,235,0.85)',  // blue
+    'Resolved': 'rgba(34,197,94,0.85)'       // green
+  };
+  const URGENCY_COLORS = (window.URGENCY_COLORS) || {
+    'Low': 'rgba(75,192,192,0.85)',
+    'Medium': 'rgba(255,159,64,0.85)',
+    'High': 'rgba(255,99,132,0.85)'
+  };
 
-        try {
-            const [allReports, reportsThisMonth] = await Promise.all([
-                fetchReports(),
-                fetchReportsThisMonth()
-            ]);
+  // Category palette: reuse if provided, else generate on the fly
+  const CATEGORY_COLOR_FALLBACKS = [
+    'rgba(153,102,255,0.85)', 'rgba(40,167,69,0.85)',
+    'rgba(255,99,132,0.85)', 'rgba(201,203,207,0.85)',
+    'rgba(2,132,199,0.85)', 'rgba(16,185,129,0.85)'
+  ];
 
-            const totalReportsCount = allReports.length;
-            const totalReportsMonthCount = reportsThisMonth.length;
-            const statusCounts = { 'Pending': 0, 'In Progress': 0, 'Resolved': 0 };
-            const urgencyCounts = { 'Low': 0, 'Medium': 0, 'High': 0 };
-            const categoryCountsMonth = { 'Infrastructure': 0, 'Environmental': 0, 'Safety': 0, 'Others': 0 };
+  // ---- Chart.js guard ----
+  if (!window.Chart) {
+    console.warn('Chart.js not loaded; skipping analytics charts.');
+  }
 
-            allReports.forEach(report => {
-                if (report.status && statusCounts.hasOwnProperty(report.status)) statusCounts[report.status]++;
-                if (report.urgency && urgencyCounts.hasOwnProperty(report.urgency)) urgencyCounts[report.urgency]++;
-            });
-            reportsThisMonth.forEach(report => {
-                const category = (report.category && categoryCountsMonth.hasOwnProperty(report.category)) ? report.category : 'Others';
-                categoryCountsMonth[category]++;
-            });
+  // ---- Destroy old charts (stored under window._adminCharts) ----
+  window._adminCharts ||= {};
+  Object.values(window._adminCharts).forEach((c) => { try { c?.destroy?.(); } catch {} });
+  window._adminCharts = {};
 
-            if (totalReportsEl) totalReportsEl.textContent = totalReportsCount;
-            if (pendingReportsEl) pendingReportsEl.textContent = statusCounts['Pending'];
-            if (resolvedReportsEl) resolvedReportsEl.textContent = statusCounts['Resolved'];
-            if (totalMonthEl) totalMonthEl.textContent = `Total this month: ${totalReportsMonthCount}`;
+  // ---- Utilities ----
+  const toDate = (v) => {
+    if (!v) return null;
+    try {
+      if (v.toDate) return v.toDate();
+      if (v instanceof Date) return v;
+      if (typeof v === 'number') return new Date(v);
+      return new Date(String(v));
+    } catch { return null; }
+  };
 
-            // Status Chart
-            const statusCtx = statusChartCanvas?.getContext('2d');
-            const statusDataAvailable = Object.values(statusCounts).some(count => count > 0);
-            if (statusChartCanvas) statusChartCanvas.style.display = statusDataAvailable ? 'block' : 'none';
-            if (noStatusDataEl) noStatusDataEl.style.display = statusDataAvailable ? 'none' : 'block';
-            if (statusCtx && statusDataAvailable) {
-                statusChartInstance = new Chart(statusCtx, {
-                    type: 'doughnut',
-                    data: { labels: Object.keys(statusCounts), datasets: [{ data: Object.values(statusCounts), backgroundColor: Object.keys(statusCounts).map(status => STATUS_COLORS[status] || '#cccccc'), borderColor: '#fff', borderWidth: 2 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } }, title: { display: false } } }
-                });
-            }
+  const isSameMonth = (d, yr, m) => d && d.getFullYear() === yr && d.getMonth() === m;
 
-            // Urgency Chart
-            const urgencyCtx = urgencyChartCanvas?.getContext('2d');
-            const urgencyDataAvailable = Object.values(urgencyCounts).some(count => count > 0);
-            if (urgencyChartCanvas) urgencyChartCanvas.style.display = urgencyDataAvailable ? 'block' : 'none';
-            if (noUrgencyDataEl) noUrgencyDataEl.style.display = urgencyDataAvailable ? 'none' : 'block';
-            if (urgencyCtx && urgencyDataAvailable) {
-                urgencyChartInstance = new Chart(urgencyCtx, {
-                    type: 'bar',
-                    data: { labels: Object.keys(urgencyCounts), datasets: [{ data: Object.values(urgencyCounts), backgroundColor: Object.keys(urgencyCounts).map(urg => URGENCY_COLORS[urg] || '#cccccc'), borderColor: Object.keys(urgencyCounts).map(urg => (URGENCY_COLORS[urg] || '#cccccc').replace('0.7', '1')), borderWidth: 1 }] },
-                    options: { indexAxis: 'x', responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true }, x: {} }, plugins: { legend: { display: false }, title: { display: false } } }
-                });
-            }
-
-            // Category Chart (Monthly)
-            const categoryCtx = categoryChartCanvas?.getContext('2d');
-            const categoryDataAvailable = totalReportsMonthCount > 0;
-            if (categoryChartCanvas) categoryChartCanvas.style.display = categoryDataAvailable ? 'block' : 'none';
-            if (noReportsMsgEl) noReportsMsgEl.style.display = categoryDataAvailable ? 'none' : 'block';
-            if (categoryCtx && categoryDataAvailable) {
-                const allCategories = Object.keys(categoryCountsMonth);
-                categoryChartInstance = new Chart(categoryCtx, {
-                    type: 'bar',
-                    data: { labels: allCategories, datasets: [{ data: allCategories.map(cat => categoryCountsMonth[cat]), backgroundColor: allCategories.map(cat => CATEGORY_COLORS_MONTHLY[cat] || '#cccccc'), borderColor: allCategories.map(cat => (CATEGORY_COLORS_MONTHLY[cat] || '#cccccc').replace('0.7', '1')), borderWidth: 1 }] },
-                    options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: '# Reports' } }, x: {} }, plugins: { legend: { display: false }, title: { display: false } } }
-                });
-                window.reportsChart = categoryChartInstance; // Assign to global if needed elsewhere
-            } else {
-                window.reportsChart = null;
-            }
-
-        } catch (error) {
-            console.error("Error rendering admin analytics:", error);
-            // showPopup("Error loading analytics data.", "error", 0, false); // REPLACED
-            console.error("Error loading analytics data."); // Log error
-            if (statusChartCanvas) statusChartCanvas.style.display = 'none';
-            if (noStatusDataEl) { noStatusDataEl.textContent = 'Error loading status data.'; noStatusDataEl.style.display = 'block'; }
-            if (urgencyChartCanvas) urgencyChartCanvas.style.display = 'none';
-            if (noUrgencyDataEl) { noUrgencyDataEl.textContent = 'Error loading urgency data.'; noUrgencyDataEl.style.display = 'block'; }
-            if (categoryChartCanvas) categoryChartCanvas.style.display = 'none';
-            if (noReportsMsgEl) { noReportsMsgEl.textContent = 'Error loading category data.'; noReportsMsgEl.style.display = 'block'; }
-        }
+  const lastNDaysSeries = (reports, n = 30, predicate = () => true) => {
+    const arr = [];
+    const now = new Date();
+    // build from oldest -> newest for easy charting
+    for (let i = n - 1; i >= 0; i--) {
+      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+      const dayKey = day.toISOString().slice(0,10);
+      const count = reports.reduce((acc, r) => {
+        const t = toDate(r.timestamp);
+        if (!t) return acc;
+        const sameDay = t.getFullYear() === day.getFullYear()
+          && t.getMonth() === day.getMonth()
+          && t.getDate() === day.getDate();
+        return sameDay && predicate(r) ? acc + 1 : acc;
+      }, 0);
+      arr.push({ dayLabel: dayKey, count });
     }
+    return arr;
+  };
+
+  // ---- Data fetch (prefer your existing fetchReports; fallback to Firestore if missing) ----
+  let allReports = [];
+  try {
+    if (typeof fetchReports === 'function') {
+      allReports = await fetchReports();
+    } else {
+      const { collection, getDocs } = await import('https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js');
+      const snap = await getDocs(collection(db, 'reports'));
+      allReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    }
+  } catch (e) {
+    console.error('Failed to fetch reports for analytics:', e);
+    allReports = [];
+  }
+
+  // Normalize timestamps in-place
+  allReports.forEach(r => { r._ts = toDate(r.timestamp); });
+
+  // ---- KPI calculations ----
+  const total = allReports.length;
+  const pending = allReports.filter(r => (r.status || 'Pending') === 'Pending').length;
+  const resolved = allReports.filter(r => r.status === 'Resolved').length;
+  const withImage = allReports.filter(r => !!r.imageUrl).length;
+
+  // Month stats (this & last)
+  const now = new Date();
+  const thisY = now.getFullYear(), thisM = now.getMonth();
+  const lastMonthDate = new Date(thisY, thisM - 1, 1);
+  const lastY = lastMonthDate.getFullYear(), lastM = lastMonthDate.getMonth();
+
+  const thisMonthReports = allReports.filter(r => isSameMonth(r._ts, thisY, thisM));
+  const lastMonthReports = allReports.filter(r => isSameMonth(r._ts, lastY, lastM));
+
+  const thisMonthTotal = thisMonthReports.length;
+  const lastMonthTotal = lastMonthReports.length;
+  const monthDelta = lastMonthTotal === 0 ? (thisMonthTotal > 0 ? 1 : 0) : (thisMonthTotal - lastMonthTotal) / lastMonthTotal;
+
+  // Top category (this month)
+  const catCountThisMonth = {};
+  thisMonthReports.forEach(r => {
+    const c = r.category || 'Others';
+    catCountThisMonth[c] = (catCountThisMonth[c] || 0) + 1;
+  });
+  const topCategory = Object.entries(catCountThisMonth).sort((a,b)=>b[1]-a[1])[0];
+
+  // ---- Write KPIs ----
+  if (el.kpiTotal) el.kpiTotal.textContent = String(total);
+  if (el.kpiPending) el.kpiPending.textContent = String(pending);
+  if (el.kpiResolved) el.kpiResolved.textContent = String(resolved);
+  if (el.kpiPendingShare) el.kpiPendingShare.textContent = `${fmtPct(total ? pending/total : 0, 0)} of total`;
+  if (el.kpiResolvedShare) el.kpiResolvedShare.textContent = `${fmtPct(total ? resolved/total : 0, 0)} of total`;
+
+  if (el.kpiImgRate) el.kpiImgRate.textContent = fmtPct(total ? withImage/total : 0, 0);
+  if (el.kpiImgCount) el.kpiImgCount.textContent = `${withImage} of ${total}`;
+
+  if (el.kpiMonthTotal) el.kpiMonthTotal.textContent = String(thisMonthTotal);
+  if (el.kpiMonthDelta) el.kpiMonthDelta.textContent = (monthDelta === 0 && lastMonthTotal === 0)
+    ? '– vs last'
+    : `${monthDelta>=0?'+':''}${(monthDelta*100).toFixed(0)}% vs last`;
+  if (el.kpiTopCategory) {
+    el.kpiTopCategory.textContent = topCategory ? `Top: ${topCategory[0]} (${topCategory[1]})` : 'Top: –';
+  }
+
+  // ---- Build Sparkline data (last 14 days) ----
+  const days14_total = lastNDaysSeries(allReports, 14);
+  const days14_pending = lastNDaysSeries(allReports, 14, r => (r.status || 'Pending') === 'Pending');
+  const days14_resolved = lastNDaysSeries(allReports, 14, r => r.status === 'Resolved');
+
+  // ---- Chart helpers ----
+  const simpleLine = (canvas, series, opts={}) => {
+    if (!window.Chart || !canvas) return null;
+    return new Chart(canvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: series.map(d=>d.dayLabel),
+        datasets: [{
+          data: series.map(d=>d.count),
+          tension: 0.35,
+          fill: false,
+          borderWidth: 2,
+          pointRadius: 0
+        }]
+      },
+      options: {
+        plugins: { legend: { display:false }, tooltip: { enabled: true } },
+        scales: {
+          x: { display: false },
+          y: { display: false, beginAtZero: true }
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+        ...opts
+      }
+    });
+  };
+
+  const doughnut = (canvas, labels, counts, colors) => {
+    if (!window.Chart || !canvas) return null;
+    return new Chart(canvas.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 0 }]
+      },
+      options: {
+        plugins: { legend: { position: 'bottom' } },
+        cutout: '62%',
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  };
+
+  const bar = (canvas, labels, counts) => {
+    if (!window.Chart || !canvas) return null;
+    return new Chart(canvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels, datasets: [{ data: counts, borderWidth: 0 }] },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  };
+
+  // ---- Build main charts ----
+
+  // Status doughnut
+  const statusLabels = ['Pending','In Progress','Resolved'];
+  const statusCounts = statusLabels.map(s => allReports.filter(r => (r.status || 'Pending') === s).length);
+  const statusColors = statusLabels.map(s => STATUS_COLORS[s] || 'rgba(148,163,184,0.85)');
+  window._adminCharts.status = doughnut(el.statusCanvas, statusLabels, statusCounts, statusColors);
+
+  // Urgency doughnut
+  const urgencyLabels = ['Low','Medium','High'];
+  const urgencyCounts = urgencyLabels.map(u => allReports.filter(r => (r.urgency || '').toLowerCase() === u.toLowerCase()).length);
+  const urgencyColors = urgencyLabels.map(u => URGENCY_COLORS[u] || 'rgba(148,163,184,0.85)');
+  window._adminCharts.urgency = doughnut(el.urgencyCanvas, urgencyLabels, urgencyCounts, urgencyColors);
+
+  // This-month by category (bar)
+  const monthCats = Object.keys(catCountThisMonth);
+  const monthCatCounts = monthCats.map(c => catCountThisMonth[c]);
+  const monthColors = monthCats.map((_, i) => CATEGORY_COLOR_FALLBACKS[i % CATEGORY_COLOR_FALLBACKS.length]);
+  if (window.Chart && el.categoryCanvas) {
+    window._adminCharts.category = new Chart(el.categoryCanvas.getContext('2d'), {
+      type: 'bar',
+      data: { labels: monthCats, datasets: [{ data: monthCatCounts, backgroundColor: monthColors, borderWidth: 0 }] },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false } },
+          y: { beginAtZero: true, ticks: { precision: 0, stepSize: 1 } }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  }
+
+  // Daily (last 30 days, all statuses)
+  const days30 = lastNDaysSeries(allReports, 30);
+  window._adminCharts.daily = bar(el.dailyCanvas, days30.map(d=>d.dayLabel), days30.map(d=>d.count));
+
+  // Sparklines
+  window._adminCharts.sparkTotal = simpleLine(el.sparkTotal, days14_total);
+  window._adminCharts.sparkPending = simpleLine(el.sparkPending, days14_pending);
+  window._adminCharts.sparkResolved = simpleLine(el.sparkResolved, days14_resolved);
+
+  // ---- Tabs behaviour (once) ----
+  if (el.tabsRoot && !el.tabsRoot.dataset.bound) {
+    el.tabsRoot.dataset.bound = '1';
+    const tabs = el.tabsRoot.querySelectorAll('.tab');
+    const panels = el.tabsRoot.querySelectorAll('.panel');
+    const show = (name) => {
+      tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+      panels.forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
+    };
+    tabs.forEach(b => b.addEventListener('click', () => show(b.dataset.tab)));
+    // default
+    show('status');
+  }
+}
+
 
     // --- Forum Functions ---
     function formatRichText(text) {

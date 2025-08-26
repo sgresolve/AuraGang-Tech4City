@@ -1,0 +1,96 @@
+SGResolve Legal Policy
+
+Last Updated: August 26, 2025
+
+Welcome to SGResolve. This Legal Policy combines our Privacy Policy and Terms of Service to provide you with a clear understanding of how we operate and how we protect your information.
+
+============================================================
+1. Privacy Policy
+============================================================
+
+1.1 Information We Collect
+- Personal Information: name, email, or login details (if you register).
+- Report Information: issue descriptions, categories, images, location data.
+- Technical Information: device type, browser, operating system, IP address.
+
+1.2 How We Use Your Information
+- Process and store your reports.
+- Display issues on maps and dashboards for community awareness.
+- Provide AI-powered suggestions and system improvements.
+- Notify you of updates related to your reports.
+- Protect platform security and prevent misuse.
+
+1.3 Information Sharing
+- We do not sell your data.
+- May share with relevant authorities, community users (if non-anonymous), and service providers.
+
+1.4 Data Retention
+- Report data retained as long as necessary.
+- Personal info deleted on request, unless legally required.
+
+1.5 Your Rights
+- Access, update, or delete your personal info.
+- Opt out of notifications.
+- Request anonymity in public displays.
+
+1.6 Security
+- HTTPS, encrypted authentication, restricted access.
+- No system is completely secure; risks remain.
+
+1.7 Children’s Privacy
+- Not intended for children under 13. Contact us to remove such data if collected.
+
+1.8 Updates
+- We may update this Privacy Policy. Major changes will be notified.
+
+============================================================
+2. Terms of Service
+============================================================
+
+2.1 Acceptance of Terms
+By using SGResolve, you agree to these Terms and our Privacy Policy.
+
+2.2 Purpose of SGResolve
+- Civic-issue reporting platform for public concerns.
+- Not an emergency service.
+
+2.3 User Responsibilities
+- Provide accurate, truthful reports.
+- No offensive, defamatory, or harmful content.
+- Do not misuse platform (false reports, spamming).
+- Follow applicable laws.
+
+2.4 Content Ownership & Rights
+- You retain ownership of submitted content.
+- By submitting, you grant SGResolve a license to store, display, and share content.
+- We may remove content that violates Terms.
+
+2.5 Community Visibility
+- Reports may appear on public maps and feeds.
+- Anonymous submissions are available.
+
+2.6 Platform Limitations
+- Provided “as is” and “as available.”
+- No guarantee every report is resolved.
+- No guarantee of uninterrupted service.
+
+2.7 Limitation of Liability
+- Not liable for false reports, failures by authorities, or technical issues.
+- Use at your own risk.
+
+2.8 Account Suspension & Termination
+- Accounts may be suspended/terminated for violations, misuse, or security risks.
+
+2.9 Changes to Terms
+- Updates will be notified; continued use = acceptance.
+
+2.10 Governing Law
+- Governed by the laws of Singapore (or applicable jurisdiction).
+
+============================================================
+3. Contact Us
+============================================================
+
+SGResolve Team
+Email: support@sgresolve.sg (placeholder)
+Website: www.sgresolve.sg

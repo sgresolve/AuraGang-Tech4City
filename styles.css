@@ -1082,8 +1082,8 @@ h1{
 .cta-buttons{ display:flex; justify-content:center; gap:18px; flex-wrap:wrap; }
 #cta-section .button{ box-shadow:0 10px 28px rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.28); }
 #cta-section .primary-button{
-  background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.08)) padding-box,
-              linear-gradient(120deg, #fff, rgba(255,255,255,.15)) border-box;
+  background: linear-gradient(180deg, rgba(18, 55, 224, 0.836), rgba(16, 121, 241, 0.08)) padding-box,
+              linear-gradient(120deg, #04003f, rgb(1, 60, 255)) border-box;
   border:1px solid transparent; color:#fff;
 }
 #cta-section .primary-button:hover{
@@ -1091,10 +1091,13 @@ h1{
   transform: translateY(-3px) scale(1.03);
 }
 #cta-section .secondary-button{
-  background:rgba(255,255,255,.12); color:#ffffff; border:1px solid rgba(255,255,255,.38);
+    background: linear-gradient(180deg, rgba(1, 156, 53, 0.836), rgb(60, 255, 0)) padding-box,
+              linear-gradient(120deg, #00ff0d, rgb(4, 112, 0)) border-box;
+  border:1px solid transparent; color:#fff;
 }
 #cta-section .secondary-button:hover{
-  background:rgba(255,255,255,.18); transform: translateY(-3px) scale(1.03);
+    box-shadow: var(--shadow-glow);
+  transform: translateY(-3px) scale(1.03);
 }
 
 /* optional wavy white divider at top of CTA */

@@ -9,7 +9,6 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-S6sV5WmX+oFJrQ9b9q6QXnXb6G7r3p8v9z1jzZ1L6yZ94o0jz3T7lEo0Zc5pQmM2T19mJ9u1xT2o6wCwqgYx1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <!-- Font Awesome CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -98,73 +97,110 @@
     </nav>
 
 <!-- Landing Page -->
-<div id="landing-page" class="page show">
+<div id="landing-page" class="page show full-bleed">
   <!-- Decorative background blobs (non-interactive) -->
   <div class="hero-ornament hero-ornament--one" aria-hidden="true"></div>
   <div class="hero-ornament hero-ornament--two" aria-hidden="true"></div>
 
-  <section id="hero-section">
-    <div class="hero-content" data-aos="fade-right">
-      <span class="pill-badge">AI-first Smart Nation</span>
-      <h1>Welcome to SGResolve</h1>
-      <p class="hero-tagline">Making Singapore a smarter, more responsive city with AI.</p>
-      <div class="hero-buttons">
-        <a href="#" id="hero-report-issue" class="button primary-button">
-          <i class="fa-solid fa-flag" aria-hidden="true"></i><span>Report an Issue</span>
-        </a>
-        <a href="#" id="hero-learn-more" class="button secondary-button">
-          <i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Learn More</span>
-        </a>
+  <!-- HERO (full-bleed) -->
+  <section id="hero-section" aria-label="SGResolve hero">
+    <div class="hero-inner">
+      <div class="hero-content" data-aos="fade-right">
+        <span class="pill-badge">AI-first Smart Nation</span>
+        <h1>Welcome to SGResolve</h1>
+        <p class="hero-tagline">Making Singapore a smarter, more responsive city with AI.</p>
+
+        <div class="hero-buttons">
+          <a href="#" id="hero-report-issue" class="button primary-button">
+            <i class="fa-solid fa-flag" aria-hidden="true"></i><span>Report an Issue</span>
+          </a>
+          <a href="#features-section" id="hero-learn-more" class="button secondary-button">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Learn More</span>
+          </a>
+        </div>
+
+        <ul class="hero-checklist" role="list">
+          <li><i class="fa-solid fa-check"></i> Pin a location on the map</li>
+          <li><i class="fa-solid fa-check"></i> AI auto-categorises your report</li>
+          <li><i class="fa-solid fa-check"></i> Track progress in real-time</li>
+        </ul>
       </div>
-      <ul class="hero-checklist" role="list">
-        <li><i class="fa-solid fa-check"></i> Pin a location on the map</li>
-        <li><i class="fa-solid fa-check"></i> AI auto-categorises your report</li>
-        <li><i class="fa-solid fa-check"></i> Track progress in real-time</li>
-      </ul>
+
+      <div class="hero-image" data-aos="fade-left">
+        <img src="images/green-city.png" alt="Smart city illustration with greenery and buildings" />
+      </div>
     </div>
 
-    <div class="hero-image" data-aos="fade-left">
-      <img src="images/green-city.png" alt="Smart city illustration with greenery and buildings" />
-    </div>
+    <!-- Animated Waves (your SVGs) -->
+    <div class="animated-waves" aria-hidden="true">
+      <!-- Wave A
+      <svg width="100%" height="100%" viewBox="0 0 1440 590" xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150">
+        <style>
+          .path-0{ animation:pathAnim-0 4s linear infinite }
+          @keyframes pathAnim-0{
+            0%{ d:path("M 0,600 L 0,150 C 115.07177033492823,109.71291866028707 230.14354066985646,69.42583732057416 315,75 C 399.85645933014354,80.57416267942584 454.4976076555024,132.00956937799043 554,170 C 653.5023923444976,207.99043062200957 797.866028708134,232.53588516746413 909,210 C 1020.133971291866,187.46411483253587 1098.0382775119617,117.8468899521531 1181,100 C 1263.9617224880383,82.1531100478469 1351.9808612440193,116.07655502392345 1440,150 L 1440,600 L 0,600 Z"); }
+            25%{ d:path("M 0,600 L 0,150 C 114.88038277511961,182.16267942583733 229.76076555023923,214.32535885167462 338,197 C 446.2392344497608,179.67464114832538 547.8373205741627,112.86124401913875 618,114 C 688.1626794258373,115.13875598086125 726.88995215311,184.22966507177034 828,190 C 929.11004784689,195.77033492822966 1092.6028708133972,138.2200956937799 1205,121 C 1317.3971291866028,103.7799043062201 1378.6985645933014,126.88995215311004 1440,150 L 1440,600 L 0,600 Z"); }
+            50%{ d:path("M 0,600 L 0,150 C 122.22966507177034,132.2775119617225 244.45933014354068,114.55502392344498 321,114 C 397.5406698564593,113.44497607655502 428.3923444976076,130.05741626794256 525,147 C 621.6076555023924,163.94258373205744 783.9712918660288,181.21531100478472 883,171 C 982.0287081339712,160.78468899521528 1017.7224880382773,123.08133971291866 1100,115 C 1182.2775119617227,106.91866028708134 1311.1387559808613,128.45933014354068 1440,150 L 1440,600 L 0,600 Z"); }
+            75%{ d:path("M 0,600 L 0,150 C 91.83732057416267,176.78468899521533 183.67464114832535,203.56937799043064 290,217 C 396.32535885167465,230.43062200956936 517.1387559808612,230.5071770334928 603,218 C 688.8612440191388,205.4928229665072 739.7703349282298,180.4019138755981 833,148 C 926.2296650717702,115.5980861244019 1061.77990430622,75.88516746411483 1170,75 C 1278.22009569378,74.11483253588517 1359.11004784689,112.05741626794259 1440,150 L 1440,600 L 0,600 Z"); }
+            100%{ d:path("M 0,600 L 0,150 C 115.07177033492823,109.71291866028707 230.14354066985646,69.42583732057416 315,75 C 399.85645933014354,80.57416267942584 454.4976076555024,132.00956937799043 554,170 C 653.5023923444976,207.99043062200957 797.866028708134,232.53588516746413 909,210 C 1020.133971291866,187.46411483253587 1098.0382775119617,117.8468899521531 1181,100 C 1263.9617224880383,82.1531100478469 1351.9808612440193,116.07655502392345 1440,150 L 1440,600 L 0,600 Z"); }
+          }
+        </style>
+        <defs><linearGradient id="gradientA" x1="1%" y1="62%" x2="99%" y2="38%">
+          <stop offset="5%" stop-color="#0693e3"/><stop offset="95%" stop-color="#00d084"/>
+        </linearGradient></defs>
+        <path d="M 0,600 L 0,150 C 115.07,109.71 230.14,69.43 315,75 C 399.85,80.57 454.50,132.01 554,170 C 653.50,207.99 797.86,232.53 909,210 C 1020.13,187.46 1098.03,117.84 1181,100 C 1263.96,82.15 1351.98,116.07 1440,150 L 1440,600 L 0,600 Z"
+              fill="url(#gradientA)" fill-opacity="0.53" class="path-0"></path>
+      </svg> -->
 
-    <!-- soft wave divider -->
-    <svg class="wave-divider" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M0,40 C240,90 480,-10 720,30 C960,70 1200,0 1440,25 L1440,80 L0,80 Z"></path>
-    </svg>
+      <!-- Wave B
+      <svg width="100%" height="100%" viewBox="0 0 1440 590" xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150">
+        <style>
+          .path-1{ animation:pathAnim-1 4s linear infinite }
+          @keyframes pathAnim-1{
+            0%{   d:path("M 0,600 L 0,350 C 118.947,367.474 237.895,384.947 323,382 C 408.105,379.053 459.368,355.684 553,360 C 646.632,364.316 782.632,396.316 889,397 C 995.368,397.684 1072.105,367.053 1159,354 C 1245.895,340.947 1342.947,345.474 1440,350 L 1440,600 L 0,600 Z"); }
+            25%{  d:path("M 0,600 L 0,350 C 77.225,367.263 154.450,384.526 246,376 C 337.550,367.474 443.426,333.158 552,347 C 660.574,360.842 771.847,422.842 864,408 C 956.153,393.158 1029.187,301.474 1122,279 C 1214.813,256.526 1327.407,303.263 1440,350 L 1440,600 L 0,600 Z"); }
+            50%{  d:path("M 0,600 L 0,350 C 94.411,388.823 188.823,427.646 294,422 C 399.177,416.354 515.120,366.239 618,363 C 720.880,359.761 810.699,403.397 887,407 C 963.301,410.603 1026.086,374.172 1116,358 C 1205.914,341.828 1322.957,345.914 1440,350 L 1440,600 L 0,600 Z"); }
+            75%{  d:path("M 0,600 L 0,350 C 92.871,321.483 185.742,292.967 280,299 C 374.258,305.033 469.904,345.617 559,344 C 648.096,342.383 730.641,298.565 839,293 C 947.359,287.435 1081.531,320.124 1186,336 C 1290.469,351.876 1365.234,350.938 1440,350 L 1440,600 L 0,600 Z"); }
+            100%{ d:path("M 0,600 L 0,350 C 118.947,367.474 237.895,384.947 323,382 C 408.105,379.053 459.368,355.684 553,360 C 646.632,364.316 782.632,396.316 889,397 C 995.368,397.684 1072.105,367.053 1159,354 C 1245.895,340.947 1342.947,345.474 1440,350 L 1440,600 L 0,600 Z"); }
+          }
+        </style>
+        <defs><linearGradient id="gradientB" x1="1%" y1="62%" x2="99%" y2="38%">
+          <stop offset="5%" stop-color="#0693e3"/><stop offset="95%" stop-color="#00d084"/>
+        </linearGradient></defs>
+        <path d="M 0,600 L 0,350 C 118.947,367.474 237.895,384.947 323,382 C 408.105,379.053 459.368,355.684 553,360 C 646.632,364.316 782.632,396.316 889,397 C 995.368,397.684 1072.105,367.053 1159,354 C 1245.895,340.947 1342.947,345.474 1440,350 L 1440,600 L 0,600 Z"
+              fill="url(#gradientB)" class="path-1"></path>
+      </svg> -->
+    </div>
   </section>
 
-  <section id="features-section">
-    <h2 data-aos="fade-up">Key Features</h2>
+  <!-- FEATURES -->
+  <section id="features-section" aria-labelledby="features-title">
+    <h2 id="features-title" data-aos="fade-up">Key Features</h2>
     <div class="features-grid">
-      <div class="feature-item" data-aos="zoom-in" data-aos-delay="0">
+      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="0">
         <i class="feature-icon" aria-hidden="true">
-          <!-- your original SVG kept -->
-          <!-- (SVG omitted here for brevity — keep your existing SVG exactly) -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">...</svg>
+          <img width="50" height="50" src="https://img.icons8.com/glassmorphism/50/news.png" alt="news"/>
         </i>
         <h3>Easy Issue Reporting</h3>
         <p>Report city issues quickly and easily with our intuitive interface.</p>
       </div>
-
-      <div class="feature-item" data-aos="zoom-in" data-aos-delay="80">
+      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="80">
         <i class="feature-icon" aria-hidden="true">
-          <img width="48" height="48" src="https://img.icons8.com/color/48/ai-robot--v11.png" alt="" />
+          <img width="48" height="48" src="https://img.icons8.com/color/48/ai-robot--v11.png" alt="AI robot"/>
         </i>
         <h3>AI-Powered Categorization</h3>
         <p>AI intelligently categorises reports for faster resolution.</p>
       </div>
-
-      <div class="feature-item" data-aos="zoom-in" data-aos-delay="160">
+      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="160">
         <i class="feature-icon" aria-hidden="true">
-          <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/worldwide-location.png" alt="" />
+          <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/worldwide-location.png" alt="location"/>
         </i>
         <h3>Real-time Tracking</h3>
         <p>Track the status of your reports and stay informed every step of the way.</p>
       </div>
-
-      <div class="feature-item" data-aos="zoom-in" data-aos-delay="240">
+      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="240">
         <i class="feature-icon" aria-hidden="true">
-          <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/group-background-selected.png" alt="" />
+          <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/group-background-selected.png" alt="community"/>
         </i>
         <h3>Community Forum</h3>
         <p>Engage with your community and discuss local issues.</p>
@@ -172,21 +208,21 @@
     </div>
   </section>
 
-  <!-- New: How it works -->
-  <section id="how-it-works-section">
-    <h2 data-aos="fade-up">How SGResolve Works</h2>
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works-section" aria-labelledby="how-title">
+    <h2 id="how-title" data-aos="fade-up">How SGResolve Works</h2>
     <div class="steps-grid">
-      <div class="step" data-aos="fade-up" data-aos-delay="0">
+      <div class="step hover-raise" data-aos="fade-up" data-aos-delay="0">
         <div class="step-number">1</div>
         <h3>Report</h3>
         <p>Pin a location, snap a photo, and describe the issue in seconds.</p>
       </div>
-      <div class="step" data-aos="fade-up" data-aos-delay="100">
+      <div class="step hover-raise" data-aos="fade-up" data-aos-delay="100">
         <div class="step-number">2</div>
         <h3>AI Classifies</h3>
         <p>Our AI auto-routes your report to the right agency for action.</p>
       </div>
-      <div class="step" data-aos="fade-up" data-aos-delay="200">
+      <div class="step hover-raise" data-aos="fade-up" data-aos-delay="200">
         <div class="step-number">3</div>
         <h3>Track</h3>
         <p>Get updates and milestones until the issue is resolved.</p>
@@ -194,86 +230,93 @@
     </div>
   </section>
 
-  <!-- New: Live stats -->
+  <!-- STATS -->
   <section id="stats-section" aria-label="Live statistics">
     <div class="stats-grid">
-      <div class="lp-stat" data-aos="flip-up">
-        <span class="lp-stat__value counter" data-target="12560">0</span>
+      <div class="lp-stat hover-raise" data-aos="flip-up">
+        <span class="lp-stat__value counter" data-target="18560">0</span>
         <span class="lp-stat__label">Reports Submitted</span>
       </div>
-      <div class="lp-stat" data-aos="flip-up" data-aos-delay="80">
-        <span class="lp-stat__value counter" data-target="8420">0</span>
+      <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="80">
+        <span class="lp-stat__value counter" data-target="14890">0</span>
         <span class="lp-stat__label">Issues Resolved</span>
       </div>
-      <div class="lp-stat" data-aos="flip-up" data-aos-delay="160">
-        <span class="lp-stat__value counter" data-target="57">0</span>
+      <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="160">
+        <span class="lp-stat__value counter" data-target="63">0</span>
         <span class="lp-stat__label">Agencies Integrated</span>
       </div>
-      <div class="lp-stat" data-aos="flip-up" data-aos-delay="240">
-        <span class="lp-stat__value counter" data-target="4.8">0</span>
+      <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="240">
+        <span class="lp-stat__value counter" data-target="4.9" data-decimals="1">0</span>
         <span class="lp-stat__label">User Rating</span>
       </div>
     </div>
   </section>
 
-  <!-- New: Testimonials (scroll-snap) -->
-  <section id="testimonials-section">
-    <h2 data-aos="fade-up">What Citizens Are Saying</h2>
-    <div class="testi-scroller" data-aos="fade-up" role="list">
-      <article class="testi-card" role="listitem">
-        <p>“Submitted a pothole report on my way to work. Fixed within two days!”</p>
-        <div class="testi-meta"><i class="fa-solid fa-user"></i> Amir, Pasir Ris</div>
-      </article>
-      <article class="testi-card" role="listitem">
-        <p>“Love the AI suggestions — it guessed the category perfectly.”</p>
-        <div class="testi-meta"><i class="fa-solid fa-user"></i> Chloe, Queenstown</div>
-      </article>
-      <article class="testi-card" role="listitem">
-        <p>“Clear tracking and updates. Feels good to help improve my neighbourhood.”</p>
-        <div class="testi-meta"><i class="fa-solid fa-user"></i> Wei Lun, Woodlands</div>
-      </article>
+  <!-- TESTIMONIALS -->
+  <section id="testimonials-section" aria-labelledby="testi-title">
+    <h2 id="testi-title" data-aos="fade-up">What Citizens Are Saying</h2>
+    <div class="testi-slider" data-aos="fade-up">
+      <button class="testi-nav testi-prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="testi-track">
+        <article class="testi-card is-active">
+          <p>“Submitted a pothole report on my way to work. Fixed within two days!”</p>
+          <div class="testi-meta"><i class="fa-solid fa-user"></i> Amir, Pasir Ris</div>
+        </article>
+        <article class="testi-card">
+          <p>“Love the AI suggestions — it guessed the category perfectly.”</p>
+          <div class="testi-meta"><i class="fa-solid fa-user"></i> Chloe, Queenstown</div>
+        </article>
+        <article class="testi-card">
+          <p>“Clear tracking and updates. Feels good to help improve my neighbourhood.”</p>
+          <div class="testi-meta"><i class="fa-solid fa-user"></i> Wei Lun, Woodlands</div>
+        </article>
+      </div>
+      <button class="testi-nav testi-next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
+      <div class="testi-dots" aria-hidden="true"></div>
     </div>
   </section>
 
-  <!-- Compact FAQ (CSS-only) -->
-  <section id="faq-section">
-    <h2 data-aos="fade-up">FAQ</h2>
-    <div class="faq-grid" data-aos="fade-up" data-aos-delay="100">
-      <details>
-        <summary><i class="fa-solid fa-shield-halved"></i> Is my data safe?</summary>
-        <p>Yes. SGResolve follows strict security practices and only shares necessary info with relevant agencies.</p>
-      </details>
-      <details>
-        <summary><i class="fa-solid fa-clock"></i> How fast are issues resolved?</summary>
-        <p>It depends on the category and agency workload. You’ll see status updates as actions are taken.</p>
-      </details>
-      <details>
-        <summary><i class="fa-solid fa-map-location-dot"></i> Do I need to enable location?</summary>
-        <p>It’s optional. You can search or tap the map to pick an exact spot.</p>
-      </details>
+  <!-- FAQ -->
+  <section id="faq-section" aria-labelledby="faq-title">
+    <h2 id="faq-title" data-aos="fade-up">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item" data-aos="fade-up">
+        <button class="faq-question"><span>How do I report an issue?</span><i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><p>Click “Report an Issue,” pin the location on the map, and provide details. You can also attach a photo.</p></div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="80">
+        <button class="faq-question"><span>Is SGResolve free to use?</span><i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><p>Yes, the service is free for all Singapore residents and visitors.</p></div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="160">
+        <button class="faq-question"><span>How quickly are issues resolved?</span><i class="fa-solid fa-chevron-down"></i></button>
+        <div class="faq-answer"><p>Resolution time varies by agency and issue. You can track progress in real time in the app.</p></div>
+      </div>
     </div>
   </section>
 
+  <!-- CTA -->
   <section id="cta-section">
     <h2>Join SGResolve Today</h2>
     <p>Help us build a better Singapore. Report issues, track progress, and engage with your community.</p>
     <div class="cta-buttons" data-aos="zoom-in">
       <a href="#" id="cta-register" class="button primary-button">
-        <i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Register Now</span>
+      <i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Register Now</span>
       </a>
       <a href="#" id="cta-login" class="button secondary-button">
-        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i><span>Login</span>
+      <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i><span>Login</span>
       </a>
     </div>
     <p class="cta-social" data-aos="fade-up" data-aos-delay="100">
       Follow us on
       <a href="https://t.me/+8VF80QalI3thZDU1" target="_blank" rel="noopener noreferrer" aria-label="SGResolve on Telegram">
-        <i class="fa-brands fa-telegram" aria-hidden="true"></i> Telegram
+      <i class="fa-brands fa-telegram" aria-hidden="true"></i> Telegram
       </a>
       for live updates.
     </p>
-  </section>
+    </section>
 </div>
+
 
 
     <!-- Custom Chatbot -->
@@ -898,17 +941,94 @@
     </div>
   </div>
 
-  <!-- Main App Script -->
-  <script type="module" src="script.js"></script>
+
+  <!-- Main App Script (deferred so AOS is available) -->
+  <script type="module" src="script.js" defer></script>
+
+  <!-- AOS JS -->
   <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-<script>
-  AOS.init({
-    duration: 700,
-    easing: 'ease-out-cubic',
-    once: true,          // animate only the first time you scroll past
-    offset: 80
+
+  <!-- Page-only interactions & fixes -->
+  <script>
+    AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic', offset: 80 });
+
+    // Stats: count up when visible
+    (function(){
+      const counters = document.querySelectorAll('.counter');
+      if (!('IntersectionObserver' in window)) return;
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(!entry.isIntersecting) return;
+          const el = entry.target;
+          const target = parseFloat(el.dataset.target || '0');
+          const decimals = parseInt(el.dataset.decimals || '0', 10);
+          const dur = 1200;
+          const start = performance.now();
+          function tick(now){
+            const p = Math.min(1, (now - start)/dur);
+            const eased = 1 - Math.pow(1 - p, 3);
+            const val = target * eased;
+            el.textContent = val.toFixed(decimals);
+            if(p < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          io.unobserve(el);
+        });
+      }, { threshold: 0.4 });
+      counters.forEach(c => io.observe(c));
+    })();
+
+    // Testimonials slider (auto + pause on hover)
+    (function(){
+      const track = document.querySelector('.testi-track');
+      const slides = Array.from(document.querySelectorAll('.testi-card'));
+      const prev = document.querySelector('.testi-prev');
+      const next = document.querySelector('.testi-next');
+      const dotsWrap = document.querySelector('.testi-dots');
+      if (!track || slides.length === 0) return;
+
+      let index = 0;
+      let timer;
+
+      slides.forEach((_,i)=>{
+        const b = document.createElement('button');
+        b.className = 'testi-dot';
+        b.setAttribute('role','tab');
+        b.setAttribute('aria-label',`Go to slide ${i+1}`);
+        b.addEventListener('click', ()=>go(i, true));
+        dotsWrap.appendChild(b);
+      });
+
+      function update(){
+        slides.forEach((s,i)=>s.classList.toggle('is-active', i===index));
+        Array.from(dotsWrap.children).forEach((d,i)=>d.classList.toggle('active', i===index));
+        track.style.transform = `translateX(${-index * 100}%)`;
+      }
+      function go(i, pause){
+        index = (i + slides.length) % slides.length;
+        update();
+        if(pause){ stop(); start(); }
+      }
+      function start(){ timer = setInterval(()=>go(index+1), 5000); }
+      function stop(){ clearInterval(timer); }
+
+      prev.addEventListener('click', ()=>go(index-1, true));
+      next.addEventListener('click', ()=>go(index+1, true));
+
+      update(); start();
+      track.addEventListener('mouseenter', stop);
+      track.addEventListener('mouseleave', start);
+    })();
+
+    // FAQ accordion
+document.querySelectorAll('.faq-question').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const item = btn.closest('.faq-item');
+    item.classList.toggle('open');
   });
-</script>
+});
+
+  </script>
 
 
   <!-- PWA Service Worker Registration -->

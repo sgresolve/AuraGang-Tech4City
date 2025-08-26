@@ -252,29 +252,148 @@
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section id="testimonials-section" aria-labelledby="testi-title">
-    <h2 id="testi-title" data-aos="fade-up">What Citizens Are Saying</h2>
-    <div class="testi-slider" data-aos="fade-up">
-      <button class="testi-nav testi-prev" aria-label="Previous"><i class="fa-solid fa-chevron-left"></i></button>
-      <div class="testi-track">
-        <article class="testi-card is-active">
-          <p>“Submitted a pothole report on my way to work. Fixed within two days!”</p>
-          <div class="testi-meta"><i class="fa-solid fa-user"></i> Amir, Pasir Ris</div>
-        </article>
-        <article class="testi-card">
-          <p>“Love the AI suggestions — it guessed the category perfectly.”</p>
-          <div class="testi-meta"><i class="fa-solid fa-user"></i> Chloe, Queenstown</div>
-        </article>
-        <article class="testi-card">
-          <p>“Clear tracking and updates. Feels good to help improve my neighbourhood.”</p>
-          <div class="testi-meta"><i class="fa-solid fa-user"></i> Wei Lun, Woodlands</div>
-        </article>
-      </div>
-      <button class="testi-nav testi-next" aria-label="Next"><i class="fa-solid fa-chevron-right"></i></button>
-      <div class="testi-dots" aria-hidden="true"></div>
+<!-- TESTIMONIALS -->
+<section id="testimonials-section" aria-labelledby="testi-title">
+  <div class="testi-head">
+    <h2 id="testi-title">What Citizens Are Saying</h2>
+    <p class="testi-subtitle">
+      Real reports, real fixes — shared by neighbours across Singapore.
+    </p>
+  </div>
+
+  <div class="testi-slider" aria-live="polite">
+    <!-- Arrows -->
+    <button class="testi-nav testi-prev" aria-label="Previous testimonial">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="testi-nav testi-next" aria-label="Next testimonial">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Viewport -->
+    <div class="testi-viewport" role="region" aria-roledescription="carousel">
+      <!-- CARD 1 -->
+      <article class="testi-card">
+        <div class="testi-topline">
+          <span class="chip"><i class="fa-solid fa-road"></i> Pothole</span>
+          <time class="when" datetime="2025-08-14"><i class="fa-regular fa-clock"></i> 14 Aug</time>
+        </div>
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Submitted a pothole report on my way to work. Fixed within two days!</p>
+        <div class="testi-meta">
+          <span class="avatar" data-initials="A"></span>
+          <div class="who">
+            <span class="name">Amir <i class="fa-solid fa-circle-check verified"></i></span>
+            <span class="loc"><i class="fa-solid fa-location-dot"></i> Pasir Ris</span>
+          </div>
+          <span class="footnote"><i class="fa-solid fa-bolt"></i> Resolved in 48h</span>
+        </div>
+      </article>
+
+      <!-- CARD 2 -->
+      <article class="testi-card">
+        <div class="testi-topline">
+          <span class="chip chip-green"><i class="fa-solid fa-lightbulb"></i> Streetlight</span>
+          <time class="when" datetime="2025-07-29"><i class="fa-regular fa-clock"></i> 29 Jul</time>
+        </div>
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Love the AI suggestions — it guessed the category perfectly.</p>
+        <div class="testi-meta">
+          <span class="avatar" data-initials="C"></span>
+          <div class="who">
+            <span class="name">Chloe <i class="fa-solid fa-circle-check verified"></i></span>
+            <span class="loc"><i class="fa-solid fa-location-dot"></i> Queenstown</span>
+          </div>
+          <span class="footnote"><i class="fa-solid fa-mobile-screen-button"></i> Reported via app</span>
+        </div>
+      </article>
+
+      <!-- CARD 3 -->
+      <article class="testi-card">
+        <div class="testi-topline">
+          <span class="chip chip-amber"><i class="fa-solid fa-dumpster"></i> Cleanliness</span>
+          <time class="when" datetime="2025-08-03"><i class="fa-regular fa-clock"></i> 3 Aug</time>
+        </div>
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Clear tracking and updates. Feels good to help improve my neighbourhood.</p>
+        <div class="testi-meta">
+          <span class="avatar" data-initials="W"></span>
+          <div class="who">
+            <span class="name">Wei Lun</span>
+            <span class="loc"><i class="fa-solid fa-location-dot"></i> Woodlands</span>
+          </div>
+          <span class="footnote"><i class="fa-solid fa-paper-plane"></i> Followed to completion</span>
+        </div>
+      </article>
+
+      <!-- CARD 4 -->
+      <article class="testi-card">
+        <div class="testi-topline">
+          <span class="chip chip-blue"><i class="fa-solid fa-water"></i> Drainage</span>
+          <time class="when" datetime="2025-08-10"><i class="fa-regular fa-clock"></i> 10 Aug</time>
+        </div>
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Took a photo, pinned the spot, done. Super intuitive.</p>
+        <div class="testi-meta">
+          <span class="avatar" data-initials="S"></span>
+          <div class="who">
+            <span class="name">Siti</span>
+            <span class="loc"><i class="fa-solid fa-location-dot"></i> Tampines</span>
+          </div>
+          <span class="footnote"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-categorised</span>
+        </div>
+      </article>
+
+      <!-- CARD 5 -->
+      <article class="testi-card">
+        <div class="testi-topline">
+          <span class="chip chip-purple"><i class="fa-solid fa-tree"></i> Landscaping</span>
+          <time class="when" datetime="2025-07-22"><i class="fa-regular fa-clock"></i> 22 Jul</time>
+        </div>
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Notifications were timely and clear. Crews came the next morning.</p>
+        <div class="testi-meta">
+          <span class="avatar" data-initials="R"></span>
+          <div class="who">
+            <span class="name">Ravi</span>
+            <span class="loc"><i class="fa-solid fa-location-dot"></i> Jurong West</span>
+          </div>
+          <span class="footnote"><i class="fa-solid fa-bell"></i> Smart updates</span>
+        </div>
+      </article>
+
+      <!-- CARD 6 -->
+      <article class="testi-card">
+        <div class="testi-topline">
+          <span class="chip chip-rose"><i class="fa-solid fa-recycle"></i> Recycling</span>
+          <time class="when" datetime="2025-08-18"><i class="fa-regular fa-clock"></i> 18 Aug</time>
+        </div>
+        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> The new interface is slick — reporting took less than a minute.</p>
+        <div class="testi-meta">
+          <span class="avatar" data-initials="H"></span>
+          <div class="who">
+            <span class="name">Hui Min</span>
+            <span class="loc"><i class="fa-solid fa-location-dot"></i> Toa Payoh</span>
+          </div>
+          <span class="footnote"><i class="fa-solid fa-stopwatch"></i> Under 60s</span>
+        </div>
+      </article>
     </div>
-  </section>
+
+    <!-- Dots -->
+    <div class="testi-dots">
+      <button class="testi-dot" data-index="0"><span class="sr-only">1</span></button>
+      <button class="testi-dot" data-index="1"><span class="sr-only">2</span></button>
+      <button class="testi-dot" data-index="2"><span class="sr-only">3</span></button>
+      <button class="testi-dot" data-index="3"><span class="sr-only">4</span></button>
+      <button class="testi-dot" data-index="4"><span class="sr-only">5</span></button>
+      <button class="testi-dot" data-index="5"><span class="sr-only">6</span></button>
+    </div>
+  </div>
+</section>
+
+
 
   <!-- FAQ -->
   <section id="faq-section" aria-labelledby="faq-title">
@@ -1027,6 +1146,27 @@ document.querySelectorAll('.faq-question').forEach(btn=>{
     item.classList.toggle('open');
   });
 });
+const viewport = document.querySelector('.testi-viewport');
+const cards = document.querySelectorAll('.testi-card');
+const prevBtn = document.querySelector('.testi-prev');
+const nextBtn = document.querySelector('.testi-next');
+const dots = document.querySelectorAll('.testi-dot');
+
+let currentIndex = 0;
+
+function goToSlide(index) {
+  if (index < 0) index = cards.length - 1;
+  if (index >= cards.length) index = 0;
+  currentIndex = index;
+  cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center' });
+  dots.forEach((d,i)=>d.classList.toggle('active', i===index));
+}
+
+prevBtn.addEventListener('click', ()=> goToSlide(currentIndex-1));
+nextBtn.addEventListener('click', ()=> goToSlide(currentIndex+1));
+dots.forEach((dot,i)=> dot.addEventListener('click', ()=> goToSlide(i)));
+
+goToSlide(0);
 
   </script>
 

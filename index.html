@@ -8,9 +8,11 @@
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Poppins:wght@600;700&display=swap"
+    rel="stylesheet" />
   <!-- Font Awesome CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Styles -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -29,7 +31,7 @@
   <link rel="apple-touch-icon" href="images/icons/icon-192x192.png" />
 
   <!-- Scripts (order matters) -->
-   
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -41,10 +43,11 @@
   <svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
     <!-- App / UI -->
     <symbol id="svg-files" viewBox="0 0 24 24">
-      <path d="M4 6a2 2 0 0 1 2-2h6l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zM14 4v4h4"/>
+      <path d="M4 6a2 2 0 0 1 2-2h6l4 4v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6zM14 4v4h4" />
     </symbol>
     <symbol id="svg-clock" viewBox="0 0 24 24">
-      <path d="M12 8v5l3 3M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" fill="none" stroke="currentColor" stroke-width="2" />
+      <path d="M12 8v5l3 3M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" fill="none" stroke="currentColor"
+        stroke-width="2" />
     </symbol>
     <symbol id="svg-check" viewBox="0 0 24 24">
       <path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2" />
@@ -55,7 +58,8 @@
       <path d="M10 2h4l2 8-2 12h-4L8 10l2-8zm-8 20h8m6 0h6" fill="none" stroke="currentColor" stroke-width="2" />
     </symbol>
     <symbol id="icon-light" viewBox="0 0 24 24">
-      <path d="M9 18h6M8 22h8M6 10a6 6 0 1 1 12 0c0 2.2-1.2 3.5-2 4.5-.8 1-1 1.7-1 2.5H9c0-.8-.2-1.5-1-2.5S6 12.2 6 10z" fill="none" stroke="currentColor" stroke-width="2" />
+      <path d="M9 18h6M8 22h8M6 10a6 6 0 1 1 12 0c0 2.2-1.2 3.5-2 4.5-.8 1-1 1.7-1 2.5H9c0-.8-.2-1.5-1-2.5S6 12.2 6 10z"
+        fill="none" stroke="currentColor" stroke-width="2" />
     </symbol>
     <symbol id="icon-trash" viewBox="0 0 24 24">
       <path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" fill="none" stroke="currentColor" stroke-width="2" />
@@ -67,7 +71,8 @@
       <path d="M3 21h18M6 21V8h4v13M14 21v-8h4v8M10 8l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" />
     </symbol>
     <symbol id="icon-pest" viewBox="0 0 24 24">
-      <path d="M12 3c3 0 5 2 5 5v5a5 5 0 1 1-10 0V8c0-3 2-5 5-5zm-8 7h16M4 17h4M16 17h4" fill="none" stroke="currentColor" stroke-width="2" />
+      <path d="M12 3c3 0 5 2 5 5v5a5 5 0 1 1-10 0V8c0-3 2-5 5-5zm-8 7h16M4 17h4M16 17h4" fill="none"
+        stroke="currentColor" stroke-width="2" />
     </symbol>
     <symbol id="icon-noise" viewBox="0 0 24 24">
       <path d="M3 10v4m4-7v10m4-12v14m4-10v6m4-8v10" fill="none" stroke="currentColor" stroke-width="2" />
@@ -96,44 +101,44 @@
       </ul>
     </nav>
 
-<!-- Landing Page -->
-<div id="landing-page" class="page show full-bleed">
-  <!-- Decorative background blobs (non-interactive) -->
-  <div class="hero-ornament hero-ornament--one" aria-hidden="true"></div>
-  <div class="hero-ornament hero-ornament--two" aria-hidden="true"></div>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page show full-bleed">
+      <!-- Decorative background blobs (non-interactive) -->
+      <div class="hero-ornament hero-ornament--one" aria-hidden="true"></div>
+      <div class="hero-ornament hero-ornament--two" aria-hidden="true"></div>
 
-  <!-- HERO (full-bleed) -->
-  <section id="hero-section" aria-label="SGResolve hero">
-    <div class="hero-inner">
-      <div class="hero-content" data-aos="fade-right">
-        <span class="pill-badge">AI-first Smart Nation</span>
-        <h1>Welcome to SGResolve</h1>
-        <p class="hero-tagline">Making Singapore a smarter, more responsive city with AI.</p>
+      <!-- HERO (full-bleed) -->
+      <section id="hero-section" aria-label="SGResolve hero">
+        <div class="hero-inner">
+          <div class="hero-content" data-aos="fade-right">
+            <span class="pill-badge">AI-first Smart Nation</span>
+            <h1>Welcome to SGResolve</h1>
+            <p class="hero-tagline">Making Singapore a smarter, more responsive city with AI.</p>
 
-        <div class="hero-buttons">
-          <a href="#" id="hero-report-issue" class="button primary-button">
-            <i class="fa-solid fa-flag" aria-hidden="true"></i><span>Report an Issue</span>
-          </a>
-          <a href="#features-section" id="hero-learn-more" class="button secondary-button">
-            <i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Learn More</span>
-          </a>
+            <div class="hero-buttons">
+              <a href="#" id="hero-report-issue" class="button primary-button">
+                <i class="fa-solid fa-flag" aria-hidden="true"></i><span>Report an Issue</span>
+              </a>
+              <a href="#features-section" id="hero-learn-more" class="button secondary-button">
+                <i class="fa-solid fa-circle-info" aria-hidden="true"></i><span>Learn More</span>
+              </a>
+            </div>
+
+            <ul class="hero-checklist" role="list">
+              <li><i class="fa-solid fa-check"></i> Pin a location on the map</li>
+              <li><i class="fa-solid fa-check"></i> AI auto-categorises your report</li>
+              <li><i class="fa-solid fa-check"></i> Track progress in real-time</li>
+            </ul>
+          </div>
+
+          <div class="hero-image" data-aos="fade-left">
+            <img src="images/green-city.png" alt="Smart city illustration with greenery and buildings" />
+          </div>
         </div>
 
-        <ul class="hero-checklist" role="list">
-          <li><i class="fa-solid fa-check"></i> Pin a location on the map</li>
-          <li><i class="fa-solid fa-check"></i> AI auto-categorises your report</li>
-          <li><i class="fa-solid fa-check"></i> Track progress in real-time</li>
-        </ul>
-      </div>
-
-      <div class="hero-image" data-aos="fade-left">
-        <img src="images/green-city.png" alt="Smart city illustration with greenery and buildings" />
-      </div>
-    </div>
-
-    <!-- Animated Waves (your SVGs) -->
-    <div class="animated-waves" aria-hidden="true">
-      <!-- Wave A
+        <!-- Animated Waves (your SVGs) -->
+        <div class="animated-waves" aria-hidden="true">
+          <!-- Wave A
       <svg width="100%" height="100%" viewBox="0 0 1440 590" xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150">
         <style>
           .path-0{ animation:pathAnim-0 4s linear infinite }
@@ -152,7 +157,7 @@
               fill="url(#gradientA)" fill-opacity="0.53" class="path-0"></path>
       </svg> -->
 
-      <!-- Wave B
+          <!-- Wave B
       <svg width="100%" height="100%" viewBox="0 0 1440 590" xmlns="http://www.w3.org/2000/svg" class="transition duration-300 ease-in-out delay-150">
         <style>
           .path-1{ animation:pathAnim-1 4s linear infinite }
@@ -170,271 +175,296 @@
         <path d="M 0,600 L 0,350 C 118.947,367.474 237.895,384.947 323,382 C 408.105,379.053 459.368,355.684 553,360 C 646.632,364.316 782.632,396.316 889,397 C 995.368,397.684 1072.105,367.053 1159,354 C 1245.895,340.947 1342.947,345.474 1440,350 L 1440,600 L 0,600 Z"
               fill="url(#gradientB)" class="path-1"></path>
       </svg> -->
-    </div>
-  </section>
-
-  <!-- FEATURES -->
-  <section id="features-section" aria-labelledby="features-title">
-    <h2 id="features-title" data-aos="fade-up">Key Features</h2>
-    <div class="features-grid">
-      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="0">
-        <i class="feature-icon" aria-hidden="true">
-          <img width="50" height="50" src="https://img.icons8.com/glassmorphism/50/news.png" alt="news"/>
-        </i>
-        <h3>Easy Issue Reporting</h3>
-        <p>Report city issues quickly and easily with our intuitive interface.</p>
-      </div>
-      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="80">
-        <i class="feature-icon" aria-hidden="true">
-          <img width="48" height="48" src="https://img.icons8.com/color/48/ai-robot--v11.png" alt="AI robot"/>
-        </i>
-        <h3>AI-Powered Categorization</h3>
-        <p>AI intelligently categorises reports for faster resolution.</p>
-      </div>
-      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="160">
-        <i class="feature-icon" aria-hidden="true">
-          <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/worldwide-location.png" alt="location"/>
-        </i>
-        <h3>Real-time Tracking</h3>
-        <p>Track the status of your reports and stay informed every step of the way.</p>
-      </div>
-      <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="240">
-        <i class="feature-icon" aria-hidden="true">
-          <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/group-background-selected.png" alt="community"/>
-        </i>
-        <h3>Community Forum</h3>
-        <p>Engage with your community and discuss local issues.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section id="how-it-works-section" aria-labelledby="how-title">
-    <h2 id="how-title" data-aos="fade-up">How SGResolve Works</h2>
-    <div class="steps-grid">
-      <div class="step hover-raise" data-aos="fade-up" data-aos-delay="0">
-        <div class="step-number">1</div>
-        <h3>Report</h3>
-        <p>Pin a location, snap a photo, and describe the issue in seconds.</p>
-      </div>
-      <div class="step hover-raise" data-aos="fade-up" data-aos-delay="100">
-        <div class="step-number">2</div>
-        <h3>AI Classifies</h3>
-        <p>Our AI auto-routes your report to the right agency for action.</p>
-      </div>
-      <div class="step hover-raise" data-aos="fade-up" data-aos-delay="200">
-        <div class="step-number">3</div>
-        <h3>Track</h3>
-        <p>Get updates and milestones until the issue is resolved.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- STATS -->
-  <section id="stats-section" aria-label="Live statistics">
-    <div class="stats-grid">
-      <div class="lp-stat hover-raise" data-aos="flip-up">
-        <span class="lp-stat__value counter" data-target="154">0</span>
-        <span class="lp-stat__label">Reports Submitted</span>
-      </div>
-      <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="80">
-        <span class="lp-stat__value counter" data-target="154">0</span>
-        <span class="lp-stat__label">Issues Resolved</span>
-      </div>
-      <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="160">
-        <span class="lp-stat__value counter" data-target="12">0</span>
-        <span class="lp-stat__label">Agencies Integrated</span>
-      </div>
-      <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="240">
-        <span class="lp-stat__value counter" data-target="5" data-decimals="1">0</span>
-        <span class="lp-stat__label">User Rating</span>
-      </div>
-    </div>
-  </section>
-
-<!-- TESTIMONIALS -->
-<section id="testimonials-section" aria-labelledby="testi-title">
-  <div class="testi-head">
-    <h2 id="testi-title">What Citizens Are Saying</h2>
-    <p class="testi-subtitle">
-      Real reports, real fixes — shared by neighbours across Singapore.
-    </p>
-  </div>
-
-  <div class="testi-slider" aria-live="polite">
-    <!-- Arrows -->
-    <button class="testi-nav testi-prev" aria-label="Previous testimonial">
-      <i class="fa-solid fa-chevron-left"></i>
-    </button>
-    <button class="testi-nav testi-next" aria-label="Next testimonial">
-      <i class="fa-solid fa-chevron-right"></i>
-    </button>
-
-    <!-- Viewport -->
-    <div class="testi-viewport" role="region" aria-roledescription="carousel">
-      <!-- CARD 1 -->
-      <article class="testi-card">
-        <div class="testi-topline">
-          <span class="chip"><i class="fa-solid fa-road"></i> Pothole</span>
-          <time class="when" datetime="2025-08-14"><i class="fa-regular fa-clock"></i> 14 Aug</time>
         </div>
-        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Submitted a pothole report on my way to work. Fixed within two days!</p>
-        <div class="testi-meta">
-          <span class="avatar" data-initials="A"></span>
-          <div class="who">
-            <span class="name">Amir <i class="fa-solid fa-circle-check verified"></i></span>
-            <span class="loc"><i class="fa-solid fa-location-dot"></i> Pasir Ris</span>
+      </section>
+
+      <!-- FEATURES -->
+      <section id="features-section" aria-labelledby="features-title">
+        <h2 id="features-title" data-aos="fade-up">Key Features</h2>
+        <div class="features-grid">
+          <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="0">
+            <i class="feature-icon" aria-hidden="true">
+              <img width="50" height="50" src="https://img.icons8.com/glassmorphism/50/news.png" alt="news" />
+            </i>
+            <h3>Easy Issue Reporting</h3>
+            <p>Report city issues quickly and easily with our intuitive interface.</p>
           </div>
-          <span class="footnote"><i class="fa-solid fa-bolt"></i> Resolved in 48h</span>
-        </div>
-      </article>
-
-      <!-- CARD 2 -->
-      <article class="testi-card">
-        <div class="testi-topline">
-          <span class="chip chip-green"><i class="fa-solid fa-lightbulb"></i> Streetlight</span>
-          <time class="when" datetime="2025-07-29"><i class="fa-regular fa-clock"></i> 29 Jul</time>
-        </div>
-        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Love the AI suggestions — it guessed the category perfectly.</p>
-        <div class="testi-meta">
-          <span class="avatar" data-initials="C"></span>
-          <div class="who">
-            <span class="name">Chloe <i class="fa-solid fa-circle-check verified"></i></span>
-            <span class="loc"><i class="fa-solid fa-location-dot"></i> Queenstown</span>
+          <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="80">
+            <i class="feature-icon" aria-hidden="true">
+              <img width="48" height="48" src="https://img.icons8.com/color/48/ai-robot--v11.png" alt="AI robot" />
+            </i>
+            <h3>AI-Powered Categorization</h3>
+            <p>AI intelligently categorises reports for faster resolution.</p>
           </div>
-          <span class="footnote"><i class="fa-solid fa-mobile-screen-button"></i> Reported via app</span>
-        </div>
-      </article>
-
-      <!-- CARD 3 -->
-      <article class="testi-card">
-        <div class="testi-topline">
-          <span class="chip chip-amber"><i class="fa-solid fa-dumpster"></i> Cleanliness</span>
-          <time class="when" datetime="2025-08-03"><i class="fa-regular fa-clock"></i> 3 Aug</time>
-        </div>
-        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
-        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Clear tracking and updates. Feels good to help improve my neighbourhood.</p>
-        <div class="testi-meta">
-          <span class="avatar" data-initials="W"></span>
-          <div class="who">
-            <span class="name">Wei Lun</span>
-            <span class="loc"><i class="fa-solid fa-location-dot"></i> Woodlands</span>
+          <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="160">
+            <i class="feature-icon" aria-hidden="true">
+              <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/worldwide-location.png"
+                alt="location" />
+            </i>
+            <h3>Real-time Tracking</h3>
+            <p>Track the status of your reports and stay informed every step of the way.</p>
           </div>
-          <span class="footnote"><i class="fa-solid fa-paper-plane"></i> Followed to completion</span>
-        </div>
-      </article>
-
-      <!-- CARD 4 -->
-      <article class="testi-card">
-        <div class="testi-topline">
-          <span class="chip chip-blue"><i class="fa-solid fa-water"></i> Drainage</span>
-          <time class="when" datetime="2025-08-10"><i class="fa-regular fa-clock"></i> 10 Aug</time>
-        </div>
-        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Took a photo, pinned the spot, done. Super intuitive.</p>
-        <div class="testi-meta">
-          <span class="avatar" data-initials="S"></span>
-          <div class="who">
-            <span class="name">Siti</span>
-            <span class="loc"><i class="fa-solid fa-location-dot"></i> Tampines</span>
+          <div class="feature-item hover-tilt" data-aos="zoom-in" data-aos-delay="240">
+            <i class="feature-icon" aria-hidden="true">
+              <img width="48" height="48" src="https://img.icons8.com/glassmorphism/48/group-background-selected.png"
+                alt="community" />
+            </i>
+            <h3>Community Forum</h3>
+            <p>Engage with your community and discuss local issues.</p>
           </div>
-          <span class="footnote"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-categorised</span>
         </div>
-      </article>
+      </section>
 
-      <!-- CARD 5 -->
-      <article class="testi-card">
-        <div class="testi-topline">
-          <span class="chip chip-purple"><i class="fa-solid fa-tree"></i> Landscaping</span>
-          <time class="when" datetime="2025-07-22"><i class="fa-regular fa-clock"></i> 22 Jul</time>
-        </div>
-        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
-        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Notifications were timely and clear. Crews came the next morning.</p>
-        <div class="testi-meta">
-          <span class="avatar" data-initials="R"></span>
-          <div class="who">
-            <span class="name">Ravi</span>
-            <span class="loc"><i class="fa-solid fa-location-dot"></i> Jurong West</span>
+      <!-- HOW IT WORKS -->
+      <section id="how-it-works-section" aria-labelledby="how-title">
+        <h2 id="how-title" data-aos="fade-up">How SGResolve Works</h2>
+        <div class="steps-grid">
+          <div class="step hover-raise" data-aos="fade-up" data-aos-delay="0">
+            <div class="step-number">1</div>
+            <h3>Report</h3>
+            <p>Pin a location, snap a photo, and describe the issue in seconds.</p>
           </div>
-          <span class="footnote"><i class="fa-solid fa-bell"></i> Smart updates</span>
+          <div class="step hover-raise" data-aos="fade-up" data-aos-delay="100">
+            <div class="step-number">2</div>
+            <h3>AI Classifies</h3>
+            <p>Our AI auto-routes your report to the right agency for action.</p>
+          </div>
+          <div class="step hover-raise" data-aos="fade-up" data-aos-delay="200">
+            <div class="step-number">3</div>
+            <h3>Track</h3>
+            <p>Get updates and milestones until the issue is resolved.</p>
+          </div>
         </div>
-      </article>
+      </section>
 
-      <!-- CARD 6 -->
-      <article class="testi-card">
-        <div class="testi-topline">
-          <span class="chip chip-rose"><i class="fa-solid fa-recycle"></i> Recycling</span>
-          <time class="when" datetime="2025-08-18"><i class="fa-regular fa-clock"></i> 18 Aug</time>
-        </div>
-        <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
-        <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> The new interface is slick — reporting took less than a minute.</p>
-        <div class="testi-meta">
-          <span class="avatar" data-initials="H"></span>
-          <div class="who">
-            <span class="name">Hui Min</span>
-            <span class="loc"><i class="fa-solid fa-location-dot"></i> Toa Payoh</span>
+      <!-- STATS -->
+      <section id="stats-section" aria-label="Live statistics">
+        <div class="stats-grid">
+          <div class="lp-stat hover-raise" data-aos="flip-up">
+            <span class="lp-stat__value counter" data-target="154">0</span>
+            <span class="lp-stat__label">Reports Submitted</span>
           </div>
-          <span class="footnote"><i class="fa-solid fa-stopwatch"></i> Under 60s</span>
+          <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="80">
+            <span class="lp-stat__value counter" data-target="154">0</span>
+            <span class="lp-stat__label">Issues Resolved</span>
+          </div>
+          <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="160">
+            <span class="lp-stat__value counter" data-target="12">0</span>
+            <span class="lp-stat__label">Agencies Integrated</span>
+          </div>
+          <div class="lp-stat hover-raise" data-aos="flip-up" data-aos-delay="240">
+            <span class="lp-stat__value counter" data-target="5" data-decimals="1">0</span>
+            <span class="lp-stat__label">User Rating</span>
+          </div>
         </div>
-      </article>
+      </section>
+
+      <!-- TESTIMONIALS -->
+      <section id="testimonials-section" aria-labelledby="testi-title">
+        <div class="testi-head">
+          <h2 id="testi-title">What Citizens Are Saying</h2>
+          <p class="testi-subtitle">
+            Real reports, real fixes — shared by neighbours across Singapore.
+          </p>
+        </div>
+
+        <div class="testi-slider" aria-live="polite">
+          <!-- Arrows -->
+          <button class="testi-nav testi-prev" aria-label="Previous testimonial">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="testi-nav testi-next" aria-label="Next testimonial">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <!-- Viewport -->
+          <div class="testi-viewport" role="region" aria-roledescription="carousel">
+            <!-- CARD 1 -->
+            <article class="testi-card">
+              <div class="testi-topline">
+                <span class="chip"><i class="fa-solid fa-road"></i> Pothole</span>
+                <time class="when" datetime="2025-08-14"><i class="fa-regular fa-clock"></i> 14 Aug</time>
+              </div>
+              <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+              <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Submitted a pothole report on my way to
+                work. Fixed within two days!</p>
+              <div class="testi-meta">
+                <span class="avatar" data-initials="A"></span>
+                <div class="who">
+                  <span class="name">Amir <i class="fa-solid fa-circle-check verified"></i></span>
+                  <span class="loc"><i class="fa-solid fa-location-dot"></i> Pasir Ris</span>
+                </div>
+                <span class="footnote"><i class="fa-solid fa-bolt"></i> Resolved in 48h</span>
+              </div>
+            </article>
+
+            <!-- CARD 2 -->
+            <article class="testi-card">
+              <div class="testi-topline">
+                <span class="chip chip-green"><i class="fa-solid fa-lightbulb"></i> Streetlight</span>
+                <time class="when" datetime="2025-07-29"><i class="fa-regular fa-clock"></i> 29 Jul</time>
+              </div>
+              <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+              <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Love the AI suggestions — it guessed the
+                category perfectly.</p>
+              <div class="testi-meta">
+                <span class="avatar" data-initials="C"></span>
+                <div class="who">
+                  <span class="name">Chloe <i class="fa-solid fa-circle-check verified"></i></span>
+                  <span class="loc"><i class="fa-solid fa-location-dot"></i> Queenstown</span>
+                </div>
+                <span class="footnote"><i class="fa-solid fa-mobile-screen-button"></i> Reported via app</span>
+              </div>
+            </article>
+
+            <!-- CARD 3 -->
+            <article class="testi-card">
+              <div class="testi-topline">
+                <span class="chip chip-amber"><i class="fa-solid fa-dumpster"></i> Cleanliness</span>
+                <time class="when" datetime="2025-08-03"><i class="fa-regular fa-clock"></i> 3 Aug</time>
+              </div>
+              <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+              <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Clear tracking and updates. Feels good to
+                help improve my neighbourhood.</p>
+              <div class="testi-meta">
+                <span class="avatar" data-initials="W"></span>
+                <div class="who">
+                  <span class="name">Wei Lun</span>
+                  <span class="loc"><i class="fa-solid fa-location-dot"></i> Woodlands</span>
+                </div>
+                <span class="footnote"><i class="fa-solid fa-paper-plane"></i> Followed to completion</span>
+              </div>
+            </article>
+
+            <!-- CARD 4 -->
+            <article class="testi-card">
+              <div class="testi-topline">
+                <span class="chip chip-blue"><i class="fa-solid fa-water"></i> Drainage</span>
+                <time class="when" datetime="2025-08-10"><i class="fa-regular fa-clock"></i> 10 Aug</time>
+              </div>
+              <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+              <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Took a photo, pinned the spot, done. Super
+                intuitive.</p>
+              <div class="testi-meta">
+                <span class="avatar" data-initials="S"></span>
+                <div class="who">
+                  <span class="name">Siti</span>
+                  <span class="loc"><i class="fa-solid fa-location-dot"></i> Tampines</span>
+                </div>
+                <span class="footnote"><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-categorised</span>
+              </div>
+            </article>
+
+            <!-- CARD 5 -->
+            <article class="testi-card">
+              <div class="testi-topline">
+                <span class="chip chip-purple"><i class="fa-solid fa-tree"></i> Landscaping</span>
+                <time class="when" datetime="2025-07-22"><i class="fa-regular fa-clock"></i> 22 Jul</time>
+              </div>
+              <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i></div>
+              <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> Notifications were timely and clear. Crews
+                came the next morning.</p>
+              <div class="testi-meta">
+                <span class="avatar" data-initials="R"></span>
+                <div class="who">
+                  <span class="name">Ravi</span>
+                  <span class="loc"><i class="fa-solid fa-location-dot"></i> Jurong West</span>
+                </div>
+                <span class="footnote"><i class="fa-solid fa-bell"></i> Smart updates</span>
+              </div>
+            </article>
+
+            <!-- CARD 6 -->
+            <article class="testi-card">
+              <div class="testi-topline">
+                <span class="chip chip-rose"><i class="fa-solid fa-recycle"></i> Recycling</span>
+                <time class="when" datetime="2025-08-18"><i class="fa-regular fa-clock"></i> 18 Aug</time>
+              </div>
+              <div class="testi-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                  class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+              <p class="testi-quote"><i class="fa-solid fa-quote-left"></i> The new interface is slick — reporting took
+                less than a minute.</p>
+              <div class="testi-meta">
+                <span class="avatar" data-initials="H"></span>
+                <div class="who">
+                  <span class="name">Hui Min</span>
+                  <span class="loc"><i class="fa-solid fa-location-dot"></i> Toa Payoh</span>
+                </div>
+                <span class="footnote"><i class="fa-solid fa-stopwatch"></i> Under 60s</span>
+              </div>
+            </article>
+          </div>
+
+          <!-- Dots -->
+          <div class="testi-dots">
+            <button class="testi-dot" data-index="0"><span class="sr-only">1</span></button>
+            <button class="testi-dot" data-index="1"><span class="sr-only">2</span></button>
+            <button class="testi-dot" data-index="2"><span class="sr-only">3</span></button>
+            <button class="testi-dot" data-index="3"><span class="sr-only">4</span></button>
+            <button class="testi-dot" data-index="4"><span class="sr-only">5</span></button>
+            <button class="testi-dot" data-index="5"><span class="sr-only">6</span></button>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- FAQ -->
+      <section id="faq-section" aria-labelledby="faq-title">
+        <h2 id="faq-title" data-aos="fade-up">Frequently Asked Questions</h2>
+        <div class="faq-list">
+          <div class="faq-item" data-aos="fade-up">
+            <button class="faq-question"><span>How do I report an issue?</span><i
+                class="fa-solid fa-chevron-down"></i></button>
+            <div class="faq-answer">
+              <p>Click “Report an Issue,” pin the location on the map, and provide details. You can also attach a photo.
+              </p>
+            </div>
+          </div>
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="80">
+            <button class="faq-question"><span>Is SGResolve free to use?</span><i
+                class="fa-solid fa-chevron-down"></i></button>
+            <div class="faq-answer">
+              <p>Yes, the service is free for all Singapore residents and visitors.</p>
+            </div>
+          </div>
+          <div class="faq-item" data-aos="fade-up" data-aos-delay="160">
+            <button class="faq-question"><span>How quickly are issues resolved?</span><i
+                class="fa-solid fa-chevron-down"></i></button>
+            <div class="faq-answer">
+              <p>Resolution time varies by agency and issue. You can track progress in real time in the app.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section id="cta-section">
+        <h2>Join SGResolve Today</h2>
+        <p>Help us build a better Singapore. Report issues, track progress, and engage with your community.</p>
+        <div class="cta-buttons" data-aos="zoom-in">
+          <a href="#" id="cta-register" class="button primary-button">
+            <i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Register Now</span>
+          </a>
+          <a href="#" id="cta-login" class="button secondary-button">
+            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i><span>Login</span>
+          </a>
+        </div>
+        <p class="cta-social" data-aos="fade-up" data-aos-delay="100">
+          Follow us on
+          <a href="https://t.me/+8VF80QalI3thZDU1" target="_blank" rel="noopener noreferrer"
+            aria-label="SGResolve on Telegram">
+            <i class="fa-brands fa-telegram" aria-hidden="true"></i> Telegram
+          </a>
+          for live updates.
+        </p>
+      </section>
     </div>
-
-    <!-- Dots -->
-    <div class="testi-dots">
-      <button class="testi-dot" data-index="0"><span class="sr-only">1</span></button>
-      <button class="testi-dot" data-index="1"><span class="sr-only">2</span></button>
-      <button class="testi-dot" data-index="2"><span class="sr-only">3</span></button>
-      <button class="testi-dot" data-index="3"><span class="sr-only">4</span></button>
-      <button class="testi-dot" data-index="4"><span class="sr-only">5</span></button>
-      <button class="testi-dot" data-index="5"><span class="sr-only">6</span></button>
-    </div>
-  </div>
-</section>
-
-
-
-  <!-- FAQ -->
-  <section id="faq-section" aria-labelledby="faq-title">
-    <h2 id="faq-title" data-aos="fade-up">Frequently Asked Questions</h2>
-    <div class="faq-list">
-      <div class="faq-item" data-aos="fade-up">
-        <button class="faq-question"><span>How do I report an issue?</span><i class="fa-solid fa-chevron-down"></i></button>
-        <div class="faq-answer"><p>Click “Report an Issue,” pin the location on the map, and provide details. You can also attach a photo.</p></div>
-      </div>
-      <div class="faq-item" data-aos="fade-up" data-aos-delay="80">
-        <button class="faq-question"><span>Is SGResolve free to use?</span><i class="fa-solid fa-chevron-down"></i></button>
-        <div class="faq-answer"><p>Yes, the service is free for all Singapore residents and visitors.</p></div>
-      </div>
-      <div class="faq-item" data-aos="fade-up" data-aos-delay="160">
-        <button class="faq-question"><span>How quickly are issues resolved?</span><i class="fa-solid fa-chevron-down"></i></button>
-        <div class="faq-answer"><p>Resolution time varies by agency and issue. You can track progress in real time in the app.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section id="cta-section">
-    <h2>Join SGResolve Today</h2>
-    <p>Help us build a better Singapore. Report issues, track progress, and engage with your community.</p>
-    <div class="cta-buttons" data-aos="zoom-in">
-      <a href="#" id="cta-register" class="button primary-button">
-      <i class="fa-solid fa-user-plus" aria-hidden="true"></i><span>Register Now</span>
-      </a>
-      <a href="#" id="cta-login" class="button secondary-button">
-      <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i><span>Login</span>
-      </a>
-    </div>
-    <p class="cta-social" data-aos="fade-up" data-aos-delay="100">
-      Follow us on
-      <a href="https://t.me/+8VF80QalI3thZDU1" target="_blank" rel="noopener noreferrer" aria-label="SGResolve on Telegram">
-      <i class="fa-brands fa-telegram" aria-hidden="true"></i> Telegram
-      </a>
-      for live updates.
-    </p>
-    </section>
-</div>
 
 
 
@@ -447,8 +477,10 @@
         </div>
         <div class="chat-box" id="chat-box" role="log" aria-live="polite"></div>
         <div class="chat-input">
-          <input type="text" id="user-input" class="input-box" placeholder="Type a message..." aria-label="Chat message" />
-          <button id="chatbot-mic-btn" class="mic-button" aria-label="Use microphone for chat input" title="Use Microphone">
+          <input type="text" id="user-input" class="input-box" placeholder="Type a message..."
+            aria-label="Chat message" />
+          <button id="chatbot-mic-btn" class="mic-button" aria-label="Use microphone for chat input"
+            title="Use Microphone">
             <i class="fas fa-microphone"></i>
           </button>
           <button class="send-button" aria-label="Send chat message">Send</button>
@@ -488,72 +520,72 @@
     <div id="admin-page" class="page" style="display: none;">
       <h1>Admin Dashboard</h1>
       <div class="admin-container">
-<!-- Analytics (compact) -->
-<div class="admin-analytics" id="admin-analytics">
-  <!-- KPI Row -->
-  <div class="kpi-row">
-    <div class="kpi-card kpi-blue">
-      <div class="kpi-title">Total</div>
-      <div class="kpi-value" id="kpi-total">0</div>
-      <div class="kpi-delta" id="kpi-total-delta">–</div>
-      
-    </div>
+        <!-- Analytics (compact) -->
+        <div class="admin-analytics" id="admin-analytics">
+          <!-- KPI Row -->
+          <div class="kpi-row">
+            <div class="kpi-card kpi-blue">
+              <div class="kpi-title">Total</div>
+              <div class="kpi-value" id="kpi-total">0</div>
+              <div class="kpi-delta" id="kpi-total-delta">–</div>
 
-    <div class="kpi-card kpi-amber">
-      <div class="kpi-title">Pending</div>
-      <div class="kpi-value" id="kpi-pending">0</div>
-      <div class="kpi-delta" id="kpi-pending-share">0% of total</div>
-      <canvas id="spark-pending" height="34" aria-hidden="true"></canvas>
-    </div>
+            </div>
 
-    <div class="kpi-card kpi-green">
-      <div class="kpi-title">Resolved</div>
-      <div class="kpi-value" id="kpi-resolved">0</div>
-      <div class="kpi-delta" id="kpi-resolved-share">0% of total</div>
-      <canvas id="spark-resolved" height="34" aria-hidden="true"></canvas>
-    </div>
+            <div class="kpi-card kpi-amber">
+              <div class="kpi-title">Pending</div>
+              <div class="kpi-value" id="kpi-pending">0</div>
+              <div class="kpi-delta" id="kpi-pending-share">0% of total</div>
+              <canvas id="spark-pending" height="34" aria-hidden="true"></canvas>
+            </div>
 
-    <div class="kpi-card kpi-purple">
-      <div class="kpi-title">With Images</div>
-      <div class="kpi-value"><span id="kpi-img-rate">0%</span></div>
-      <div class="kpi-delta subtle">attach rate</div>
-      <div class="kpi-foot" id="kpi-img-count">0 of 0</div>
-    </div>
+            <div class="kpi-card kpi-green">
+              <div class="kpi-title">Resolved</div>
+              <div class="kpi-value" id="kpi-resolved">0</div>
+              <div class="kpi-delta" id="kpi-resolved-share">0% of total</div>
+              <canvas id="spark-resolved" height="34" aria-hidden="true"></canvas>
+            </div>
 
-    <div class="kpi-card kpi-teal">
-      <div class="kpi-title">This Month</div>
-      <div class="kpi-value" id="kpi-month-total">0</div>
-      <div class="kpi-delta" id="kpi-month-delta">– vs last</div>
-      <div class="kpi-foot" id="kpi-top-category">Top: –</div>
-    </div>
-  </div>
+            <div class="kpi-card kpi-purple">
+              <div class="kpi-title">With Images</div>
+              <div class="kpi-value"><span id="kpi-img-rate">0%</span></div>
+              <div class="kpi-delta subtle">attach rate</div>
+              <div class="kpi-foot" id="kpi-img-count">0 of 0</div>
+            </div>
 
-  <!-- Tabbed Charts (one card, multiple tabs) -->
-  <div class="chart-tabs" id="analytics-tabs">
-    <div class="tabs" role="tablist" aria-label="Analytics charts">
-      <button class="tab active" data-tab="status" aria-selected="true">Status</button>
-      <button class="tab" data-tab="urgency" aria-selected="false">Urgency</button>
-      <button class="tab" data-tab="category" aria-selected="false">Category</button>
-      <button class="tab" data-tab="daily" aria-selected="false">Daily</button>
-    </div>
+            <div class="kpi-card kpi-teal">
+              <div class="kpi-title">This Month</div>
+              <div class="kpi-value" id="kpi-month-total">0</div>
+              <div class="kpi-delta" id="kpi-month-delta">– vs last</div>
+              <div class="kpi-foot" id="kpi-top-category">Top: –</div>
+            </div>
+          </div>
 
-    <div class="tab-panels">
-      <div class="panel" data-panel="status">
-        <canvas id="status-chart" aria-label="Reports by Status"></canvas>
-      </div>
-      <div class="panel hidden" data-panel="urgency">
-        <canvas id="urgency-chart" aria-label="Reports by Urgency"></canvas>
-      </div>
-      <div class="panel hidden" data-panel="category">
-        <p id="total-reports-month" class="subtle-text">Total this month: 0</p>
-        <canvas id="reports-chart" aria-label="This Month by Category"></canvas>
-      </div>
-      <div class="panel hidden" data-panel="daily">
-        <canvas id="daily-chart" aria-label="Reports per Day (30 days)"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
+          <!-- Tabbed Charts (one card, multiple tabs) -->
+          <div class="chart-tabs" id="analytics-tabs">
+            <div class="tabs" role="tablist" aria-label="Analytics charts">
+              <button class="tab active" data-tab="status" aria-selected="true">Status</button>
+              <button class="tab" data-tab="urgency" aria-selected="false">Urgency</button>
+              <button class="tab" data-tab="category" aria-selected="false">Category</button>
+              <button class="tab" data-tab="daily" aria-selected="false">Daily</button>
+            </div>
+
+            <div class="tab-panels">
+              <div class="panel" data-panel="status">
+                <canvas id="status-chart" aria-label="Reports by Status"></canvas>
+              </div>
+              <div class="panel hidden" data-panel="urgency">
+                <canvas id="urgency-chart" aria-label="Reports by Urgency"></canvas>
+              </div>
+              <div class="panel hidden" data-panel="category">
+                <p id="total-reports-month" class="subtle-text">Total this month: 0</p>
+                <canvas id="reports-chart" aria-label="This Month by Category"></canvas>
+              </div>
+              <div class="panel hidden" data-panel="daily">
+                <canvas id="daily-chart" aria-label="Reports per Day (30 days)"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
         <div class="admin-reports">
@@ -595,18 +627,22 @@
               </select>
 
               <button id="apply-filters" class="button"><i class="fa-solid fa-filter"></i> Apply Filters</button>
-              <button id="reset-filters" class="button secondary-button"><i class="fa-solid fa-rotate-right"></i> Reset</button>
+              <button id="reset-filters" class="button secondary-button"><i class="fa-solid fa-rotate-right"></i>
+                Reset</button>
             </div>
 
-            <button id="refresh-reports" class="button"><i class="fa-solid fa-arrows-rotate"></i> Refresh Reports</button>
-            <button id="export-data" class="button secondary-button"><i class="fa-solid fa-file-export"></i> Export Data</button>
+            <button id="refresh-reports" class="button"><i class="fa-solid fa-arrows-rotate"></i> Refresh
+              Reports</button>
+            <button id="export-data" class="button secondary-button"><i class="fa-solid fa-file-export"></i> Export
+              Data</button>
           </div>
 
           <ul id="admin-reports-container"></ul>
         </div>
 
         <div class="admin-logout">
-          <p><a href="#" id="logout-admin" class="button danger-button"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></p>
+          <p><a href="#" id="logout-admin" class="button danger-button"><i class="fa-solid fa-right-from-bracket"></i>
+              Logout</a></p>
         </div>
       </div>
     </div>
@@ -623,15 +659,17 @@
         <section class="rp-section rp-map-section">
           <div id="map" aria-label="Map to select issue location" class="rp-map">
             <div class="map-toolbar" role="search" aria-label="Map search toolbar"></div>
-            <div class="map-hint"><i class="fa-solid fa-hand-pointer"></i> Click on the map to set the exact location</div>
+            <div class="map-hint"><i class="fa-solid fa-hand-pointer"></i> Click on the map to set the exact location
+            </div>
           </div>
 
           <!-- Detect Location BELOW the map, centered -->
           <div class="map-actions">
-            <button type="button" id="detectLocation" class="button tertiary" aria-label="Detect my location" title="Detect my location">
+            <button type="button" id="detectLocation" class="button tertiary" aria-label="Detect my location"
+              title="Detect my location">
               <i class="fas" aria-hidden="true"> Detect Location
             </button> </i>
-              
+
           </div>
         </section>
 
@@ -641,7 +679,8 @@
             <!-- Main column -->
             <div class="col-main">
               <div class="form-row">
-                <label for="locationName">Location Name <span class="muted">(e.g., “Opposite Tampines Mall”)</span></label>
+                <label for="locationName">Location Name <span class="muted">(e.g., “Opposite Tampines
+                    Mall”)</span></label>
                 <input type="text" id="locationName" placeholder="A brief name for the location" required />
                 <input type="hidden" id="latitude" name="latitude" />
                 <input type="hidden" id="longitude" name="longitude" />
@@ -650,9 +689,13 @@
               <div class="form-row">
                 <label for="problemDesc">Describe the Issue</label>
                 <div class="textarea-wrap">
-                  <textarea id="problemDesc" placeholder="Please provide a detailed description of the problem…" required></textarea>
-                  <button type="button" id="report-desc-mic-btn" class="mic-btn" aria-label="Use microphone for description" title="Voice input">
-                    <i aria-hidden="true"><img width="24" height="24" src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-microphone-phone-dreamstale-lineal-dreamstale-3.png" alt="external-microphone-phone-dreamstale-lineal-dreamstale-3"/></i>
+                  <textarea id="problemDesc" placeholder="Please provide a detailed description of the problem…"
+                    required></textarea>
+                  <button type="button" id="report-desc-mic-btn" class="mic-btn"
+                    aria-label="Use microphone for description" title="Voice input">
+                    <i aria-hidden="true"><img width="24" height="24"
+                        src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/external-microphone-phone-dreamstale-lineal-dreamstale-3.png"
+                        alt="external-microphone-phone-dreamstale-lineal-dreamstale-3" /></i>
                   </button>
                 </div>
                 <p class="field-hint">Tips: include landmarks, time seen, and any safety risks.</p>
@@ -662,7 +705,8 @@
             <!-- Helpful aside -->
             <aside class="col-aside">
               <div class="card tip-card">
-                <h4><i aria-hidden="true"><img width="24" height="24" src="https://img.icons8.com/fluency/48/light--v1.png" alt="light--v1"/></i> Good report tips</h4>
+                <h4><i aria-hidden="true"><img width="24" height="24"
+                      src="https://img.icons8.com/fluency/48/light--v1.png" alt="light--v1" /></i> Good report tips</h4>
                 <ul>
                   <li>Mention nearby landmarks or bus stops.</li>
                   <li>Add when you noticed it and how often.</li>
@@ -672,7 +716,8 @@
               </div>
 
               <div class="card loc-card">
-                <h4><i aria-hidden="true"><img width="24" height="24" src="https://img.icons8.com/fluency/48/map-pin.png" alt="map-pin"/></i> Selected location</h4>
+                <h4><i aria-hidden="true"><img width="24" height="24"
+                      src="https://img.icons8.com/fluency/48/map-pin.png" alt="map-pin" /></i> Selected location</h4>
                 <p class="loc-line"><span class="muted">Lat:</span> <span id="sel-lat">—</span></p>
                 <p class="loc-line"><span class="muted">Lng:</span> <span id="sel-lng">—</span></p>
                 <small class="muted">These update when you click the map or search.</small>
@@ -716,7 +761,8 @@
               </div>
 
               <button type="button" id="autoDetect" class="button secondary full-width" disabled>
-                <i aria-hidden="true"><img width="36" height="36" src="https://img.icons8.com/color/48/fantasy.png" alt="fantasy"/></i>
+                <i aria-hidden="true"><img width="36" height="36" src="https://img.icons8.com/color/48/fantasy.png"
+                    alt="fantasy" /></i>
                 Auto Fill In Details
               </button>
             </div>
@@ -725,7 +771,8 @@
             <div class="grid-right">
               <div class="form-row image-upload">
                 <label for="imageUpload" class="image-drop" title="Click to upload an image">
-                  <i aria-hidden="true"><img width="48" height="48" src="https://img.icons8.com/fluency/48/image--v1.png" alt="image--v1"/></i>
+                  <i aria-hidden="true"><img width="48" height="48"
+                      src="https://img.icons8.com/fluency/48/image--v1.png" alt="image--v1" /></i>
                   <span>Upload Image</span>
                   <small>(Optional but recommended)</small>
                 </label>
@@ -734,7 +781,8 @@
               </div>
 
               <button type="button" id="analyzeImageBtn" class="button ai full-width" disabled>
-                <i aria-hidden="true"><img width="36" height="36" src="https://img.icons8.com/lollipop/48/sparkling.png" alt="sparkling"/></i>
+                <i aria-hidden="true"><img width="36" height="36" src="https://img.icons8.com/lollipop/48/sparkling.png"
+                    alt="sparkling" /></i>
                 Analyze Image with AI
               </button>
             </div>
@@ -742,12 +790,11 @@
 
           <!-- reCAPTCHA -->
           <div class="form-row recaptcha-row">
-            <div id="recaptcha-container" class="g-recaptcha"
-                 data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
-                 data-callback="onRecaptchaSuccess"
-                 data-expired-callback="onRecaptchaExpired"
-                 data-error-callback="onRecaptchaError"></div>
-            <p id="recaptcha-error" class="error-message" style="display:none;">Please complete the CAPTCHA verification.</p>
+            <div id="recaptcha-container" class="g-recaptcha" data-sitekey="6LfJnAorAAAAAOnTt2wuZXMrLw_-RbWb25YTRA6m"
+              data-callback="onRecaptchaSuccess" data-expired-callback="onRecaptchaExpired"
+              data-error-callback="onRecaptchaError"></div>
+            <p id="recaptcha-error" class="error-message" style="display:none;">Please complete the CAPTCHA
+              verification.</p>
           </div>
 
           <!-- Submit -->
@@ -804,7 +851,8 @@
           <option value="5000">5 km</option>
         </select>
 
-        <button id="load-nearby-reports" class="button"><i class="fa-solid fa-map-location-dot"></i> Load Reports</button>
+        <button id="load-nearby-reports" class="button"><i class="fa-solid fa-map-location-dot"></i> Load
+          Reports</button>
       </div>
       <div id="nearby-map" aria-label="Nearby reports map"></div>
       <div id="nearby-status" style="margin-bottom: 15px;">Select a location and click Load.</div>
@@ -921,17 +969,47 @@
           <h2>How It Works</h2>
           <div class="slideshow-container" aria-live="polite">
             <div class="slide-track">
-              <div class="slide"><h3>Report</h3><p>Submit an issue with photos and location.</p></div>
-              <div class="slide"><h3>AI Analysis</h3><p>We automatically categorize and prioritize your report.</p></div>
-              <div class="slide"><h3>Assignment</h3><p>The appropriate agency receives your report.</p></div>
-              <div class="slide"><h3>Resolution</h3><p>Work crews address the issue and document their solution.</p></div>
-              <div class="slide"><h3>Verification</h3><p>Confirm if the issue is resolved.</p></div>
+              <div class="slide">
+                <h3>Report</h3>
+                <p>Submit an issue with photos and location.</p>
+              </div>
+              <div class="slide">
+                <h3>AI Analysis</h3>
+                <p>We automatically categorize and prioritize your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Assignment</h3>
+                <p>The appropriate agency receives your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Resolution</h3>
+                <p>Work crews address the issue and document their solution.</p>
+              </div>
+              <div class="slide">
+                <h3>Verification</h3>
+                <p>Confirm if the issue is resolved.</p>
+              </div>
               <!-- duplicate slides for smooth loop -->
-              <div class="slide"><h3>Report</h3><p>Submit an issue with photos and location.</p></div>
-              <div class="slide"><h3>AI Analysis</h3><p>We automatically categorize and prioritize your report.</p></div>
-              <div class="slide"><h3>Assignment</h3><p>The appropriate agency receives your report.</p></div>
-              <div class="slide"><h3>Resolution</h3><p>Work crews address the issue and document their solution.</p></div>
-              <div class="slide"><h3>Verification</h3><p>Confirm if the issue is resolved.</p></div>
+              <div class="slide">
+                <h3>Report</h3>
+                <p>Submit an issue with photos and location.</p>
+              </div>
+              <div class="slide">
+                <h3>AI Analysis</h3>
+                <p>We automatically categorize and prioritize your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Assignment</h3>
+                <p>The appropriate agency receives your report.</p>
+              </div>
+              <div class="slide">
+                <h3>Resolution</h3>
+                <p>Work crews address the issue and document their solution.</p>
+              </div>
+              <div class="slide">
+                <h3>Verification</h3>
+                <p>Confirm if the issue is resolved.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -942,35 +1020,51 @@
           <h2>Supported Issue Categories</h2>
           <div class="categories-grid">
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-road"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-road"></use>
+              </svg>
               <span>Road & Sidewalk</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-light"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-light"></use>
+              </svg>
               <span>Street Lighting</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-trash"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-trash"></use>
+              </svg>
               <span>Waste & Cleanliness</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-nature"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-nature"></use>
+              </svg>
               <span>Trees & Greenery</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-construction"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-construction"></use>
+              </svg>
               <span>Construction Safety</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-pest"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-pest"></use>
+              </svg>
               <span>Pest Control</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-noise"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-noise"></use>
+              </svg>
               <span>Noise Concerns</span>
             </div>
             <div class="category-item">
-              <svg class="category-icon" width="28" height="28" aria-hidden="true"><use href="#icon-facilities"></use></svg>
+              <svg class="category-icon" width="28" height="28" aria-hidden="true">
+                <use href="#icon-facilities"></use>
+              </svg>
               <span>Public Facilities</span>
             </div>
           </div>
@@ -983,13 +1077,14 @@
           <p>SGResolve prioritizes your data security. Personal information is protected using enterprise-grade
             encryption, and we maintain compliance with Singapore's Personal Data Protection Act (PDPA). Your contact
             details are shared only with relevant agencies for issue resolution.</p>
-            <p>For full details on our data handling practices, please refer to our Privacy Policy.
-            </p>
-            <p>
-            <a href="sgresolve_legal_policy.txt" download="SGResolve_Privacy_Policy.txt" class="button secondary-button" style="margin-top:10px;">
+          <p>For full details on our data handling practices, please refer to our Privacy Policy.
+          </p>
+          <p>
+            <a href="sgresolve_legal_policy.txt" download="SGResolve_Privacy_Policy.txt" class="button secondary-button"
+              style="margin-top:10px;">
               <i class="fa-solid fa-file-arrow-down"></i> Download Full Privacy Policy
             </a>
-            </p>
+          </p>
         </div>
       </section>
 
@@ -1072,23 +1167,23 @@
     AOS.init({ once: true, duration: 700, easing: 'ease-out-cubic', offset: 80 });
 
     // Stats: count up when visible
-    (function(){
+    (function () {
       const counters = document.querySelectorAll('.counter');
       if (!('IntersectionObserver' in window)) return;
-      const io = new IntersectionObserver((entries)=>{
-        entries.forEach(entry=>{
-          if(!entry.isIntersecting) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
           const el = entry.target;
           const target = parseFloat(el.dataset.target || '0');
           const decimals = parseInt(el.dataset.decimals || '0', 10);
           const dur = 1200;
           const start = performance.now();
-          function tick(now){
-            const p = Math.min(1, (now - start)/dur);
+          function tick(now) {
+            const p = Math.min(1, (now - start) / dur);
             const eased = 1 - Math.pow(1 - p, 3);
             const val = target * eased;
             el.textContent = val.toFixed(decimals);
-            if(p < 1) requestAnimationFrame(tick);
+            if (p < 1) requestAnimationFrame(tick);
           }
           requestAnimationFrame(tick);
           io.unobserve(el);
@@ -1097,78 +1192,15 @@
       counters.forEach(c => io.observe(c));
     })();
 
-    // Testimonials slider (auto + pause on hover)
-    (function(){
-      const track = document.querySelector('.testi-track');
-      const slides = Array.from(document.querySelectorAll('.testi-card'));
-      const prev = document.querySelector('.testi-prev');
-      const next = document.querySelector('.testi-next');
-      const dotsWrap = document.querySelector('.testi-dots');
-      if (!track || slides.length === 0) return;
-
-      let index = 0;
-      let timer;
-
-      slides.forEach((_,i)=>{
-        const b = document.createElement('button');
-        b.className = 'testi-dot';
-        b.setAttribute('role','tab');
-        b.setAttribute('aria-label',`Go to slide ${i+1}`);
-        b.addEventListener('click', ()=>go(i, true));
-        dotsWrap.appendChild(b);
-      });
-
-      function update(){
-        slides.forEach((s,i)=>s.classList.toggle('is-active', i===index));
-        Array.from(dotsWrap.children).forEach((d,i)=>d.classList.toggle('active', i===index));
-        track.style.transform = `translateX(${-index * 100}%)`;
-      }
-      function go(i, pause){
-        index = (i + slides.length) % slides.length;
-        update();
-        if(pause){ stop(); start(); }
-      }
-      function start(){ timer = setInterval(()=>go(index+1), 5000); }
-      function stop(){ clearInterval(timer); }
-
-      prev.addEventListener('click', ()=>go(index-1, true));
-      next.addEventListener('click', ()=>go(index+1, true));
-
-      update(); start();
-      track.addEventListener('mouseenter', stop);
-      track.addEventListener('mouseleave', start);
-    })();
-
     // FAQ accordion
-document.querySelectorAll('.faq-question').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    const item = btn.closest('.faq-item');
-    item.classList.toggle('open');
-  });
-});
-const viewport = document.querySelector('.testi-viewport');
-const cards = document.querySelectorAll('.testi-card');
-const prevBtn = document.querySelector('.testi-prev');
-const nextBtn = document.querySelector('.testi-next');
-const dots = document.querySelectorAll('.testi-dot');
-
-let currentIndex = 0;
-
-function goToSlide(index) {
-  if (index < 0) index = cards.length - 1;
-  if (index >= cards.length) index = 0;
-  currentIndex = index;
-  cards[index].scrollIntoView({ behavior: 'smooth', inline: 'center' });
-  dots.forEach((d,i)=>d.classList.toggle('active', i===index));
-}
-
-prevBtn.addEventListener('click', ()=> goToSlide(currentIndex-1));
-nextBtn.addEventListener('click', ()=> goToSlide(currentIndex+1));
-dots.forEach((dot,i)=> dot.addEventListener('click', ()=> goToSlide(i)));
-
-goToSlide(0);
-
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        item.classList.toggle('open');
+      });
+    });
   </script>
+
 
 
   <!-- PWA Service Worker Registration -->
@@ -1186,4 +1218,5 @@ goToSlide(0);
     }
   </script>
 </body>
+
 </html>

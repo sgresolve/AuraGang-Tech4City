@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [SINGAPORE_BOUNDS.latMax, SINGAPORE_BOUNDS.lonMax]
     );
 
+
     // Initialize Maps
     let reportingMap = null;
     let adminMap = null;
@@ -290,41 +291,113 @@ document.addEventListener('DOMContentLoaded', () => {
 
         hideAllPages();
         pageToShow.style.display = 'block';
-        // Use setTimeout to allow the display change to render before adding the class for transition
+
         setTimeout(() => {
             pageToShow.classList.add('show');
         }, 10); // Small delay
 
-        // Invalidate maps or render content specific to the shown page
+        // NEW: lock the landing page to the top on show (prevents auto-jump)
+        if (pageId === 'landing' || pageId === 'landing-page') {
+            const html = document.documentElement;
+            const prev = html.style.scrollBehavior;
+            html.style.scrollBehavior = 'auto';          // disable smooth for this snap
+            if (location.hash) {
+                history.replaceState(null, '', location.pathname + location.search);
+            }
+            window.scrollTo(0, 0);
+            html.style.scrollBehavior = prev;            // restore
+        }
+
+        // Page-specific work
         if (pageId === 'reporting') {
             if (reportingMap) reportingMap.invalidateSize();
-            // Reset CAPTCHA when showing reporting page
             if (typeof grecaptcha !== 'undefined' && grecaptcha) {
                 try {
                     const widgetContainer = document.getElementById('recaptcha-container');
                     const widgetId = widgetContainer?.getAttribute('data-widget-id');
-                    if (widgetId) {
-                        grecaptcha.reset(widgetId);
-                    } else {
-                        grecaptcha.reset(); // Fallback
-                    }
+                    if (widgetId) { grecaptcha.reset(widgetId); } else { grecaptcha.reset(); }
                     const submitBtn = document.getElementById('submit-report-button');
                     if (submitBtn) submitBtn.disabled = true;
                     const recaptchaError = document.getElementById('recaptcha-error');
                     if (recaptchaError) recaptchaError.style.display = 'none';
-
                 } catch (e) {
                     console.error("Error resetting reCAPTCHA on page show:", e);
                 }
             }
         }
-        else if (pageId === 'admin' && adminMap) { adminMap.invalidateSize(); renderAdminReports(); renderAdminAnalytics(); }
-        else if (pageId === 'nearbyReports' && nearbyMap) nearbyMap.invalidateSize();
-        else if (pageId === 'about') initializeAboutPageObserver();
-        else if (pageId === 'myReports' && currentUser) renderUserReports();
-        else if (pageId === 'community') renderForumPosts(); // Initial render
-        else if (pageId === 'profile' && currentUserData) renderProfilePage(); // Render profile if shown
+        else if (pageId === 'admin' && adminMap) {
+            adminMap.invalidateSize(); renderAdminReports(); renderAdminAnalytics();
+        }
+        else if (pageId === 'nearbyReports' && nearbyMap) {
+            nearbyMap.invalidateSize();
+        }
+        else if (pageId === 'about') {
+            initializeAboutPageObserver();
+        }
+        else if (pageId === 'myReports' && currentUser) {
+            renderUserReports();
+        }
+        else if (pageId === 'community') {
+            renderForumPosts();
+        }
+        else if (pageId === 'profile' && currentUserData) {
+            renderProfilePage();
+        }
     }
+
+
+    function initLandingScrollGuards() {
+        const landing = document.getElementById('landing-page');
+        if (!landing) return;
+
+        const viewport = landing.querySelector('#testimonials-section .testi-viewport');
+        const cards = Array.from(landing.querySelectorAll('#testimonials-section .testi-card'));
+        const prev = landing.querySelector('#testimonials-section .testi-prev');
+        const next = landing.querySelector('#testimonials-section .testi-next');
+        const dots = Array.from(landing.querySelectorAll('#testimonials-section .testi-dot'));
+
+        if (!viewport || cards.length === 0) return;
+        let index = 0;
+
+        const snapTo = (i, behavior = 'smooth') => {
+            index = (i + cards.length) % cards.length;
+            const card = cards[index];
+            viewport.scrollTo({ left: card.offsetLeft, top: 0, behavior });
+            dots.forEach((d, k) => d.classList.toggle('active', k === index));
+        };
+
+        // Stop page scroll when using arrows/dots
+        const blockKeys = (e) => {
+            if (['ArrowLeft', 'ArrowRight', ' ', 'Spacebar'].includes(e.key)) e.preventDefault();
+        };
+        [prev, next, ...dots].forEach(el => {
+            if (!el) return;
+            el.addEventListener('keydown', blockKeys);
+            el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); });
+        });
+
+        prev && prev.addEventListener('click', () => snapTo(index - 1));
+        next && next.addEventListener('click', () => snapTo(index + 1));
+        dots.forEach((dot, i) => dot.addEventListener('click', () => snapTo(i)));
+
+        // Keep index in sync if user swipes
+        viewport.addEventListener('scroll', () => {
+            const left = viewport.scrollLeft;
+            let nearest = 0, best = Infinity;
+            cards.forEach((c, i) => {
+                const d = Math.abs(c.offsetLeft - left);
+                if (d < best) { best = d; nearest = i; }
+            });
+            index = nearest;
+            dots.forEach((d, k) => d.classList.toggle('active', k === index));
+        }, { passive: true });
+
+        snapTo(0, 'auto');
+    }
+
+
+
+
 
     function updateNavbar() {
         const loggedIn = !!currentUser;
@@ -1097,282 +1170,282 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     // === Admin Analytics (KPI + Charts) ===
-async function renderAdminAnalytics() {
-  // ---- Dom helpers ----
-  const $ = (id) => document.getElementById(id);
-  const fmtPct = (v, dp = 0) => isFinite(v) ? `${(v * 100).toFixed(dp)}%` : '–';
-  const clamp0 = (n) => Math.max(0, n|0);
+    async function renderAdminAnalytics() {
+        // ---- Dom helpers ----
+        const $ = (id) => document.getElementById(id);
+        const fmtPct = (v, dp = 0) => isFinite(v) ? `${(v * 100).toFixed(dp)}%` : '–';
+        const clamp0 = (n) => Math.max(0, n | 0);
 
-  // ---- Elements (KPI + charts) ----
-  const el = {
-    kpiTotal: $('kpi-total'),
-    kpiPending: $('kpi-pending'),
-    kpiResolved: $('kpi-resolved'),
-    kpiPendingShare: $('kpi-pending-share'),
-    kpiResolvedShare: $('kpi-resolved-share'),
-    kpiImgRate: $('kpi-img-rate'),
-    kpiImgCount: $('kpi-img-count'),
-    kpiMonthTotal: $('kpi-month-total'),
-    kpiMonthDelta: $('kpi-month-delta'),
-    kpiTopCategory: $('kpi-top-category'),
-    sparkTotal: $('spark-total'),
-    sparkPending: $('spark-pending'),
-    sparkResolved: $('spark-resolved'),
-    statusCanvas: $('status-chart'),
-    urgencyCanvas: $('urgency-chart'),
-    categoryCanvas: $('reports-chart'),
-    dailyCanvas: $('daily-chart'),
-    tabsRoot: $('analytics-tabs')
-  };
+        // ---- Elements (KPI + charts) ----
+        const el = {
+            kpiTotal: $('kpi-total'),
+            kpiPending: $('kpi-pending'),
+            kpiResolved: $('kpi-resolved'),
+            kpiPendingShare: $('kpi-pending-share'),
+            kpiResolvedShare: $('kpi-resolved-share'),
+            kpiImgRate: $('kpi-img-rate'),
+            kpiImgCount: $('kpi-img-count'),
+            kpiMonthTotal: $('kpi-month-total'),
+            kpiMonthDelta: $('kpi-month-delta'),
+            kpiTopCategory: $('kpi-top-category'),
+            sparkTotal: $('spark-total'),
+            sparkPending: $('spark-pending'),
+            sparkResolved: $('spark-resolved'),
+            statusCanvas: $('status-chart'),
+            urgencyCanvas: $('urgency-chart'),
+            categoryCanvas: $('reports-chart'),
+            dailyCanvas: $('daily-chart'),
+            tabsRoot: $('analytics-tabs')
+        };
 
-  // ---- Colors (fallbacks if global constants not present) ----
-  const STATUS_COLORS = (window.STATUS_COLORS) || {
-    'Pending': 'rgba(251,191,36,0.85)',      // amber-400
-    'In Progress': 'rgba(54,162,235,0.85)',  // blue
-    'Resolved': 'rgba(34,197,94,0.85)'       // green
-  };
-  const URGENCY_COLORS = (window.URGENCY_COLORS) || {
-    'Low': 'rgba(75,192,192,0.85)',
-    'Medium': 'rgba(255,159,64,0.85)',
-    'High': 'rgba(255,99,132,0.85)'
-  };
+        // ---- Colors (fallbacks if global constants not present) ----
+        const STATUS_COLORS = (window.STATUS_COLORS) || {
+            'Pending': 'rgba(251,191,36,0.85)',      // amber-400
+            'In Progress': 'rgba(54,162,235,0.85)',  // blue
+            'Resolved': 'rgba(34,197,94,0.85)'       // green
+        };
+        const URGENCY_COLORS = (window.URGENCY_COLORS) || {
+            'Low': 'rgba(75,192,192,0.85)',
+            'Medium': 'rgba(255,159,64,0.85)',
+            'High': 'rgba(255,99,132,0.85)'
+        };
 
-  // Category palette: reuse if provided, else generate on the fly
-  const CATEGORY_COLOR_FALLBACKS = [
-    'rgba(153,102,255,0.85)', 'rgba(40,167,69,0.85)',
-    'rgba(255,99,132,0.85)', 'rgba(201,203,207,0.85)',
-    'rgba(2,132,199,0.85)', 'rgba(16,185,129,0.85)'
-  ];
+        // Category palette: reuse if provided, else generate on the fly
+        const CATEGORY_COLOR_FALLBACKS = [
+            'rgba(153,102,255,0.85)', 'rgba(40,167,69,0.85)',
+            'rgba(255,99,132,0.85)', 'rgba(201,203,207,0.85)',
+            'rgba(2,132,199,0.85)', 'rgba(16,185,129,0.85)'
+        ];
 
-  // ---- Chart.js guard ----
-  if (!window.Chart) {
-    console.warn('Chart.js not loaded; skipping analytics charts.');
-  }
+        // ---- Chart.js guard ----
+        if (!window.Chart) {
+            console.warn('Chart.js not loaded; skipping analytics charts.');
+        }
 
-  // ---- Destroy old charts (stored under window._adminCharts) ----
-  window._adminCharts ||= {};
-  Object.values(window._adminCharts).forEach((c) => { try { c?.destroy?.(); } catch {} });
-  window._adminCharts = {};
+        // ---- Destroy old charts (stored under window._adminCharts) ----
+        window._adminCharts ||= {};
+        Object.values(window._adminCharts).forEach((c) => { try { c?.destroy?.(); } catch { } });
+        window._adminCharts = {};
 
-  // ---- Utilities ----
-  const toDate = (v) => {
-    if (!v) return null;
-    try {
-      if (v.toDate) return v.toDate();
-      if (v instanceof Date) return v;
-      if (typeof v === 'number') return new Date(v);
-      return new Date(String(v));
-    } catch { return null; }
-  };
+        // ---- Utilities ----
+        const toDate = (v) => {
+            if (!v) return null;
+            try {
+                if (v.toDate) return v.toDate();
+                if (v instanceof Date) return v;
+                if (typeof v === 'number') return new Date(v);
+                return new Date(String(v));
+            } catch { return null; }
+        };
 
-  const isSameMonth = (d, yr, m) => d && d.getFullYear() === yr && d.getMonth() === m;
+        const isSameMonth = (d, yr, m) => d && d.getFullYear() === yr && d.getMonth() === m;
 
-  const lastNDaysSeries = (reports, n = 30, predicate = () => true) => {
-    const arr = [];
-    const now = new Date();
-    // build from oldest -> newest for easy charting
-    for (let i = n - 1; i >= 0; i--) {
-      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
-      const dayKey = day.toISOString().slice(0,10);
-      const count = reports.reduce((acc, r) => {
-        const t = toDate(r.timestamp);
-        if (!t) return acc;
-        const sameDay = t.getFullYear() === day.getFullYear()
-          && t.getMonth() === day.getMonth()
-          && t.getDate() === day.getDate();
-        return sameDay && predicate(r) ? acc + 1 : acc;
-      }, 0);
-      arr.push({ dayLabel: dayKey, count });
+        const lastNDaysSeries = (reports, n = 30, predicate = () => true) => {
+            const arr = [];
+            const now = new Date();
+            // build from oldest -> newest for easy charting
+            for (let i = n - 1; i >= 0; i--) {
+                const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+                const dayKey = day.toISOString().slice(0, 10);
+                const count = reports.reduce((acc, r) => {
+                    const t = toDate(r.timestamp);
+                    if (!t) return acc;
+                    const sameDay = t.getFullYear() === day.getFullYear()
+                        && t.getMonth() === day.getMonth()
+                        && t.getDate() === day.getDate();
+                    return sameDay && predicate(r) ? acc + 1 : acc;
+                }, 0);
+                arr.push({ dayLabel: dayKey, count });
+            }
+            return arr;
+        };
+
+        // ---- Data fetch (prefer your existing fetchReports; fallback to Firestore if missing) ----
+        let allReports = [];
+        try {
+            if (typeof fetchReports === 'function') {
+                allReports = await fetchReports();
+            } else {
+                const { collection, getDocs } = await import('https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js');
+                const snap = await getDocs(collection(db, 'reports'));
+                allReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            }
+        } catch (e) {
+            console.error('Failed to fetch reports for analytics:', e);
+            allReports = [];
+        }
+
+        // Normalize timestamps in-place
+        allReports.forEach(r => { r._ts = toDate(r.timestamp); });
+
+        // ---- KPI calculations ----
+        const total = allReports.length;
+        const pending = allReports.filter(r => (r.status || 'Pending') === 'Pending').length;
+        const resolved = allReports.filter(r => r.status === 'Resolved').length;
+        const withImage = allReports.filter(r => !!r.imageUrl).length;
+
+        // Month stats (this & last)
+        const now = new Date();
+        const thisY = now.getFullYear(), thisM = now.getMonth();
+        const lastMonthDate = new Date(thisY, thisM - 1, 1);
+        const lastY = lastMonthDate.getFullYear(), lastM = lastMonthDate.getMonth();
+
+        const thisMonthReports = allReports.filter(r => isSameMonth(r._ts, thisY, thisM));
+        const lastMonthReports = allReports.filter(r => isSameMonth(r._ts, lastY, lastM));
+
+        const thisMonthTotal = thisMonthReports.length;
+        const lastMonthTotal = lastMonthReports.length;
+        const monthDelta = lastMonthTotal === 0 ? (thisMonthTotal > 0 ? 1 : 0) : (thisMonthTotal - lastMonthTotal) / lastMonthTotal;
+
+        // Top category (this month)
+        const catCountThisMonth = {};
+        thisMonthReports.forEach(r => {
+            const c = r.category || 'Others';
+            catCountThisMonth[c] = (catCountThisMonth[c] || 0) + 1;
+        });
+        const topCategory = Object.entries(catCountThisMonth).sort((a, b) => b[1] - a[1])[0];
+
+        // ---- Write KPIs ----
+        if (el.kpiTotal) el.kpiTotal.textContent = String(total);
+        if (el.kpiPending) el.kpiPending.textContent = String(pending);
+        if (el.kpiResolved) el.kpiResolved.textContent = String(resolved);
+        if (el.kpiPendingShare) el.kpiPendingShare.textContent = `${fmtPct(total ? pending / total : 0, 0)} of total`;
+        if (el.kpiResolvedShare) el.kpiResolvedShare.textContent = `${fmtPct(total ? resolved / total : 0, 0)} of total`;
+
+        if (el.kpiImgRate) el.kpiImgRate.textContent = fmtPct(total ? withImage / total : 0, 0);
+        if (el.kpiImgCount) el.kpiImgCount.textContent = `${withImage} of ${total}`;
+
+        if (el.kpiMonthTotal) el.kpiMonthTotal.textContent = String(thisMonthTotal);
+        if (el.kpiMonthDelta) el.kpiMonthDelta.textContent = (monthDelta === 0 && lastMonthTotal === 0)
+            ? '– vs last'
+            : `${monthDelta >= 0 ? '+' : ''}${(monthDelta * 100).toFixed(0)}% vs last`;
+        if (el.kpiTopCategory) {
+            el.kpiTopCategory.textContent = topCategory ? `Top: ${topCategory[0]} (${topCategory[1]})` : 'Top: –';
+        }
+
+        // ---- Build Sparkline data (last 14 days) ----
+        const days14_total = lastNDaysSeries(allReports, 14);
+        const days14_pending = lastNDaysSeries(allReports, 14, r => (r.status || 'Pending') === 'Pending');
+        const days14_resolved = lastNDaysSeries(allReports, 14, r => r.status === 'Resolved');
+
+        // ---- Chart helpers ----
+        const simpleLine = (canvas, series, opts = {}) => {
+            if (!window.Chart || !canvas) return null;
+            return new Chart(canvas.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: series.map(d => d.dayLabel),
+                    datasets: [{
+                        data: series.map(d => d.count),
+                        tension: 0.35,
+                        fill: false,
+                        borderWidth: 2,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false }, tooltip: { enabled: true } },
+                    scales: {
+                        x: { display: false },
+                        y: { display: false, beginAtZero: true }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...opts
+                }
+            });
+        };
+
+        const doughnut = (canvas, labels, counts, colors) => {
+            if (!window.Chart || !canvas) return null;
+            return new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom' } },
+                    cutout: '62%',
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        };
+
+        const bar = (canvas, labels, counts) => {
+            if (!window.Chart || !canvas) return null;
+            return new Chart(canvas.getContext('2d'), {
+                type: 'bar',
+                data: { labels, datasets: [{ data: counts, borderWidth: 0 }] },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        };
+
+        // ---- Build main charts ----
+
+        // Status doughnut
+        const statusLabels = ['Pending', 'In Progress', 'Resolved'];
+        const statusCounts = statusLabels.map(s => allReports.filter(r => (r.status || 'Pending') === s).length);
+        const statusColors = statusLabels.map(s => STATUS_COLORS[s] || 'rgba(148,163,184,0.85)');
+        window._adminCharts.status = doughnut(el.statusCanvas, statusLabels, statusCounts, statusColors);
+
+        // Urgency doughnut
+        const urgencyLabels = ['Low', 'Medium', 'High'];
+        const urgencyCounts = urgencyLabels.map(u => allReports.filter(r => (r.urgency || '').toLowerCase() === u.toLowerCase()).length);
+        const urgencyColors = urgencyLabels.map(u => URGENCY_COLORS[u] || 'rgba(148,163,184,0.85)');
+        window._adminCharts.urgency = doughnut(el.urgencyCanvas, urgencyLabels, urgencyCounts, urgencyColors);
+
+        // This-month by category (bar)
+        const monthCats = Object.keys(catCountThisMonth);
+        const monthCatCounts = monthCats.map(c => catCountThisMonth[c]);
+        const monthColors = monthCats.map((_, i) => CATEGORY_COLOR_FALLBACKS[i % CATEGORY_COLOR_FALLBACKS.length]);
+        if (window.Chart && el.categoryCanvas) {
+            window._adminCharts.category = new Chart(el.categoryCanvas.getContext('2d'), {
+                type: 'bar',
+                data: { labels: monthCats, datasets: [{ data: monthCatCounts, backgroundColor: monthColors, borderWidth: 0 }] },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, ticks: { precision: 0, stepSize: 1 } }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Daily (last 30 days, all statuses)
+        const days30 = lastNDaysSeries(allReports, 30);
+        window._adminCharts.daily = bar(el.dailyCanvas, days30.map(d => d.dayLabel), days30.map(d => d.count));
+
+        // Sparklines
+        window._adminCharts.sparkTotal = simpleLine(el.sparkTotal, days14_total);
+        window._adminCharts.sparkPending = simpleLine(el.sparkPending, days14_pending);
+        window._adminCharts.sparkResolved = simpleLine(el.sparkResolved, days14_resolved);
+
+        // ---- Tabs behaviour (once) ----
+        if (el.tabsRoot && !el.tabsRoot.dataset.bound) {
+            el.tabsRoot.dataset.bound = '1';
+            const tabs = el.tabsRoot.querySelectorAll('.tab');
+            const panels = el.tabsRoot.querySelectorAll('.panel');
+            const show = (name) => {
+                tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+                panels.forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
+            };
+            tabs.forEach(b => b.addEventListener('click', () => show(b.dataset.tab)));
+            // default
+            show('status');
+        }
     }
-    return arr;
-  };
-
-  // ---- Data fetch (prefer your existing fetchReports; fallback to Firestore if missing) ----
-  let allReports = [];
-  try {
-    if (typeof fetchReports === 'function') {
-      allReports = await fetchReports();
-    } else {
-      const { collection, getDocs } = await import('https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js');
-      const snap = await getDocs(collection(db, 'reports'));
-      allReports = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    }
-  } catch (e) {
-    console.error('Failed to fetch reports for analytics:', e);
-    allReports = [];
-  }
-
-  // Normalize timestamps in-place
-  allReports.forEach(r => { r._ts = toDate(r.timestamp); });
-
-  // ---- KPI calculations ----
-  const total = allReports.length;
-  const pending = allReports.filter(r => (r.status || 'Pending') === 'Pending').length;
-  const resolved = allReports.filter(r => r.status === 'Resolved').length;
-  const withImage = allReports.filter(r => !!r.imageUrl).length;
-
-  // Month stats (this & last)
-  const now = new Date();
-  const thisY = now.getFullYear(), thisM = now.getMonth();
-  const lastMonthDate = new Date(thisY, thisM - 1, 1);
-  const lastY = lastMonthDate.getFullYear(), lastM = lastMonthDate.getMonth();
-
-  const thisMonthReports = allReports.filter(r => isSameMonth(r._ts, thisY, thisM));
-  const lastMonthReports = allReports.filter(r => isSameMonth(r._ts, lastY, lastM));
-
-  const thisMonthTotal = thisMonthReports.length;
-  const lastMonthTotal = lastMonthReports.length;
-  const monthDelta = lastMonthTotal === 0 ? (thisMonthTotal > 0 ? 1 : 0) : (thisMonthTotal - lastMonthTotal) / lastMonthTotal;
-
-  // Top category (this month)
-  const catCountThisMonth = {};
-  thisMonthReports.forEach(r => {
-    const c = r.category || 'Others';
-    catCountThisMonth[c] = (catCountThisMonth[c] || 0) + 1;
-  });
-  const topCategory = Object.entries(catCountThisMonth).sort((a,b)=>b[1]-a[1])[0];
-
-  // ---- Write KPIs ----
-  if (el.kpiTotal) el.kpiTotal.textContent = String(total);
-  if (el.kpiPending) el.kpiPending.textContent = String(pending);
-  if (el.kpiResolved) el.kpiResolved.textContent = String(resolved);
-  if (el.kpiPendingShare) el.kpiPendingShare.textContent = `${fmtPct(total ? pending/total : 0, 0)} of total`;
-  if (el.kpiResolvedShare) el.kpiResolvedShare.textContent = `${fmtPct(total ? resolved/total : 0, 0)} of total`;
-
-  if (el.kpiImgRate) el.kpiImgRate.textContent = fmtPct(total ? withImage/total : 0, 0);
-  if (el.kpiImgCount) el.kpiImgCount.textContent = `${withImage} of ${total}`;
-
-  if (el.kpiMonthTotal) el.kpiMonthTotal.textContent = String(thisMonthTotal);
-  if (el.kpiMonthDelta) el.kpiMonthDelta.textContent = (monthDelta === 0 && lastMonthTotal === 0)
-    ? '– vs last'
-    : `${monthDelta>=0?'+':''}${(monthDelta*100).toFixed(0)}% vs last`;
-  if (el.kpiTopCategory) {
-    el.kpiTopCategory.textContent = topCategory ? `Top: ${topCategory[0]} (${topCategory[1]})` : 'Top: –';
-  }
-
-  // ---- Build Sparkline data (last 14 days) ----
-  const days14_total = lastNDaysSeries(allReports, 14);
-  const days14_pending = lastNDaysSeries(allReports, 14, r => (r.status || 'Pending') === 'Pending');
-  const days14_resolved = lastNDaysSeries(allReports, 14, r => r.status === 'Resolved');
-
-  // ---- Chart helpers ----
-  const simpleLine = (canvas, series, opts={}) => {
-    if (!window.Chart || !canvas) return null;
-    return new Chart(canvas.getContext('2d'), {
-      type: 'line',
-      data: {
-        labels: series.map(d=>d.dayLabel),
-        datasets: [{
-          data: series.map(d=>d.count),
-          tension: 0.35,
-          fill: false,
-          borderWidth: 2,
-          pointRadius: 0
-        }]
-      },
-      options: {
-        plugins: { legend: { display:false }, tooltip: { enabled: true } },
-        scales: {
-          x: { display: false },
-          y: { display: false, beginAtZero: true }
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        ...opts
-      }
-    });
-  };
-
-  const doughnut = (canvas, labels, counts, colors) => {
-    if (!window.Chart || !canvas) return null;
-    return new Chart(canvas.getContext('2d'), {
-      type: 'doughnut',
-      data: {
-        labels, datasets: [{ data: counts, backgroundColor: colors, borderWidth: 0 }]
-      },
-      options: {
-        plugins: { legend: { position: 'bottom' } },
-        cutout: '62%',
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  };
-
-  const bar = (canvas, labels, counts) => {
-    if (!window.Chart || !canvas) return null;
-    return new Chart(canvas.getContext('2d'), {
-      type: 'bar',
-      data: { labels, datasets: [{ data: counts, borderWidth: 0 }] },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false } },
-          y: { beginAtZero: true, ticks: { stepSize: 1 } }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  };
-
-  // ---- Build main charts ----
-
-  // Status doughnut
-  const statusLabels = ['Pending','In Progress','Resolved'];
-  const statusCounts = statusLabels.map(s => allReports.filter(r => (r.status || 'Pending') === s).length);
-  const statusColors = statusLabels.map(s => STATUS_COLORS[s] || 'rgba(148,163,184,0.85)');
-  window._adminCharts.status = doughnut(el.statusCanvas, statusLabels, statusCounts, statusColors);
-
-  // Urgency doughnut
-  const urgencyLabels = ['Low','Medium','High'];
-  const urgencyCounts = urgencyLabels.map(u => allReports.filter(r => (r.urgency || '').toLowerCase() === u.toLowerCase()).length);
-  const urgencyColors = urgencyLabels.map(u => URGENCY_COLORS[u] || 'rgba(148,163,184,0.85)');
-  window._adminCharts.urgency = doughnut(el.urgencyCanvas, urgencyLabels, urgencyCounts, urgencyColors);
-
-  // This-month by category (bar)
-  const monthCats = Object.keys(catCountThisMonth);
-  const monthCatCounts = monthCats.map(c => catCountThisMonth[c]);
-  const monthColors = monthCats.map((_, i) => CATEGORY_COLOR_FALLBACKS[i % CATEGORY_COLOR_FALLBACKS.length]);
-  if (window.Chart && el.categoryCanvas) {
-    window._adminCharts.category = new Chart(el.categoryCanvas.getContext('2d'), {
-      type: 'bar',
-      data: { labels: monthCats, datasets: [{ data: monthCatCounts, backgroundColor: monthColors, borderWidth: 0 }] },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false } },
-          y: { beginAtZero: true, ticks: { precision: 0, stepSize: 1 } }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  }
-
-  // Daily (last 30 days, all statuses)
-  const days30 = lastNDaysSeries(allReports, 30);
-  window._adminCharts.daily = bar(el.dailyCanvas, days30.map(d=>d.dayLabel), days30.map(d=>d.count));
-
-  // Sparklines
-  window._adminCharts.sparkTotal = simpleLine(el.sparkTotal, days14_total);
-  window._adminCharts.sparkPending = simpleLine(el.sparkPending, days14_pending);
-  window._adminCharts.sparkResolved = simpleLine(el.sparkResolved, days14_resolved);
-
-  // ---- Tabs behaviour (once) ----
-  if (el.tabsRoot && !el.tabsRoot.dataset.bound) {
-    el.tabsRoot.dataset.bound = '1';
-    const tabs = el.tabsRoot.querySelectorAll('.tab');
-    const panels = el.tabsRoot.querySelectorAll('.panel');
-    const show = (name) => {
-      tabs.forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-      panels.forEach(p => p.classList.toggle('hidden', p.dataset.panel !== name));
-    };
-    tabs.forEach(b => b.addEventListener('click', () => show(b.dataset.tab)));
-    // default
-    show('status');
-  }
-}
 
 
     // --- Forum Functions ---
@@ -3210,6 +3283,7 @@ async function renderAdminAnalytics() {
     if (!auth.currentUser && !document.querySelector('.page.show')) {
         showPage('landing'); // Ensure landing page is shown if not logged in
     }
+    initLandingScrollGuards();
 });
 
 // --- Sticky Trending posts ---

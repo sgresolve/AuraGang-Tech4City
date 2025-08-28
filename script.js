@@ -294,7 +294,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             pageToShow.classList.add('show');
-        }, 10); // Small delay
+
+            // ✅ Recompute AOS now that content is visible
+            if (window.AOS) {
+                requestAnimationFrame(() => {
+                    if (typeof AOS.refreshHard === 'function') AOS.refreshHard();
+                    else if (typeof AOS.refresh === 'function') AOS.refresh();
+                });
+            }
+        }, 10);
 
         // NEW: lock the landing page to the top on show (prevents auto-jump)
         if (pageId === 'landing' || pageId === 'landing-page') {

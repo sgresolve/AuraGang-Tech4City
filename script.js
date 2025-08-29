@@ -130,8 +130,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 reportingMap.setView(center, 16);
                 tempMarker = L.marker(center).addTo(reportingMap);
 
-                document.getElementById('latitude').value = center.lat.toFixed(6);
-                document.getElementById('longitude').value = center.lng.toFixed(6);
+                setLatLng(center.lat, center.lng, cleanName);
+
 
                 // Clean up the name provided by the geocoder
                 const cleanName = name.split(',').slice(0, 2).join(', ');
@@ -152,11 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 tempMarker = L.marker([lat, lng]).addTo(reportingMap);
-                document.getElementById('latitude').value = lat.toFixed(6);
-                document.getElementById('longitude').value = lng.toFixed(6);
-
-                // Clear the location name field when clicking manually
-                document.getElementById('locationName').value = '';
+                setLatLng(lat, lng, '');
                 document.getElementById('locationName').placeholder = 'Please provide a name for this location';
             });
         }
@@ -2309,8 +2305,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 tempMarker = L.marker(latLng).addTo(reportingMap);
                 reportingMap.setView(latLng, 16);
             }
-            document.getElementById('latitude').value = coords.lat.toFixed(6);
-            document.getElementById('longitude').value = coords.lon.toFixed(6);
+            setLatLng(coords.lat, coords.lon);
+
         }).catch(error => {
             // showPopup(`Could not detect location: ${error.message}`, 'error', 0, false); // REPLACED
             console.error(`Could not detect location: ${error.message}`);
@@ -3293,6 +3289,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initLandingScrollGuards();
 });
+
+function setLatLng(lat, lng, name) {
+    const latStr = (+lat).toFixed(6);
+    const lngStr = (+lng).toFixed(6);
+
+    // form inputs
+    const latInput = document.getElementById('latitude');
+    const lngInput = document.getElementById('longitude');
+    if (latInput) latInput.value = latStr;
+    if (lngInput) lngInput.value = lngStr;
+
+    // the display spans you showed
+    const selLat = document.getElementById('sel-lat');
+    const selLng = document.getElementById('sel-lng');
+    if (selLat) selLat.textContent = latStr;
+    if (selLng) selLng.textContent = lngStr;
+
+    // optional: location name, when you have one
+    if (typeof name === 'string') {
+        const nameEl = document.getElementById('locationName');
+        if (nameEl) nameEl.value = name;
+    }
+}
+
 
 // --- Sticky Trending posts ---
 (function () {
